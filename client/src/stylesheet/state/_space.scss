@@ -1,0 +1,40 @@
+$grid-columns: 12;
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -20px;
+
+  & > [class*="col-"] {
+    flex: 0 0 auto;
+    padding: 0 20px;
+  }
+
+  .no-gutter {
+    margin: 0;
+  }
+
+  .no-gutter > [class*="col-"] {
+    padding: 0;
+  }
+}
+
+@include build-grid(
+  $grid-column,
+  $screen-size,
+  $screen-gutter-x,
+  $screen-gutter-y
+);
+
+@media only screen and (max-width: map-get($screen-size, "xs" )) {
+  .row {
+    @include pxRem(margin, (map-get($screen-gutter-x, "xs") / 2));
+  }
+}

@@ -1,0 +1,57 @@
+// == Breakpoints ===
+$breakpoints: (
+  small: 576px,
+  medium: 768px,
+  large: 992px,
+  largest: 1200px,
+  super-largest: 1441px,
+);
+
+$grid-column: 12;
+$grid-gutter: 20;
+
+$screen-size: (
+  lg: "",
+  md: 1024px,
+  sm: 768px,
+  xs: 576px,
+);
+
+$screen-gutter-x: (
+  lg: 16,
+  md: 12,
+  sm: 8,
+  xs: 4,
+);
+$screen-gutter-y: (
+  lg: 16,
+  md: 12,
+  sm: 8,
+  xs: 4,
+);
+
+$color: (
+  primary: #febb0a,
+  secodary: #292929,
+  text: #000000,
+);
+
+$font-size: (
+  xs: 12x,
+  sm: 14px,
+  md: 16px,
+  lg: 18px,
+  xl: 20px,
+  xxl: 22px,
+  xxxl: 24px,
+);
+
+$font-weight: (
+  light: 400,
+  regular: 500,
+  bold: 700,
+);
+
+$font-body: "Manrope", sans-serif;
+
+$header-height: 70px;

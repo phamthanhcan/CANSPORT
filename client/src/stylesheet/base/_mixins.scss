@@ -1,0 +1,304 @@
+// === RESPOND ABOVE ===
+// @include respond-above(small) {}
+@mixin respond-above($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    $breakpoint-value: map-get($breakpoints, $breakpoint);
+    @media (min-width: $breakpoint-value) {
+      @content;
+    }
+  } @else {
+    @warn 'Invalid breakpoint: #{$breakpoint}.';
+  }
+}
+
+// === RESPOND BELOW ===
+// @include respond-below(small) {}
+@mixin respond-below($breakpoint) {
+  @if map-has-key($breakpoints, $breakpoint) {
+    $breakpoint-value: map-get($breakpoints, $breakpoint);
+    @media (max-width: ($breakpoint-value - 1)) {
+      @content;
+    }
+  } @else {
+    @warn 'Invalid breakpoint: #{$breakpoint}.';
+  }
+}
+
+// === RESPOND BETWEEN ===
+// @include respond-between(small, medium);
+@mixin respond-between($lower, $upper) {
+  @if map-has-key($breakpoints, $lower) and map-has-key($breakpoints, $upper) {
+    $lower-breakpoint: map-get($breakpoints, $lower);
+    $upper-breakpoint: map-get($breakpoints, $upper);
+    @media (min-width: $lower-breakpoint) and (max-width: ($upper-breakpoint - 1)) {
+      @content;
+    }
+  } @else {
+    @if (map-has-key($breakpoints, $lower) == false) {
+      @warn 'Your lower breakpoint was invalid: #{$lower}.';
+    }
+    @if (map-has-key($breakpoints, $upper) == false) {
+      @warn 'Your upper breakpoint was invalid: #{$upper}.';
+    }
+  }
+}
+
+@mixin border-radius($radius) {
+  -webkit-border-radius: convertPxToRem($radius);
+  -moz-border-radius: convertPxToRem($radius);
+  border-radius: convertPxToRem($radius);
+}
+@mixin border($value, $color) {
+  -webkit-border: convertPxToRem($value) solid $color;
+  -moz-border: convertPxToRem($value) solid $color;
+  border: convertPxToRem($value) solid $color;
+}
+@mixin box-shadow($shadow) {
+  box-shadow: $shadow;
+  -webkit-box-shadow: $shadow;
+  -moz-box-shadow: $shadow;
+}
+@mixin transition($transition) {
+  -webkit-transition: $transition;
+  -moz-transition: $transition;
+  -ms-transition: $transition;
+  -o-transition: $transition;
+  transition: $transition;
+}
+@mixin transform($value) {
+  -ms-transform: $value;
+  -webkit-transform: $value;
+  transform: $value;
+}
+@mixin transformX($transition) {
+  -ms-transform: translateX($transition);
+  -webkit-transform: translateX($transition);
+  transform: translateX($transition);
+}
+@mixin transformY($transition) {
+  -ms-transform: translateY($transition);
+  -webkit-transform: translateY($transition);
+  transform: translateY($transition);
+}
+@mixin opacity($opacity) {
+  -webkit-opacity: $opacity;
+  -moz-opacity: $opacity;
+  opacity: $opacity;
+}
+@mixin clearfix() {
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
+}
+@mixin font-icon($icon) {
+  content: map-get($font-icon, $icon);
+  font-family: map-get($font-family, icon);
+  -webkit-font-smoothing: antialiased;
+}
+@mixin border-box($border-box) {
+  -webkit-box-sizing: $border-box;
+  -moz-box-sizing: $border-box;
+  box-sizing: $border-box;
+}
+@mixin text-fill-color($prColor) {
+  -webkit-text-fill-color: map-get($color, $prColor) !important;
+}
+@mixin flex-direction($direction) {
+  -webkit-flex-direction: $direction;
+  -moz-flex-direction: $direction;
+  flex-direction: $direction;
+}
+
+// Flexbox display
+@mixin flexbox() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+@mixin flex-wrap($wrap) {
+  -webkit-flex-wrap: $wrap;
+  -moz-flex-wrap: $wrap;
+  -ms-flex-wrap: $wrap;
+  flex-wrap: $wrap;
+}
+
+@mixin flex-column() {
+  display: flex;
+  flex-direction: column;
+}
+@mixin flex-center-y() {
+  display: flex;
+  align-items: center;
+}
+@mixin flex-center-x() {
+  display: flex;
+  justify-content: center;
+}
+@mixin flex-centered() {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@mixin flex-column-centered() {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+@mixin flex-center-between() {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+@mixin flex-center-end() {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+@mixin flex-between-y() {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@mixin evenly-space-x($space) {
+  margin-right: $space;
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+@mixin evenly-space-y($space) {
+  margin-bottom: $space;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@mixin ellipsis-special($number: null) {
+  overflow: hidden;
+  @if type-of($number) != number {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } @else {
+    display: box;
+    display: -moz-box;
+    display: -webkit-box;
+    display: -ms-box;
+    box-orient: vertical;
+    -moz-box-orient: vertical;
+    -ms-line-clamp: $number;
+    -moz-line-clamp: $number;
+    -webkit-line-clamp: $number;
+    word-wrap: break-word;
+    white-space: normal;
+    /*! autoprefixer: off */
+    -webkit-box-orient: vertical;
+    -moz-box-orient: vertical;
+  }
+}
+
+@mixin create-media-query($break-point) {
+  @if ($break-point == "") {
+    @content;
+  } @else {
+    @media only screen and (max-width: $break-point) {
+      @content;
+    }
+  }
+}
+
+@mixin create-col-classes($size, $column, $break-point, $gutter-x, $gutter-y) {
+  @include create-media-query($break-point) {
+    @for $i from 0 through $column {
+      @if ($break-point == "") {
+        .col-#{$i} {
+          width: percentage($i / $column);
+          @include pxRem(
+            padding,
+            map-get($gutter-y, $size / 2) (map-get($gutter-x, $size) / 2)
+          );
+        }
+      } @else {
+        .col-#{$size}-#{$i} {
+          width: percentage($i / $column);
+          @include pxRem(
+            padding,
+            map-get($gutter-y, $size) / 2 map-get($gutter-x, $size) / 2
+          );
+        }
+      }
+    }
+  }
+}
+
+@mixin build-grid($column, $screen-size, $gutter-x, $gutter-y) {
+  @each $size, $break-point in $screen-size {
+    @include create-col-classes(
+      $size,
+      $column,
+      $break-point,
+      $gutter-x,
+      $gutter-y
+    );
+  }
+}
+
+// === CONVERT PXREM ===
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
+}
+
+@function convertRootPxToEm($value) {
+  // check for null:
+  @if ($value == null) {
+    @return $value;
+  }
+  // assume em:
+  @if (unitless($value) or unit($value) == em) {
+    @return 0em + $value;
+  } @else {
+    @return 0em + strip-units($value) / 16;
+  }
+}
+
+@function convertPxToRem($px) {
+  @return 0rem + strip-units($px) / 16;
+}
+
+@mixin pxRem($property, $values) {
+  // Create a couple of empty lists as output buffers:
+  $px-values: ();
+  $rem-values: ();
+
+  // Ensure $values is a list.
+  @if type-of($values) != "list" {
+    $values: join((), $values);
+  }
+
+  // Loop through the $values list:
+  @each $value in $values {
+    @if type-of($value) == number and (unitless($value) or unit($value) == px) {
+      $px-values: join($px-values, 0px + ($value));
+      $rem-values: join($rem-values, convertPxToRem($value));
+    } @else {
+      // no conversion:
+      $px-values: join($px-values, $value);
+      $rem-values: join($rem-values, $value);
+    }
+  }
+
+  #{$property}: $px-values;
+
+  // don't add media query if it's not needed:
+  @if $px-values != $rem-values {
+    // @media only all {
+    #{$property}: $rem-values;
+    // }
+  }
+}
+
+// == End / Convert Px To Rem
