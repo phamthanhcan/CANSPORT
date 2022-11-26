@@ -1,0 +1,37 @@
+.auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  &-input {
+    display: block;
+    width: 400px !important;
+  }
+
+  &-title {
+    margin-bottom: 40px;
+    font-size: map-get($font-size, xxxl);
+    font-weight: map-get($font-weight, bold);
+  }
+
+  &-form {
+    padding: 45px;
+    background-color: map-get($color, gray);
+
+    &-title {
+      margin-bottom: 15px;
+      font-size: map-get($font-size, md);
+      font-weight: map-get($font-weight, bold);
+    }
+
+    &-description {
+      margin-bottom: 5px;
+      font-size: map-get($font-size, xs);
+    }
+
+    .btn {
+      margin-top: 20px;
+    }
+  }
+}

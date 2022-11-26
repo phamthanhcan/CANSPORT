@@ -32,12 +32,19 @@ $screen-gutter-y: (
 
 $color: (
   primary: #febb0a,
-  secodary: #292929,
+  primary-hover: #e1a500,
+  secondary: #292929,
+  secondary-hover: #4b4b4b,
   text: #000000,
+  gray: #f7f7f7,
+  error: #e75b52,
+  warning: #fbbc05,
+  disabled: #d9d9d9,
+  white: #ffffff,
 );
 
 $font-size: (
-  xs: 12x,
+  xs: 12px,
   sm: 14px,
   md: 16px,
   lg: 18px,

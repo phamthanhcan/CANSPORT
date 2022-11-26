@@ -1,0 +1,30 @@
+input.form-control {
+  width: 100%;
+  margin-top: 5px;
+  padding: 10px;
+  border: 1px solid map-get($color, gray);
+  outline: none;
+  font-size: map-get($font-size, sm);
+}
+
+.form-label {
+  font-size: map-get($font-size, sm);
+
+  &-required {
+    margin-left: 3px;
+    color: map-get($color, error);
+  }
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.form-error {
+  position: absolute;
+  left: 0;
+  bottom: -20px;
+  color: map-get($color, error);
+  font-size: map-get($font-size, xs);
+}

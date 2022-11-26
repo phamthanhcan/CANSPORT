@@ -78,3 +78,7 @@ textarea {
 .required {
   color: map-get($color, danger);
 }
+
+.bg-gray {
+  background-color: map-get($color, gray);
+}

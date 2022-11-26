@@ -1,40 +1,51 @@
-$grid-columns: 12;
+$value: 5;
+$sizeList: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16;
 
-.container {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -20px;
-
-  & > [class*="col-"] {
-    flex: 0 0 auto;
-    padding: 0 20px;
+// Padding
+@each $size in $sizeList {
+  .pd-#{$size} {
+    @include pxRem(padding, $value * $size);
   }
-
-  .no-gutter {
-    margin: 0;
+  .px-#{$size} {
+    @include pxRem(padding, 0 $value * $size);
   }
-
-  .no-gutter > [class*="col-"] {
-    padding: 0;
+  .py-#{$size} {
+    @include pxRem(padding, $value * $size 0);
   }
-}
-
-@include build-grid(
-  $grid-column,
-  $screen-size,
-  $screen-gutter-x,
-  $screen-gutter-y
-);
-
-@media only screen and (max-width: map-get($screen-size, "xs" )) {
-  .row {
-    @include pxRem(margin, (map-get($screen-gutter-x, "xs") / 2));
+  .pl-#{$size} {
+    @include pxRem(padding-left, $value * $size);
+  }
+  .pr-#{$size} {
+    @include pxRem(padding-right, $value * $size);
+  }
+  .pt-#{$size} {
+    @include pxRem(padding-top, $value * $size);
+  }
+  .pb-#{$size} {
+    @include pxRem(padding-bottom, $value * $size);
+  }
+  .mg-#{$size} {
+    @include pxRem(margin, $value * $size);
+  }
+  .mx-#{$size} {
+    @include pxRem(margin, 0 $value * $size);
+  }
+  .my-#{$size} {
+    @include pxRem(margin, $value * $size 0);
+  }
+  .mt-#{$size} {
+    @include pxRem(margin-top, $value * $size);
+  }
+  .ml-#{$size} {
+    @include pxRem(margin-left, $value * $size);
+  }
+  .mb-#{$size} {
+    @include pxRem(margin-bottom, $value * $size);
+  }
+  .mr-#{$size} {
+    @include pxRem(margin-right, $value * $size);
+  }
+  .mr-#{$size}-i {
+    @include pxRem(margin-right, $value * $size);
   }
 }
