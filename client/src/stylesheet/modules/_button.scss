@@ -1,7 +1,9 @@
 .btn {
+  display: inline-block;
   padding: 15px;
   outline: none;
   border: none;
+  line-height: 1.2;
   font-weight: map-get($font-weight, bold);
   font-size: map-get($font-size, md);
   transition: background-color 0.25s;
@@ -26,6 +28,6 @@
   &-sm {
     padding: 10px;
     font-weight: map-get($font-weight, light);
-    font-size: map-get($font-size, xs);
+    font-size: map-get($font-size, sm);
   }
 }

@@ -1,0 +1,25 @@
+POST http://localhost:7000/auth/signup
+Content-Type: application/json
+
+{
+  "name": "bảo như",
+  "email": "tranchaubaonhu003@gmail.com",
+  "phone": "0921194880",
+  "password": "thanhcan123",
+  "userRole": 1
+}
+
+###
+
+POST http://localhost:7000/auth/signin
+Content-Type: application/json
+
+{
+  "email": "admin@gmail.com",
+  "password": "thanhcan123"
+}
+
+###
+GET http://localhost:7000/user/638245e6728d20ce61049823
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzgyNDkyMGY1NmIyOTJjNWIzNzM0NmUiLCJyb2xlIjoxLCJpYXQiOjE2Njk0ODQyOTksImV4cCI6MTY2OTcwMDI5OX0.4v3cyrp6fx1pRnw_X25gI_WFhvlm0U2P1L7j4JEr0AY

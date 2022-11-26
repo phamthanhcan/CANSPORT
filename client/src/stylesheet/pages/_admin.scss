@@ -1,0 +1,59 @@
+.admin-nav {
+  background-color: map-get($color, primary);
+  min-height: calc(100vh - 180px);
+  &-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .active {
+    background-color: #cac7c7;
+  }
+}
+
+.category-admin {
+  &-img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .category-action {
+    width: 18px;
+    height: 18px;
+
+    &.delete {
+      color: #fa3636;
+    }
+  }
+
+  .category-search {
+    width: 350px;
+  }
+
+  .category-input {
+    width: 430px;
+  }
+}
+.product-form {
+  .product-input {
+    width: 670px;
+  }
+}
+
+.shipping-form {
+  width: 800px;
+}
+
+.sku-form {
+  width: 100%;
+  td {
+    padding: 0 !important;
+  }
+  input {
+    border: 1px solid map-get($color, border);
+  }
+
+  input:focus {
+    outline: none;
+  }
+}

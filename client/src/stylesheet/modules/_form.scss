@@ -5,6 +5,15 @@ input.form-control {
   border: 1px solid map-get($color, gray);
   outline: none;
   font-size: map-get($font-size, sm);
+
+  &.dark {
+    background-color: map-get($color, secondary);
+    color: map-get($color, white);
+
+    &::placeholder {
+      color: map-get($color, gray);
+    }
+  }
 }
 
 .form-label {

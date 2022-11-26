@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
-
+import { Link, useHistory } from "react-router-dom";
 import { regex } from "../../shared/constants/regex";
+import { postApi } from "../../shared/helper/api";
 
 const Register = () => {
+  const [status, setStatus] = useState({
+    isLoading: false,
+    error: "",
+    success: "",
+  });
+
+  const history = useHistory();
+
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("Vui lòng nhập tên"),
     lastName: Yup.string().required("Vui lòng nhập họ"),
@@ -33,7 +42,39 @@ const Register = () => {
   } = useForm(formOptions);
 
   const onSubmit = (data) => {
-    console.log(data);
+    const dataSubmit = {
+      name: `${data.firstName} ${data.lastName}`,
+      email: data.email,
+      password: data.password,
+      phone: data.phone,
+      userRole: 1,
+    };
+    console.log(dataSubmit);
+    setStatus({
+      ...status,
+      isLoading: true,
+    });
+    postApi(["auth", "signup"], dataSubmit)
+      .then((res) => {
+        setStatus({
+          ...status,
+          isLoading: false,
+          error: "",
+          success: "Create account successfully",
+        });
+
+        setTimeout(() => {
+          history.push("/login");
+        }, 3000);
+      })
+      .catch((err) => {
+        setStatus({
+          ...status,
+          isLoading: false,
+          error: err.response.data.message,
+          success: "",
+        });
+      });
   };
 
   return (
@@ -122,7 +163,10 @@ const Register = () => {
               </div>
             </div>
           </div>
-          <button className="btn btn-secondary mr-3">Quay lại</button>
+          <p className="txt-error">{status.error}</p>
+          <Link to="/login" className="btn btn-secondary mr-3">
+            Quay lại
+          </Link>
           <button className="btn btn-primary">Đăng ký</button>
         </form>
       </div>

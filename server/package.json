@@ -17,6 +17,7 @@
     "firebase-admin": "^11.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.3",
+    "mongoose-paginate-v2": "^1.7.1",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

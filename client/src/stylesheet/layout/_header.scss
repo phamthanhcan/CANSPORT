@@ -1,0 +1,120 @@
+.header {
+  z-index: 100;
+
+  &.dark {
+    background-color: map-get($color, secondary);
+    color: map-get($color, white);
+
+    a,
+    button {
+      color: map-get($color, white);
+    }
+  }
+
+  .logo {
+    width: 80px;
+    height: 80px;
+  }
+
+  &-top {
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &-left {
+    display: flex;
+    align-items: center;
+
+    input {
+      margin-left: 20px;
+      width: 350px;
+    }
+  }
+
+  &-right {
+    display: flex;
+    align-items: center;
+  }
+
+  .btn-purchase {
+    width: 110px;
+    margin-left: 30px;
+  }
+}
+
+.navbar {
+  padding: 15px;
+  background-color: map-get($color, primary);
+
+  .categories-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .category-item {
+    a {
+      font-weight: map-get($font-weight, bold);
+    }
+  }
+}
+
+.header-account {
+  .account {
+    display: flex;
+    align-items: center;
+
+    &-link {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      margin-right: 10px;
+      font-size: map-get($font-size, sm);
+    }
+
+    &-img {
+      margin-right: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+  }
+}
+
+.header-cart {
+  display: flex;
+  position: relative;
+  margin-left: 20px;
+
+  .cart-img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .quantity {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    left: 20px;
+    top: 4px;
+    font-style: italic;
+    border-radius: 50px;
+    content: "";
+    background-color: map-get($color, primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: map-get($font-size, xs);
+  }
+
+  .cart-title {
+    font-size: map-get($font-size, sm);
+    font-weight: map-get($font-weight, bold);
+  }
+
+  .cart-quantity {
+    font-size: map-get($font-size, xs);
+  }
+}
