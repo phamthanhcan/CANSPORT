@@ -1,15 +1,16 @@
 .btn {
   display: inline-block;
-  padding: 15px;
+  padding: 10px;
+  min-width: 80px;
   outline: none;
   border: none;
-  line-height: 1.2;
+  line-height: 1.3;
   font-weight: map-get($font-weight, bold);
   font-size: map-get($font-size, md);
   transition: background-color 0.25s;
 
   &-primary {
-    background-color: map-get($color, primary);
+    background-color: map-get($color, primary) !important;
 
     &:hover {
       background-color: map-get($color, primary-hover);
@@ -18,7 +19,7 @@
 
   &-secondary {
     color: map-get($color, white);
-    background-color: map-get($color, secondary);
+    background-color: map-get($color, secondary) !important;
 
     &:hover {
       background-color: map-get($color, secondary-hover);
@@ -29,5 +30,10 @@
     padding: 10px;
     font-weight: map-get($font-weight, light);
     font-size: map-get($font-size, sm);
+  }
+  &-xs {
+    padding: 5px;
+    font-weight: map-get($font-weight, light);
+    font-size: map-get($font-size, xs);
   }
 }

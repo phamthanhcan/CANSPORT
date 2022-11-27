@@ -30,3 +30,15 @@
   font-size: map-get($font-size, xs);
   color: map-get($color, error);
 }
+
+.txt-xs {
+  font-size: map-get($font-size, xs);
+}
+
+.txt-sm {
+  font-size: map-get($font-size, sm);
+}
+
+.txt-lg {
+  font-size: map-get($font-size, lg);
+}

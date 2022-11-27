@@ -6,7 +6,6 @@
 
   &-input {
     display: block;
-    width: 400px !important;
   }
 
   &-title {
@@ -16,7 +15,7 @@
   }
 
   &-form {
-    padding: 45px;
+    padding: 60px;
     background-color: map-get($color, gray);
 
     &-title {

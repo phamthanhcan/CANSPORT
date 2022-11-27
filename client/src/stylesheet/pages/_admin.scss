@@ -1,6 +1,6 @@
 .admin-nav {
   background-color: map-get($color, primary);
-  min-height: calc(100vh - 180px);
+  height: calc(100vh - 100px);
   &-icon {
     width: 18px;
     height: 18px;
@@ -56,4 +56,52 @@
   input:focus {
     outline: none;
   }
+}
+
+.admin-wrapper {
+  padding: 30px;
+
+  .admin-title {
+    margin-bottom: 20px;
+    font-size: map-get($font-size, xxxl);
+    font-weight: map-get($font-weight, bold);
+  }
+
+  .admin-actions {
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    input {
+      width: 400px;
+      border-color: #ccc;
+    }
+
+    .btn {
+      flex-shrink: 0;
+    }
+  }
+}
+
+.category-form {
+  width: 500px;
+
+  input.form-control,
+  textarea.form-control {
+    border-color: #ccc;
+  }
+
+  &-img {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border: 1px solid #ccc;
+  }
+}
+
+.category-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
 }

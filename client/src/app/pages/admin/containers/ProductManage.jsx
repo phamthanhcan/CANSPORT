@@ -1,5 +1,11 @@
+import Empty from "../../../shared/components/modules/Empty";
+
 const ProductManage = () => {
-  return <h1>Product Manage</h1>;
+  return (
+    <div className="product-manage">
+      <Empty />;
+    </div>
+  );
 };
 
 export default ProductManage;

@@ -88,9 +88,17 @@ textarea {
   background-color: map-get($color, secondary);
 }
 
+.bg-white {
+  background-color: map-get($color, white);
+}
+
 .ovelay {
   position: fixed;
   inset: 0;
   background-color: rgba(1, 1, 1, 0.1);
   z-index: 1111111111;
+
+  &.inline {
+    position: absolute;
+  }
 }

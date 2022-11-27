@@ -1,0 +1,9 @@
+.dialog {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(1, 1, 1, 0.1);
+
+  &-wrap {
+    border-radius: 6px;
+  }
+}

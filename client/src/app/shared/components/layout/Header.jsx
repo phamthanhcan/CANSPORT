@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { getUserInfor } from "../../../pages/account/account.actions";
@@ -48,7 +48,7 @@ export const isExpriedToken = (token) => {
 
 const Header = (props) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [isHome, setIsHome] = useState(false);
   const user = useSelector((state) => state.auth.data);
@@ -57,7 +57,7 @@ const Header = (props) => {
 
   const handleLogout = useCallback(() => {
     dispatch(logout());
-    history.push("/");
+    navigate("/");
   }, [dispatch]);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ const Header = (props) => {
     <header className={`header ${isAdmin ? "dark" : ""}`}>
       <div className="header-top container">
         <div className="header-left">
-          <Link className="logo" to="/">
+          <Link className="logo" to={`${isAdmin ? "/admin" : "/"}`}>
             <img
               src="https://bizweb.dktcdn.net/100/108/842/themes/775959/assets/logo.png?1669439764403"
               alt="CANSPORT LOGO"

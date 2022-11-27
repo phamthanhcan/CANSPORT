@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { regex } from "../../shared/constants/regex";
 import { postApi } from "../../shared/helper/api";
 
@@ -13,7 +13,7 @@ const Register = () => {
     success: "",
   });
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("Vui lòng nhập tên"),
@@ -64,7 +64,7 @@ const Register = () => {
         });
 
         setTimeout(() => {
-          history.push("/login");
+          navigate("/login");
         }, 3000);
       })
       .catch((err) => {
