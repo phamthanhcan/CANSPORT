@@ -90,11 +90,11 @@ const CategoryForm = (props) => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <p className="txt-bold txt-lg txt-center mb-4">
-            {!!id ? "EDIT CATEGORY" : "ADD CATEGORY"}
+            {!!id ? "CẬP NHẬT DANH MỤC" : "THÊM MỚI DANH MỤC"}
           </p>
           <div className="form-group">
             <label className="form-label" htmlFor="name">
-              Name <span className="form-label-required">*</span>
+              Tên danh mục <span className="form-label-required">*</span>
             </label>
             <input
               type="text"
@@ -107,7 +107,7 @@ const CategoryForm = (props) => {
           </div>
           <div className="form-group">
             <label className="form-label" htmlFor="description">
-              Description
+              Mô tả
             </label>
             <textarea
               className="form-control category-input"
@@ -126,7 +126,7 @@ const CategoryForm = (props) => {
               accept="image/png, image/jpeg"
               onChange={uploadImg}
             />
-            <label className="btn btn-secondary btn-sm" htmlFor="image">
+            <label className="btn btn-secondary btn-xs" htmlFor="image">
               Chọn ảnh
             </label>
           </div>

@@ -1,0 +1,37 @@
+$width: 45px;
+$height: $width/2;
+
+.toggle {
+  display: inline-block;
+  cursor: pointer;
+
+  &-fill {
+    @include transition(0.25s ease-in-out);
+    position: relative;
+    width: $width;
+    height: $height;
+    border-radius: $height/2;
+    background-color: #dddddd;
+
+    &::after {
+      @include box-shadow(0 0 10px rgba(0, 0, 0, 0.25));
+      @include transition(0.25s ease-in-out);
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: $height;
+      width: $height;
+      border-radius: $height/2;
+      background-color: map-get($color, white-a);
+    }
+  }
+
+  &-input:checked ~ &-fill {
+    background-color: map-get($color, primary);
+  }
+
+  &-input:checked ~ &-fill::after {
+    transform: translateX($height);
+  }
+}

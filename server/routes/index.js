@@ -1,6 +1,7 @@
 const authRoute = require("./authRoute");
 const userRoute = require("./userRoute");
-const categories = require("./categoriesRoute");
+const categoryRoute = require("./categoriesRoute");
+const productRoute = require("./productRoute");
 const firebase = require("../config/firebase");
 const multer = require("multer");
 
@@ -15,7 +16,8 @@ const uploads = multer({
 function route(app) {
   app.use("/auth", authRoute);
   app.use("/user", userRoute);
-  app.use("/categories", categories);
+  app.use("/categories", categoryRoute);
+  app.use("/product", productRoute);
 
   app.post("/uploadiu", upload, (req, res) => {
     if (!req.file) {

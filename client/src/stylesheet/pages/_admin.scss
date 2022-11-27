@@ -82,20 +82,21 @@
       flex-shrink: 0;
     }
   }
+
+  input.form-control,
+  textarea.form-control,
+  select.form-control {
+    border-color: #ccc;
+  }
 }
 
 .category-form {
   width: 500px;
 
-  input.form-control,
-  textarea.form-control {
-    border-color: #ccc;
-  }
-
   &-img {
     position: relative;
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     border: 1px solid #ccc;
   }
 }
@@ -104,4 +105,8 @@
   display: flex;
   justify-content: flex-end;
   margin-top: 20px;
+}
+
+.product-form {
+  width: 700px;
 }
