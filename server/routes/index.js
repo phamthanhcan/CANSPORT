@@ -2,6 +2,7 @@ const authRoute = require("./authRoute");
 const userRoute = require("./userRoute");
 const categoryRoute = require("./categoriesRoute");
 const productRoute = require("./productRoute");
+// const skuRoute = require("./skuRoute");
 const firebase = require("../config/firebase");
 const multer = require("multer");
 
@@ -18,6 +19,7 @@ function route(app) {
   app.use("/user", userRoute);
   app.use("/categories", categoryRoute);
   app.use("/product", productRoute);
+  // app.use("/sku", skuRoute);
 
   app.post("/uploadiu", upload, (req, res) => {
     if (!req.file) {

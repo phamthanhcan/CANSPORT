@@ -3,10 +3,14 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { getListCategory } from "../../home/home.actions";
 import NoImage from "../../../../assets/images/no-image.png";
+import SkuForm from "./SkuForm";
 
 const ProductForm = (props) => {
   const { setShowForm } = props;
   const dispatch = useDispatch();
+
+  const [showSkuForm, setShowSkuForm] = useState(false);
+  const [hasSku, setHasSku] = useState(false);
 
   const categories = useSelector((state) => state.category.data);
   console.log(categories);
@@ -17,8 +21,6 @@ const ProductForm = (props) => {
     formState: { errors },
   } = useForm();
 
-  const [hasSku, setHasSku] = useState(false);
-
   const onSubmit = useCallback(() => {}, []);
 
   useEffect(() => {
@@ -26,10 +28,10 @@ const ProductForm = (props) => {
   }, [dispatch]);
 
   return (
-    <div className="ovelay">
-      <div className="full-height f-center-x f-center-y">
+    <div className="ovelay full-height f-center-x f-center-y">
+      <div className="product-form">
         <form
-          className="pd-5 product-form bg-white"
+          className={`pd-5 bg-white ${showSkuForm ? "hidden" : ""}`}
           onSubmit={handleSubmit(onSubmit)}
         >
           <p className="txt-bold txt-lg txt-center mb-4">THÊM MỚI SẢN PHẨM</p>
@@ -112,7 +114,10 @@ const ProductForm = (props) => {
                   </div>
                 </div>
               ) : (
-                <button className="btn btn-primary btn-xs mb-5">
+                <button
+                  className="btn btn-primary btn-xs mb-5"
+                  onClick={() => setShowSkuForm(true)}
+                >
                   + Thêm sku
                 </button>
               )}
@@ -159,6 +164,9 @@ const ProductForm = (props) => {
             <input className="btn btn-primary" type="submit" value="Thêm mới" />
           </div>
         </form>
+        <div className={`bg-white ${!showSkuForm ? "hidden" : ""}`}>
+          <SkuForm handleCancelSku={() => setShowSkuForm(false)} />
+        </div>
       </div>
     </div>
   );

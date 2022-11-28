@@ -20,7 +20,7 @@ const AdminNav = () => {
       >
         <Link to="/admin/revenue" className="d-flex">
           <img src={dashboardIcon} alt="icon" className="admin-nav-icon" />
-          <p className="px-3">Revenue</p>
+          <p className="px-3">Thống kê</p>
         </Link>
       </li>
       <li
@@ -30,7 +30,7 @@ const AdminNav = () => {
       >
         <Link to="/admin/products" className="d-flex">
           <img src={productIcon} alt="icon" className="admin-nav-icon" />
-          <p className="px-3">Product</p>
+          <p className="px-3">Sản phẩm</p>
         </Link>
       </li>
       <li
@@ -40,7 +40,7 @@ const AdminNav = () => {
       >
         <Link to="/admin/category" className="d-flex">
           <img src={categoryIcon} alt="icon" className="admin-nav-icon" />
-          <p className="px-3">Category</p>
+          <p className="px-3">Danh mục</p>
         </Link>
       </li>
       <li
@@ -50,7 +50,7 @@ const AdminNav = () => {
       >
         <Link to="/admin/orders" className="d-flex">
           <img src={orderIcon} alt="icon" className="admin-nav-icon" />
-          <p className="px-3">Order</p>
+          <p className="px-3">Đơn hàng</p>
         </Link>
       </li>
       <li
@@ -60,7 +60,7 @@ const AdminNav = () => {
       >
         <Link to="/admin/users" className="d-flex">
           <img src={customerIcon} alt="icon" className="admin-nav-icon" />
-          <p className="px-3">Customers</p>
+          <p className="px-3">Khách hàng</p>
         </Link>
       </li>
     </ul>
