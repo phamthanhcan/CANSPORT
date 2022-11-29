@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { getListCategory } from "../../home/home.actions";
@@ -6,14 +6,17 @@ import NoImage from "../../../../assets/images/no-image.png";
 import SkuForm from "./SkuForm";
 
 const ProductForm = (props) => {
-  const { setShowForm } = props;
+  const { handleCancel } = props;
   const dispatch = useDispatch();
 
   const [showSkuForm, setShowSkuForm] = useState(false);
   const [hasSku, setHasSku] = useState(false);
+  const [status, setStatus] = useState({
+    isLoading: false,
+    error: null,
+  });
 
   const categories = useSelector((state) => state.category.data);
-  console.log(categories);
 
   const {
     handleSubmit,
@@ -21,14 +24,23 @@ const ProductForm = (props) => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = useCallback(() => {}, []);
+  const handleSaveSku = (data) => {
+    props.handleCancelSku(data);
+    setShowSkuForm(false);
+  };
+
+  const onSubmit = (data) => {
+    props.handleSaveInfo({ ...data }, hasSku);
+  };
+
+  const uploadImage = () => {};
 
   useEffect(() => {
     dispatch(getListCategory());
   }, [dispatch]);
 
   return (
-    <div className="ovelay full-height f-center-x f-center-y">
+    <div className="f-center-x f-center-y">
       <div className="product-form">
         <form
           className={`pd-5 bg-white ${showSkuForm ? "hidden" : ""}`}
@@ -159,13 +171,16 @@ const ProductForm = (props) => {
               className="btn btn-secondary mr-3"
               type="button"
               value="Huỷ"
-              onClick={() => setShowForm(false)}
+              onClick={handleCancel}
             />
             <input className="btn btn-primary" type="submit" value="Thêm mới" />
           </div>
         </form>
         <div className={`bg-white ${!showSkuForm ? "hidden" : ""}`}>
-          <SkuForm handleCancelSku={() => setShowSkuForm(false)} />
+          <SkuForm
+            handleSaveSku={handleSaveSku}
+            handleCancelSku={() => setShowSkuForm(false)}
+          />
         </div>
       </div>
     </div>

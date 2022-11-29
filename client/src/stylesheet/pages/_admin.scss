@@ -1,6 +1,10 @@
 .admin-nav {
   background-color: map-get($color, primary);
-  height: calc(100vh - 100px);
+  position: sticky;
+  top: 100px;
+  left: 0;
+  height: 100%;
+  width: 100%;
   &-icon {
     width: 18px;
     height: 18px;

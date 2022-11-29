@@ -13,7 +13,7 @@ const isEmptyArray = (arr) => {
 };
 
 const SkuForm = (props) => {
-  const { handleCancelSku } = props;
+  const { handleCancelSku, handleSaveSku } = props;
 
   const {
     register,
@@ -46,53 +46,78 @@ const SkuForm = (props) => {
 
   const [applyForAll, setApplyForAll] = useState(false);
 
-  const handleChangeColorSize = useCallback(() => {
-    let arr = [];
+  const handleChangeColorSize = () => {
+    const arr = [];
 
     if (
-      !isEmptyArray(colors?.map((item) => item.name)) ||
-      !isEmptyArray(sizes?.map((item) => item.name))
+      !isEmptyArray(colors.map((item) => item.name)) ||
+      !isEmptyArray(sizes.map((item) => item.name))
     ) {
       if (
-        !isEmptyArray(colors?.map((item) => item.name)) &&
-        !isEmptyArray(sizes?.map((item) => item.name))
+        !isEmptyArray(colors.map((item) => item.name)) &&
+        !isEmptyArray(sizes.map((item) => item.name))
       ) {
         colors.forEach((color) => {
           if (color.name) {
-            if (color.name) {
-              sizes.forEach((size) => {
-                if (size.name) {
-                  arr.push({
-                    color: color.name,
-                    size: size.name,
-                  });
-                }
-              });
-            }
+            sizes.forEach((size) => {
+              if (size.name) {
+                arr.push({
+                  color: color.name,
+                  size: size.name,
+                  quantity: null,
+                  discount: null,
+                  price: null,
+                });
+              }
+            });
           }
         });
-      }
-    } else {
-      (!isEmptyArray(sizes?.map((item) => item.name)) ? sizes : colors).forEach(
-        (item) => {
+      } else {
+        (!isEmptyArray(sizes?.map((item) => item.name))
+          ? sizes
+          : colors
+        ).forEach((item) => {
           if (item.name) {
             arr.push({
               color: !isEmptyArray(colors?.map((item) => item.name))
                 ? ""
                 : item.name,
               size: !isEmptyArray(sizes?.map((item) => item.name))
-                ? item.name
-                : "",
+                ? ""
+                : item.name,
+              quantity: null,
+              discount: null,
+              price: null,
             });
           }
-        }
-      );
+        });
+      }
     }
-
     skuReplace(arr);
-  }, [colors, sizes, skuReplace]);
+  };
 
-  const onSubmit = (data) => {};
+  const onSubmit = (data) => {
+    console.log(data.skus);
+    if (
+      isEmptyArray(data.skus.map((item) => item.color)) &&
+      isEmptyArray(data.skus.map((item) => item.size))
+    ) {
+      alert("Vui lòng chọn màu sắc hoặc size!");
+    }
+    if (!applyForAll) {
+      handleSaveSku(data.skus);
+    } else {
+      const temp = data.skus.map((sku) => {
+        return {
+          ...sku,
+          price: data.price,
+          quantity: data.quantity,
+          discount: data.discount || "0",
+        };
+      });
+      handleSaveSku(temp);
+    }
+  };
 
   return (
     <form className="sku-form pd-5" onSubmit={handleSubmit(onSubmit)}>
@@ -173,7 +198,9 @@ const SkuForm = (props) => {
               className="form-control"
               id="price"
               min="0"
-              {...register("price")}
+              {...register("price", {
+                required: applyForAll ? "Vui lòng nhập giá" : false,
+              })}
             />
             <p className="form-error">{errors.price?.message}</p>
           </div>
@@ -186,7 +213,9 @@ const SkuForm = (props) => {
               className="form-control"
               id="quantity"
               min="0"
-              {...register("quantity")}
+              {...register("quantity", {
+                required: applyForAll ? "Vui lòng nhập số lượng" : false,
+              })}
             />
             <p className="form-error">{errors.quantity?.message}</p>
           </div>

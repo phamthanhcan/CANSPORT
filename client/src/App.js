@@ -22,6 +22,9 @@ const UserManage = React.lazy(() =>
 const RevenueChart = React.lazy(() =>
   import("./app/pages/admin/containers/RevenueChart")
 );
+const AddProduct = React.lazy(() =>
+  import("./app/pages/admin/containers/AddProduct")
+);
 
 function App() {
   return (
@@ -51,6 +54,7 @@ function App() {
             <Route path="users" element={<UserManage />} />
             <Route path="orders" element={<OrderManage />} />
             <Route path="revenue" element={<RevenueChart />} />
+            <Route path="products/add" element={<AddProduct />} />
           </Route>
         </Routes>
       </Suspense>
