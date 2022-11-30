@@ -124,7 +124,7 @@ const SkuForm = (props) => {
       <div className="row no-gutter f-center-x">
         <div className="col-6 sku-col">
           <h5 className="sku-title">MÀU SẮC</h5>
-          <ul className="color-list">
+          <ul className="add-list">
             {colorFields.map((item, index) => (
               <li key={item.id} className="color-item">
                 <Controller
@@ -138,34 +138,42 @@ const SkuForm = (props) => {
               </li>
             ))}
           </ul>
-          <button
-            className="btn-add"
-            type="button"
-            onClick={() => colorAppend({ name: "#000000" })}
-          >
-            <ion-icon name="add-circle-outline"></ion-icon>
-          </button>
+          <div className="f-center-x">
+            <button
+              className="btn-add"
+              type="button"
+              onClick={() => colorAppend({ name: "#000000" })}
+            >
+              <ion-icon name="add-circle-outline"></ion-icon>
+            </button>
+          </div>
         </div>
-        <ul className="col-6 sku-col">
+        <div className="col-6 sku-col">
           <h5 className="sku-title">SIZE</h5>
-          {sizeFields.map((item, index) => (
-            <li key={item.id}>
-              <Controller
-                render={({ field }) => <input className="mr-3" {...field} />}
-                name={`sizes.${index}.name`}
-                control={control}
-              />
-              <button onClick={() => sizeRemove(index)}>X</button>
-            </li>
-          ))}
-          <button
-            type="button"
-            className="btn-add"
-            onClick={() => sizeAppend({ name: "" })}
-          >
-            + Thêm size
-          </button>
-        </ul>
+          <ul className="add-list">
+            {sizeFields.map((item, index) => (
+              <li key={item.id} className="size-item">
+                <Controller
+                  render={({ field }) => <input className="mr-1" {...field} />}
+                  name={`sizes.${index}.name`}
+                  control={control}
+                />
+                <button onClick={() => sizeRemove(index)}>
+                  <ion-icon name="close-circle-outline"></ion-icon>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <div className="f-center-x">
+            <button
+              type="button"
+              className="btn-add"
+              onClick={() => sizeAppend({ name: "" })}
+            >
+              <ion-icon name="add-circle-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
       </div>
       <div className="f-center-x mt-3">
         <button

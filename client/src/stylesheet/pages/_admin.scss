@@ -121,17 +121,26 @@
 }
 
 .sku-form {
-  .color-list {
+  .add-list {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-start;
     padding: 10px;
   }
 
   .color-item {
     display: flex;
     align-items: center;
-    margin-right: 10px;
-    margin-top: 5px;
+    margin-right: 13px;
+    margin-bottom: 10px;
+  }
+
+  .size-item {
+    margin-right: 15px;
+    margin-bottom: 10px;
+    input {
+      width: 40px;
+    }
   }
 
   .btn-add {
@@ -142,20 +151,10 @@
 
 .sku-col {
   border: 1px solid map-get($color, border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  padding: 10px !important;
 }
 
 .sku-title {
   text-align: center;
   font-weight: bold;
   background-color: map-get($color, gray);
-}
-
-.color-list {
-  display: flex;
-  justify-content: flex-start;
 }
