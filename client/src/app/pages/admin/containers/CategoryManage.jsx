@@ -37,7 +37,7 @@ const CategoryManage = () => {
   }, [dispatch]);
 
   return (
-    <div className="category-manage admin-wrapper">
+    <div className="category-manage admin-container">
       {showForm && <CategoryForm id={categoryId} setShowForm={setShowForm} />}
       {showDialog && (
         <Dialog

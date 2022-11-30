@@ -1,10 +1,11 @@
 .admin-nav {
   background-color: map-get($color, primary);
-  position: sticky;
-  top: 100px;
+  position: fixed;
+  top: 0;
   left: 0;
-  height: 100%;
-  width: 100%;
+  bottom: 0;
+  width: 250px;
+  padding-top: $header-top-height;
   &-icon {
     width: 18px;
     height: 18px;
@@ -63,8 +64,12 @@
 }
 
 .admin-wrapper {
-  padding: 30px;
+  padding-top: $header-top-height;
+  margin-left: 250px;
+}
 
+.admin-container {
+  padding: 30px;
   .admin-title {
     margin-bottom: 20px;
     font-size: map-get($font-size, xxxl);
@@ -112,5 +117,45 @@
 }
 
 .product-form {
-  width: 700px;
+  width: 850px;
+}
+
+.sku-form {
+  .color-list {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+
+  .color-item {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    margin-top: 5px;
+  }
+
+  .btn-add {
+    font-size: 30px;
+    margin-top: 10px;
+  }
+}
+
+.sku-col {
+  border: 1px solid map-get($color, border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px !important;
+}
+
+.sku-title {
+  text-align: center;
+  font-weight: bold;
+  background-color: map-get($color, gray);
+}
+
+.color-list {
+  display: flex;
+  justify-content: flex-start;
 }

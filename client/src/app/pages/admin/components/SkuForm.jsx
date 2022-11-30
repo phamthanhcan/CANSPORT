@@ -120,34 +120,34 @@ const SkuForm = (props) => {
   };
 
   return (
-    <form className="sku-form pd-5" onSubmit={handleSubmit(onSubmit)}>
-      <div className="f-center-x">
-        <ul className="col-7">
-          <h3 className="txt-bold txt-lg mb-4">MÀU SẮC</h3>
-          {colorFields.map((item, index) => (
-            <li key={item.id} className="f-center-y mb-3">
-              <Controller
-                render={({ field }) => (
-                  <input type="color" className="mr-3" {...field} />
-                )}
-                name={`colors.${index}.name`}
-                control={control}
-              />
-              <button type="button" onClick={() => colorRemove(index)}>
-                X
-              </button>
-            </li>
-          ))}
+    <form className="sku-form" onSubmit={handleSubmit(onSubmit)}>
+      <div className="row no-gutter f-center-x">
+        <div className="col-6 sku-col">
+          <h5 className="sku-title">MÀU SẮC</h5>
+          <ul className="color-list">
+            {colorFields.map((item, index) => (
+              <li key={item.id} className="color-item">
+                <Controller
+                  render={({ field }) => <input type="color" {...field} />}
+                  name={`colors.${index}.name`}
+                  control={control}
+                />
+                <button type="button" onClick={() => colorRemove(index)}>
+                  <ion-icon name="close-circle-outline"></ion-icon>
+                </button>
+              </li>
+            ))}
+          </ul>
           <button
-            className="btn btn-primary btn-xs mt-2"
+            className="btn-add"
             type="button"
             onClick={() => colorAppend({ name: "#000000" })}
           >
-            + Thêm màu sắc
+            <ion-icon name="add-circle-outline"></ion-icon>
           </button>
-        </ul>
-        <ul className="col-5">
-          <h3 className="txt-bold txt-lg mb-4">SIZE</h3>
+        </div>
+        <ul className="col-6 sku-col">
+          <h5 className="sku-title">SIZE</h5>
           {sizeFields.map((item, index) => (
             <li key={item.id}>
               <Controller
@@ -160,20 +160,22 @@ const SkuForm = (props) => {
           ))}
           <button
             type="button"
-            className="btn btn-primary btn-xs mt-2"
+            className="btn-add"
             onClick={() => sizeAppend({ name: "" })}
           >
             + Thêm size
           </button>
         </ul>
       </div>
-      <button
-        className="btn btn-primary btn-sm"
-        type="button"
-        onClick={handleChangeColorSize}
-      >
-        Thêm thông tin
-      </button>
+      <div className="f-center-x mt-3">
+        <button
+          className="btn btn-primary btn-xs"
+          type="button"
+          onClick={handleChangeColorSize}
+        >
+          <ion-icon name="add-circle-outline"></ion-icon> Thêm thông tin
+        </button>
+      </div>
       <div className="form-group f-center-y mt-3">
         <label className="toggle" htmlFor="all">
           <input

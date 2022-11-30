@@ -39,7 +39,6 @@ export const getListCategory = () => async (dispatch) => {
 
   try {
     const res = await getApi(["categories"]);
-    console.log(res);
     const data = res.data.categories.map((item) => {
       return new Category(item);
     });
@@ -103,7 +102,6 @@ export const deleteCategory = (id) => async (dispatch) => {
 
   try {
     const res = await deleteApi(["categories", id]);
-    console.log(res);
     dispatch({
       type: TYPES.DELETE_CATEGORY_SUCCESS,
       payload: {

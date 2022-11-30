@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getListCategory } from "../../home/home.actions";
 import NoImage from "../../../../assets/images/no-image.png";
 import SkuForm from "./SkuForm";
+import axios from "axios";
+import Loading from "../../../shared/components/modules/LoadingPage";
 
 const ProductForm = (props) => {
   const { handleCancel } = props;
@@ -11,6 +13,7 @@ const ProductForm = (props) => {
 
   const [showSkuForm, setShowSkuForm] = useState(false);
   const [hasSku, setHasSku] = useState(false);
+  const [img, setImg] = useState("");
   const [status, setStatus] = useState({
     isLoading: false,
     error: null,
@@ -30,10 +33,37 @@ const ProductForm = (props) => {
   };
 
   const onSubmit = (data) => {
-    props.handleSaveInfo({ ...data }, hasSku);
+    props.handleSaveInfo({ ...data, images: img }, hasSku);
   };
 
-  const uploadImage = () => {};
+  const uploadImage = (e) => {
+    setStatus((prevStatus) => ({
+      ...prevStatus,
+      isLoading: true,
+    }));
+
+    const file = e.target.files[0];
+    const formData = new FormData();
+
+    formData.append("file", file);
+    axios
+      .post("http://localhost:7000/uploadiu", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setImg(response?.data?.fileLocation);
+        setStatus((prevStatus) => ({
+          ...prevStatus,
+          isLoading: false,
+        }));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
     dispatch(getListCategory());
@@ -42,10 +72,7 @@ const ProductForm = (props) => {
   return (
     <div className="f-center-x f-center-y">
       <div className="product-form">
-        <form
-          className={`pd-5 bg-white ${showSkuForm ? "hidden" : ""}`}
-          onSubmit={handleSubmit(onSubmit)}
-        >
+        <form className="pd-5 bg-white" onSubmit={handleSubmit(onSubmit)}>
           <p className="txt-bold txt-lg txt-center mb-4">THÊM MỚI SẢN PHẨM</p>
           <div className="row">
             <div className="col-8">
@@ -73,7 +100,7 @@ const ProductForm = (props) => {
                 ></textarea>
                 <p className="form-error">{errors.description?.message}</p>
               </div>
-              <div className="form-group f-center-y">
+              <div className="mb-2 f-center-y">
                 <span className="form-label mr-3">SKU</span>
                 <label className="toggle" htmlFor="toggle-btn">
                   <input
@@ -126,12 +153,10 @@ const ProductForm = (props) => {
                   </div>
                 </div>
               ) : (
-                <button
-                  className="btn btn-primary btn-xs mb-5"
-                  onClick={() => setShowSkuForm(true)}
-                >
-                  + Thêm sku
-                </button>
+                <SkuForm
+                  handleSaveSku={handleSaveSku}
+                  handleCancelSku={() => setShowSkuForm(false)}
+                />
               )}
               <div className="form-group">
                 <label className="form-label" htmlFor="category">
@@ -156,13 +181,14 @@ const ProductForm = (props) => {
                 id="image"
                 className="hidden"
                 accept="image/png, image/jpeg"
+                onChange={uploadImage}
               />
               <label className="btn btn-secondary btn-xs" htmlFor="image">
                 Chọn ảnh
               </label>
               <div className="category-form-img mt-5">
-                <img src={NoImage} alt="" />
-                {/* {status.isLoading && <Loading inline />} */}
+                <img src={img || NoImage} alt="" />
+                {status.isLoading && <Loading inline />}
               </div>
             </div>
           </div>
@@ -176,12 +202,6 @@ const ProductForm = (props) => {
             <input className="btn btn-primary" type="submit" value="Thêm mới" />
           </div>
         </form>
-        <div className={`bg-white ${!showSkuForm ? "hidden" : ""}`}>
-          <SkuForm
-            handleSaveSku={handleSaveSku}
-            handleCancelSku={() => setShowSkuForm(false)}
-          />
-        </div>
       </div>
     </div>
   );

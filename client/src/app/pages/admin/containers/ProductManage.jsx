@@ -42,7 +42,7 @@ const ProductManage = () => {
   };
 
   return (
-    <div className="product-manage admin-wrapper">
+    <div className="product-manage admin-container">
       {showForm && (
         <ProductForm id={productId} handleCancel={() => setShowForm(false)} />
       )}

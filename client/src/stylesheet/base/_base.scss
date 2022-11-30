@@ -33,10 +33,6 @@ body {
   background: rgb(50 130 184 / 50%);
 }
 
-.wrapper {
-  padding-top: $header-height;
-}
-
 a {
   text-decoration: none;
   color: map-get($color, text);
@@ -101,4 +97,20 @@ textarea {
   &.inline {
     position: absolute;
   }
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  border: none !important;
+  width: 30px;
+  height: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+}
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+  border: none;
 }

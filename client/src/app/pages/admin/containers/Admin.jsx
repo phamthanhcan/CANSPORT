@@ -11,13 +11,9 @@ const Admin = () => {
     }
   }, [navigate]);
   return (
-    <div className="row no-gutter">
-      <div className="col-2">
-        <AdminNav />
-      </div>
-      <div className="col-10">
-        <Outlet />
-      </div>
+    <div className="admin-wrapper">
+      <AdminNav />
+      <Outlet />
     </div>
   );
 };
