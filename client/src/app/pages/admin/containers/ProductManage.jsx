@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 import Empty from "../../../shared/components/modules/Empty";
 import ProductForm from "../components/ProductForm";
 import { deleteProduct, getListProducts } from "../../home/home.actions";
 import Dialog, { DIALOG_TYPE } from "../../../shared/components/modules/Dialog";
+import NoImage from "../../../../assets/images/no-image.png";
+import editIcon from "../../../../assets/icons/edit.svg";
+import deleteIcon from "../../../../assets/icons/trash.svg";
+import { numberWithCommas } from "../../../shared/helper/data";
 
 const ProductManage = () => {
   const dispatch = useDispatch();
@@ -16,9 +22,11 @@ const ProductManage = () => {
 
   const products = useSelector((state) => state.product.data);
 
+  console.log(products);
+
   useEffect(() => {
     dispatch(getListProducts(page - 1, 0, "", search || ""));
-  }, [dispatch, page]);
+  }, [dispatch, page, search]);
 
   useEffect(() => {
     if (products) {
@@ -73,7 +81,58 @@ const ProductManage = () => {
         </Link>
       </div>
 
-      {/* <Empty /> */}
+      {!products?.length ? (
+        <Empty />
+      ) : (
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Tên</th>
+              <th>Hình ảnh</th>
+              <th>Giá</th>
+              <th>Số lượng</th>
+              <th>Danh mục</th>
+              <th>Chỉnh sửa</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products?.map((product) => (
+              <tr>
+                <td>{product.name}</td>
+                <td>
+                  <img
+                    className="category-admin-img"
+                    src={product.images[0] || NoImage}
+                    alt="img"
+                  />
+                </td>
+                <td>
+                  {product.minPrice === product.maxPrice
+                    ? `${numberWithCommas(product.minPrice)}đ`
+                    : `${numberWithCommas(
+                        product.minPrice
+                      )}đ - ${numberWithCommas(product.maxPrice)}đ`}
+                </td>
+                <td>{product.quantity}</td>
+                <td>{product.category.name}</td>
+                <td>
+                  <img src={editIcon} className="action-btn mr-3" alt="edit" />
+                  <img
+                    src={deleteIcon}
+                    className="action-btn delete"
+                    alt="delete"
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+      <div className="f-center-x mt-5">
+        <Stack spacing={2}>
+          <Pagination count={10} variant="outlined" shape="rounded" />
+        </Stack>
+      </div>
     </div>
   );
 };

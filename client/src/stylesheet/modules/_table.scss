@@ -1,5 +1,14 @@
 .admin-table {
   border: 1px solid #cccccc;
+
+  .action-btn {
+    width: 18px;
+    height: 18px;
+
+    &.delete {
+      color: #fa3636;
+    }
+  }
 }
 
 table {

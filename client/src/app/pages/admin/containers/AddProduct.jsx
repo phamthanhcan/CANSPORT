@@ -6,11 +6,12 @@ import ShippingForm from "../components/ShippingForm";
 import { getSkuOfProducts } from "../../home/home.actions";
 import { isEmpty } from "../../../shared/helper/data";
 import { postApi } from "../../../shared/helper/api";
+import { useNavigate } from "react-router-dom";
 
 const totalQuantity = (skus) => {
   return skus.reduce((sum, sku) => {
     return sum + +sku.quantity;
-  });
+  }, 0);
 };
 
 const maxDiscount = (skus) => {
@@ -32,6 +33,8 @@ const minPrice = (skus) => {
 };
 
 const AddProduct = () => {
+  const navigate = useNavigate();
+
   const queryParams = new URLSearchParams(window.location.search);
   const id = queryParams.get("id");
   const dispatch = useDispatch();
@@ -70,21 +73,6 @@ const AddProduct = () => {
   };
 
   const addProduct = (data) => {
-    console.log({
-      name: productInfo.name,
-      images: productInfo.images || "",
-      category: productInfo.category,
-      description: productInfo.description,
-      quantity: hasSku ? totalQuantity(skus) : +productInfo.quantity,
-      discount: hasSku ? maxDiscount(skus) : +productInfo.discount,
-      minPrice: hasSku ? minPrice(skus) : +productInfo.price,
-      maxPrice: hasSku ? maxPrice(skus) : +productInfo.price,
-      ...data,
-      weight: +data.weight,
-      width: +data.width,
-      height: +data.height,
-      lenght: +data.length,
-    });
     if (!id) {
       postApi(["product"], {
         name: productInfo.name,
@@ -100,7 +88,17 @@ const AddProduct = () => {
         width: +data.width,
         height: +data.height,
         lenght: +data.length,
-      });
+        skus: skus?.map((sku) => {
+          return {
+            ...sku,
+            quantity: +sku.quantity,
+            discount: +sku.discount,
+            price: +sku.price,
+          };
+        }),
+      })
+        .then((res) => navigate("/admin/products"))
+        .catch((err) => console.log(err));
     }
   };
 

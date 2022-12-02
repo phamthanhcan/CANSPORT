@@ -11,6 +11,10 @@
   font-size: map-get($font-size, md);
   transition: background-color 0.25s;
 
+  &[disabled] {
+    background-color: map-get($color, disabled) !important;
+  }
+
   &-primary {
     background-color: map-get($color, primary) !important;
 

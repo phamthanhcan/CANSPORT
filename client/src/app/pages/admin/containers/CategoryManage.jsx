@@ -72,7 +72,7 @@ const CategoryManage = () => {
           <table>
             <thead>
               <tr>
-                <th>Ảnh</th>
+                <th>Hình ảnh</th>
                 <th>Tên danh mục</th>
                 <th>Mô tả</th>
                 <th>Chỉnh sửa</th>

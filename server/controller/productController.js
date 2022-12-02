@@ -1,6 +1,7 @@
 const productModel = require("../models/products");
 const skuModel = require("../models/skus");
 const { getPagination } = require("../config/function");
+// const orderController = require("./orderController");
 const orderModel = require("../models/order");
 
 class Product {
@@ -12,6 +13,7 @@ class Product {
 
     if (name && category) {
       query = {
+        ...query,
         name: new RegExp(name, "i"),
         category,
       };
@@ -83,7 +85,6 @@ class Product {
       height,
       width,
     } = req.body;
-
     if (
       !name ||
       !category ||
@@ -124,27 +125,27 @@ class Product {
               };
             });
 
-            skuModel.insertMany(skusTemp).then((result) => {
-              return res
-                .status(201)
-                .json({
+            skuModel
+              .insertMany(skusTemp)
+              .then((result) => {
+                return res.status(201).json({
                   success: true,
                   category: product,
                   result: result,
-                  message: "Create product successfully 1",
-                })
-                .catch((err) => {
-                  return res.status(500).json({
-                    success: false,
-                    error: err.message,
-                  });
+                  message: "create category successfully 1",
                 });
-            });
+              })
+              .catch((err) => {
+                return res.status(500).json({
+                  success: false,
+                  error: err.message,
+                });
+              });
           } else {
             return res.status(201).json({
               success: true,
               category: product,
-              message: "Create product successfully 2",
+              message: "create category successfully 2",
             });
           }
         })
@@ -166,14 +167,14 @@ class Product {
       .then(() => {
         return res.status(200).json({
           success: true,
-          message: "Update product successfully",
+          message: "update product successfully",
           product: updateProduct,
         });
       })
       .catch((err) => {
         return res.json({
           success: false,
-          message: "Update product failed",
+          message: "update product failed",
           err: err.message,
         });
       });
@@ -328,5 +329,5 @@ class Product {
   }
 }
 
-const productController = new Product();
-module.exports = productController;
+const productsController = new Product();
+module.exports = productsController;

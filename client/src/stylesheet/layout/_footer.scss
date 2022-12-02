@@ -1,0 +1,54 @@
+.footer {
+  padding: 10px 0;
+  background-color: map-get($color, secondary);
+  color: map-get($color, white);
+
+  &-title {
+    position: relative;
+    margin-bottom: 30px;
+    font-size: map-get($font-size, xxl);
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      height: 2px;
+      width: 60px;
+      background-color: map-get($color, white);
+    }
+  }
+
+  &-socials {
+    margin-bottom: 20px;
+    display: flex;
+  }
+
+  .social-item {
+    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+
+  &-bct {
+    width: 200px;
+  }
+
+  &-policy-item {
+    margin-bottom: 10px;
+    a {
+      color: map-get($color, gray);
+    }
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  &-feedback {
+    margin: 30px 0;
+    input {
+      width: 300px;
+    }
+  }
+}

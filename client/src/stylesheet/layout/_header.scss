@@ -6,8 +6,11 @@
   z-index: 100;
 
   &.dark {
-    background-color: map-get($color, secondary);
     color: map-get($color, white);
+
+    .header-top {
+      background-color: map-get($color, secondary) !important;
+    }
 
     a,
     button {
@@ -22,9 +25,13 @@
 
   &-top {
     padding: 10px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    background-color: map-get($color, white);
+
+    .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
 
   &-left {
@@ -45,23 +52,6 @@
   .btn-purchase {
     width: 110px;
     margin-left: 30px;
-  }
-}
-
-.navbar {
-  padding: 15px;
-  background-color: map-get($color, primary);
-
-  .categories-list {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-  }
-
-  .category-item {
-    a {
-      font-weight: map-get($font-weight, bold);
-    }
   }
 }
 

@@ -64,7 +64,6 @@
 }
 
 .admin-wrapper {
-  padding-top: $header-top-height;
   margin-left: 250px;
 }
 
@@ -157,4 +156,15 @@
   text-align: center;
   font-weight: bold;
   background-color: map-get($color, gray);
+}
+
+.sku-table {
+  .form-control {
+    padding: 0;
+    text-align: center;
+
+    &.is-invalid {
+      border: 1px solid map-get($color, error);
+    }
+  }
 }

@@ -1,5 +1,6 @@
-import React, { Suspense } from "react";
+import React, { createContext, Suspense, useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import Footer from "./app/shared/components/layout/Footer";
 
 import Header from "./app/shared/components/layout/Header";
 import Loading from "./app/shared/components/modules/LoadingPage";
@@ -26,39 +27,33 @@ const AddProduct = React.lazy(() =>
   import("./app/pages/admin/containers/AddProduct")
 );
 
-function App() {
-  return (
-    <div className="App">
-      <Header />
-      <Suspense fallback={<Loading />}>
-        <Routes>
-          {/* {pageRoutes.map((route, index) => (
-            <Route key={index} path={route.path}>
-              {<route.component />}
-            </Route>
-          ))}
+export const AppContext = createContext({ name: "" });
 
-          {authRoutes.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              element={<route.component />}
-            />
-          ))} */}
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin" element={<Admin />}>
-            <Route path="category" element={<CategoryManage />} />
-            <Route path="products" element={<ProductManage />} />
-            <Route path="users" element={<UserManage />} />
-            <Route path="orders" element={<OrderManage />} />
-            <Route path="revenue" element={<RevenueChart />} />
-            <Route path="products/add" element={<AddProduct />} />
-          </Route>
-        </Routes>
-      </Suspense>
-    </div>
+function App() {
+  const [search, setSearch] = useState("");
+
+  return (
+    <AppContext.Provider value={{ name: search }}>
+      <div className="App">
+        <Header />
+        <Suspense fallback={<Loading />}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/admin" element={<Admin />}>
+              <Route path="category" element={<CategoryManage />} />
+              <Route path="products" element={<ProductManage />} />
+              <Route path="users" element={<UserManage />} />
+              <Route path="orders" element={<OrderManage />} />
+              <Route path="revenue" element={<RevenueChart />} />
+              <Route path="products/add" element={<AddProduct />} />
+            </Route>
+          </Routes>
+          <Footer />
+        </Suspense>
+      </div>
+    </AppContext.Provider>
   );
 }
 

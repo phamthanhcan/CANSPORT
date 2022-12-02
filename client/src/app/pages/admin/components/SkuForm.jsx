@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useCallback, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 
@@ -45,10 +46,10 @@ const SkuForm = (props) => {
   const skus = watch("skus");
 
   const [applyForAll, setApplyForAll] = useState(false);
+  const [isEmptySku, setIsEmptySku] = useState(true);
 
   const handleChangeColorSize = () => {
     const arr = [];
-
     if (
       !isEmptyArray(colors.map((item) => item.name)) ||
       !isEmptyArray(sizes.map((item) => item.name))
@@ -97,15 +98,9 @@ const SkuForm = (props) => {
   };
 
   const onSubmit = (data) => {
-    console.log(data.skus);
-    if (
-      isEmptyArray(data.skus.map((item) => item.color)) &&
-      isEmptyArray(data.skus.map((item) => item.size))
-    ) {
-      alert("Vui lòng chọn màu sắc hoặc size!");
-    }
     if (!applyForAll) {
       handleSaveSku(data.skus);
+      console.log(data.skus);
     } else {
       const temp = data.skus.map((sku) => {
         return {
@@ -119,8 +114,19 @@ const SkuForm = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (
+      isEmptyArray(skus?.map((item) => item.color)) &&
+      isEmptyArray(skus?.map((item) => item.size))
+    ) {
+      setIsEmptySku(true);
+    } else {
+      setIsEmptySku(false);
+    }
+  }, [skus]);
+
   return (
-    <form className="sku-form" onSubmit={handleSubmit(onSubmit)}>
+    <div className="sku-form">
       <div className="row no-gutter f-center-x">
         <div className="col-6 sku-col">
           <h5 className="sku-title">MÀU SẮC</h5>
@@ -181,7 +187,7 @@ const SkuForm = (props) => {
           type="button"
           onClick={handleChangeColorSize}
         >
-          <ion-icon name="add-circle-outline"></ion-icon> Thêm thông tin
+          Cập nhật thông tin
         </button>
       </div>
       <div className="form-group f-center-y mt-3">
@@ -244,7 +250,7 @@ const SkuForm = (props) => {
         </div>
       ) : (
         !!skuFields.length && (
-          <table className="admin-table">
+          <table className="sku-table">
             <thead>
               <tr>
                 {!isEmptyArray(skus.map((item) => item.color)) && (
@@ -253,34 +259,37 @@ const SkuForm = (props) => {
                 {!isEmptyArray(skus.map((item) => item.size)) && <td>Size</td>}
                 <td>Số lượng</td>
                 <td>Giá</td>
-                <td>Khuyến mãi</td>
+                <td style={{ width: 90 }}>Khuyến mãi</td>
               </tr>
             </thead>
             <tbody>
               {skuFields.map((item, index) => (
                 <tr key={item.id}>
-                  {!isEmptyArray(skus.map((item) => item.color)) && (
-                    <td>
-                      <input
-                        className="pd-2 form-control"
-                        readOnly
-                        {...register(`skus[${index}].color`)}
-                      />
-                    </td>
-                  )}
                   {!isEmptyArray(skus.map((item) => item.size)) && (
                     <td>
                       <input
-                        className="pd-2 form-control"
+                        className="form-control"
                         readOnly
                         {...register(`skus[${index}].size`)}
                       />
                     </td>
                   )}
+                  {!isEmptyArray(skus.map((item) => item.color)) && (
+                    <td>
+                      <input
+                        className="form-control"
+                        readOnly
+                        {...register(`skus[${index}].color`)}
+                      />
+                    </td>
+                  )}
                   <td>
                     <input
-                      type="text"
-                      className={`pd-2 form-control`}
+                      type="number"
+                      min="0"
+                      className={`form-control ${
+                        errors.skus?.[index]?.quantity ? "is-invalid" : ""
+                      } `}
                       {...register(`skus[${index}].quantity`, {
                         required: !applyForAll,
                       })}
@@ -288,8 +297,11 @@ const SkuForm = (props) => {
                   </td>
                   <td>
                     <input
-                      type="text"
-                      className={`pd-2 form-control`}
+                      type="number"
+                      min="0"
+                      className={`form-control  ${
+                        errors.skus?.[index]?.price ? "is-invalid" : ""
+                      }`}
                       {...register(`skus[${index}].price`, {
                         required: !applyForAll,
                       })}
@@ -297,11 +309,11 @@ const SkuForm = (props) => {
                   </td>
                   <td>
                     <input
-                      type="text"
-                      className={`pd-2 form-control`}
-                      {...register(`skus[${index}].discount`, {
-                        required: !applyForAll,
-                      })}
+                      type="number"
+                      className="form-control"
+                      min="0"
+                      max="100"
+                      {...register(`skus[${index}].discount`)}
                     />
                   </td>
                 </tr>
@@ -312,20 +324,21 @@ const SkuForm = (props) => {
       )}
 
       <div className="f-center-x mt-5">
-        <input
-          className="btn btn-secondary btn-sm mr-3"
-          type="button"
-          value="Huỷ"
+        <button
+          className="btn btn-secondary btn-xs mr-3"
           onClick={handleCancelSku}
-        />
-        <input
-          className="btn btn-secondary btn-sm mr-3"
-          type="reset"
-          value="Reset"
-        />
-        <input className="btn btn-primary btn-sm" type="submit" value="Thêm" />
+        >
+          Huỷ
+        </button>
+        <button
+          className="btn btn-primary btn-xs"
+          disabled={isEmptySku}
+          onClick={handleSubmit(onSubmit)}
+        >
+          Thêm
+        </button>
       </div>
-    </form>
+    </div>
   );
 };
 

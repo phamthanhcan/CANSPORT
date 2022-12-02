@@ -25,12 +25,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(50 130 184 / 100%);
+  background: rgb(254 187 10 / 100%);
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: rgb(50 130 184 / 50%);
+  background: rgb(254 187 10 / 40%);
 }
 
 a {
@@ -113,4 +113,12 @@ input[type="color"]::-webkit-color-swatch-wrapper {
 }
 input[type="color"]::-webkit-color-swatch {
   border: none;
+}
+
+// .app-wrapper {
+//   margin-top: 134px;
+// }
+
+.App {
+  padding-top: $header-top-height;
 }

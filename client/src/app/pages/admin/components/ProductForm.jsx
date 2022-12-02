@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { getListCategory } from "../../home/home.actions";
 import NoImage from "../../../../assets/images/no-image.png";
 import SkuForm from "./SkuForm";
@@ -8,12 +9,12 @@ import axios from "axios";
 import Loading from "../../../shared/components/modules/LoadingPage";
 
 const ProductForm = (props) => {
-  const { handleCancel } = props;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [showSkuForm, setShowSkuForm] = useState(false);
-  const [hasSku, setHasSku] = useState(false);
+  const [hasSkuSelection, setHasSkuSelection] = useState(false);
   const [img, setImg] = useState("");
+  const [isEmptySku, setIsEmptySku] = useState(true);
   const [status, setStatus] = useState({
     isLoading: false,
     error: null,
@@ -27,13 +28,19 @@ const ProductForm = (props) => {
     formState: { errors },
   } = useForm();
 
-  const handleSaveSku = (data) => {
-    props.handleCancelSku(data);
-    setShowSkuForm(false);
+  const handleSaveSku = (data, isEmptySku) => {
+    setIsEmptySku(isEmptySku);
+    props.handleSaveSku(data);
   };
 
+  console.log();
+
   const onSubmit = (data) => {
-    props.handleSaveInfo({ ...data, images: img }, hasSku);
+    if (hasSkuSelection && isEmptySku) {
+      alert("Vui lòng thêm Sku");
+      return;
+    }
+    props.handleSaveInfo({ ...data, images: img }, hasSkuSelection);
   };
 
   const uploadImage = (e) => {
@@ -84,7 +91,9 @@ const ProductForm = (props) => {
                   className="form-control"
                   type="text"
                   id="name"
-                  {...register("name")}
+                  {...register("name", {
+                    required: "Vui lòng nhập tên sản phẩm",
+                  })}
                 />
                 <p className="form-error">{errors.name?.message}</p>
               </div>
@@ -96,7 +105,9 @@ const ProductForm = (props) => {
                   className="form-control"
                   id="description"
                   rows="3"
-                  {...register("description")}
+                  {...register("description", {
+                    required: "Vui lòng nhập mô tả",
+                  })}
                 ></textarea>
                 <p className="form-error">{errors.description?.message}</p>
               </div>
@@ -107,55 +118,64 @@ const ProductForm = (props) => {
                     className="toggle-input hidden"
                     type="checkbox"
                     id="toggle-btn"
-                    checked={hasSku}
-                    onChange={() => setHasSku(!hasSku)}
+                    checked={hasSkuSelection}
+                    onChange={() => setHasSkuSelection(!hasSkuSelection)}
                   />
                   <div className="toggle-fill"></div>
                 </label>
               </div>
-              {!hasSku ? (
+              {!hasSkuSelection ? (
                 <div className="row">
-                  <div className="form-group col-4">
-                    <label className="form-label">Giá</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="price"
-                      min="0"
-                      {...register("price")}
-                    />
-                    <p className="form-error">{errors.price?.message}</p>
+                  <div className="col-4">
+                    <div className="form-group ">
+                      <label className="form-label">Giá</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="price"
+                        min="0"
+                        {...register("price", {
+                          required: "Vui lòng nhập giá",
+                        })}
+                      />
+                      <p className="form-error">{errors.price?.message}</p>
+                    </div>
                   </div>
-                  <div className="form-group col-4">
-                    <label className="form-label" htmlFor="quantity">
-                      Số lượng
-                    </label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="quantity"
-                      min="0"
-                      {...register("quantity")}
-                    />
-                    <p className="form-error">{errors.quantity?.message}</p>
+                  <div className="col-4">
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="quantity">
+                        Số lượng
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="quantity"
+                        min="0"
+                        {...register("quantity", {
+                          required: "Vui lòng nhập số lượng",
+                        })}
+                      />
+                      <p className="form-error">{errors.quantity?.message}</p>
+                    </div>
                   </div>
-                  <div className="form-group col-4">
-                    <label className="form-label">Khuyến mãi</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      id="discount"
-                      min="0"
-                      max="100"
-                      {...register("discount")}
-                    />
-                    <p className="form-error">{errors.price?.message}</p>
+                  <div className="col-4">
+                    <div className="form-group ">
+                      <label className="form-label">Khuyến mãi</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        id="discount"
+                        min="0"
+                        max="100"
+                        {...register("discount")}
+                      />
+                    </div>
                   </div>
                 </div>
               ) : (
                 <SkuForm
                   handleSaveSku={handleSaveSku}
-                  handleCancelSku={() => setShowSkuForm(false)}
+                  handleCancelSku={() => setHasSkuSelection(false)}
                 />
               )}
               <div className="form-group">
@@ -197,7 +217,7 @@ const ProductForm = (props) => {
               className="btn btn-secondary mr-3"
               type="button"
               value="Huỷ"
-              onClick={handleCancel}
+              onClick={() => navigate("/admin/products")}
             />
             <input className="btn btn-primary" type="submit" value="Thêm mới" />
           </div>
