@@ -50,7 +50,6 @@ const Header = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [isHome, setIsHome] = useState(false);
   const user = useSelector((state) => state.auth.data);
   const userInfo = useSelector((state) => state.user.data);
   const isAdmin = user?.encode?.role === 1;
@@ -58,15 +57,7 @@ const Header = (props) => {
   const handleLogout = useCallback(() => {
     dispatch(logout());
     navigate("/");
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (window.location.pathname === "/") {
-      setIsHome(true);
-    } else {
-      setIsHome(false);
-    }
-  }, []);
+  }, [dispatch, navigate]);
 
   useEffect(() => {
     if (!isExpriedToken(user?.token || "")) {
@@ -87,13 +78,11 @@ const Header = (props) => {
                 alt="CANSPORT LOGO"
               />
             </Link>
-            {isHome && (
-              <input
-                className="form-control dark"
-                type="text"
-                placeholder="Nhập sản phẩm tìm kiếm"
-              />
-            )}
+            <input
+              className="form-control dark"
+              type="text"
+              placeholder="Nhập sản phẩm tìm kiếm"
+            />
           </div>
           <div className="header-right">
             {(user?.token ? isExpriedToken(user.token || "") : true) ? (

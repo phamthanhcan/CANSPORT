@@ -17,6 +17,14 @@ $grid-columns: 12;
     padding: 0 20px;
   }
 
+  &.gutter-sm {
+    margin: 0 -10px;
+  }
+
+  &.gutter-sm > [class*="col-"] {
+    padding: 0 10px;
+  }
+
   &.no-gutter {
     margin: 0;
   }

@@ -11,6 +11,10 @@
   font-size: map-get($font-size, md);
   transition: background-color 0.25s;
 
+  &.full-width {
+    width: 100%;
+  }
+
   &[disabled] {
     background-color: map-get($color, disabled) !important;
   }

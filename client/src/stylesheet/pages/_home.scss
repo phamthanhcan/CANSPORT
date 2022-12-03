@@ -3,11 +3,17 @@
 }
 
 .section-policy {
-  padding: 20px 0;
-
   .row {
     padding: 10px;
     border: 1px solid #ccc;
+  }
+
+  .column {
+    flex-direction: column;
+
+    .policy {
+      margin-bottom: 20px;
+    }
   }
 }
 

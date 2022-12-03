@@ -72,6 +72,10 @@ textarea {
   }
 }
 
+.main {
+  padding: 30px 0 !important;
+}
+
 .required {
   color: map-get($color, danger);
 }

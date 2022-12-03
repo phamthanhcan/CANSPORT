@@ -67,13 +67,14 @@
   margin-left: 250px;
 }
 
+.admin-title {
+  margin-bottom: 20px;
+  font-size: map-get($font-size, xxxl);
+  font-weight: map-get($font-weight, bold);
+}
+
 .admin-container {
   padding: 30px;
-  .admin-title {
-    margin-bottom: 20px;
-    font-size: map-get($font-size, xxxl);
-    font-weight: map-get($font-weight, bold);
-  }
 
   .admin-actions {
     margin-bottom: 40px;

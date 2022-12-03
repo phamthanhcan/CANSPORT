@@ -1,0 +1,57 @@
+.cart-table {
+  th {
+    text-align: left;
+    font-size: map-get($font-size, xs);
+    background-color: map-get($color, gray);
+    border-top: 1px solid map-get($color, border);
+    border-bottom: 1px solid map-get($color, border);
+  }
+
+  tr td {
+    background-color: map-get($color, white);
+    text-align: left;
+    img {
+      width: 80px;
+      height: 80px;
+    }
+  }
+
+  .input-quantity {
+    width: 80px;
+  }
+
+  .price {
+    font-weight: map-get($font-weight, bold);
+    color: map-get($color, error);
+  }
+}
+
+.cart-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: map-get($color, gray);
+  border-top: 1px solid map-get($color, border);
+  border-bottom: 1px solid map-get($color, border);
+}
+
+.cart-totals {
+  &-title {
+    padding: 10px 0;
+    font-weight: map-get($font-weight, bold);
+    border-bottom: 1px solid map-get($color, border);
+  }
+
+  .totals {
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    font-weight: map-get($font-weight, bold);
+    font-size: map-get($font-size, sm);
+
+    &-content {
+      color: map-get($color, error);
+    }
+  }
+}
