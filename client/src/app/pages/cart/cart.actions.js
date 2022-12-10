@@ -1,5 +1,5 @@
 import { Cart } from "../../models/cart";
-import { getApi, postApi } from "../../shared/helper/api";
+import { deleteApi, getApi, postApi } from "../../shared/helper/api";
 import * as TYPES from "./cart.types";
 
 export const addProductCart =
@@ -15,13 +15,11 @@ export const addProductCart =
         quantity: quantity,
         userId: userId,
       });
+      const products = res.data.cart.products;
+      console.log(products);
       dispatch({
         type: TYPES.ADD_PRODUCT_CART_SUCCESS,
-        payload: {
-          productId: productId,
-          skuId: skuId,
-          quantity: quantity,
-        },
+        payload: products,
       });
     } catch (err) {
       dispatch({
@@ -57,25 +55,50 @@ export const getCartByUser = (userId) => async (dispatch) => {
   }
 };
 
-export const deleteItemCart = (productCartId, cartId) => async (dispatch) => {
-  dispatch({
-    type: TYPES.DELETE_ITEM_CART,
-  });
-
-  try {
-    const res = await postApi(["cart/product-cart"], {
-      productCartId: productCartId,
-      cartId: cartId,
+export const deleteItemCart =
+  (productCartId, cartId, skuId = null) =>
+  async (dispatch) => {
+    dispatch({
+      type: TYPES.DELETE_ITEM_CART,
     });
 
+    try {
+      const res = await postApi(["cart/product-cart"], {
+        productCartId: productCartId,
+        cartId: cartId,
+        skuId: skuId,
+      });
+
+      dispatch({
+        type: TYPES.DELETE_ITEM_CART_SUCCESS,
+        payload: {
+          productCartId,
+          skuId,
+        },
+      });
+    } catch (err) {
+      dispatch({
+        type: TYPES.DELETE_ITEM_CART_FAIL,
+        payload: err.response?.data?.message,
+      });
+    }
+  };
+
+export const deleteCart = (cartId, userId) => async (dispatch) => {
+  console.log("delete cart");
+  console.log(cartId, userId);
+  dispatch({
+    type: TYPES.DELETE_CART,
+  });
+  try {
+    const res = await deleteApi(["cart", cartId], { userId });
     dispatch({
-      type: TYPES.DELETE_ITEM_CART_SUCCESS,
-      payload: productCartId,
+      type: TYPES.DELETE_CART_SUCCESS,
     });
   } catch (err) {
     dispatch({
-      type: TYPES.DELETE_ITEM_CART_FAIL,
-      payload: err.response?.data?.message,
+      type: TYPES.DELETE_CART_FAIL,
+      payload: err.message,
     });
   }
 };

@@ -7,6 +7,11 @@
     border-bottom: 1px solid map-get($color, border);
   }
 
+  tbody tr {
+    border-top: 1px solid map-get($color, border);
+    border-bottom: 1px solid map-get($color, border);
+  }
+
   tr td {
     font-size: map-get($font-size, sm);
     background-color: map-get($color, white);
@@ -18,12 +23,16 @@
   }
 
   .input-quantity {
-    width: 80px;
+    width: 60px;
   }
 
   .price {
     font-weight: map-get($font-weight, bold);
     color: map-get($color, error);
+  }
+
+  .product-view-option {
+    border: 1px solid map-get($color, border);
   }
 }
 

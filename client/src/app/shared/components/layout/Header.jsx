@@ -7,6 +7,7 @@ import { getUserInfor } from "../../../pages/account/account.actions";
 import { logout } from "../../../auth/auth.actions";
 import Avatar from "../../../../assets/images/avatar.png";
 import { isEmpty } from "../../helper/data";
+import { getCartByUser } from "../../../pages/cart/cart.actions";
 
 const categories = [
   {
@@ -52,7 +53,14 @@ const Header = (props) => {
 
   const user = useSelector((state) => state.auth.data);
   const userInfo = useSelector((state) => state.user.data);
+  const cart = useSelector((state) => state.cart.data);
   const isAdmin = user?.encode?.role === 1;
+
+  const totalQuantityProductInCart = () => {
+    return cart?.products?.reduce((sum, item) => {
+      return sum + +item.quantity;
+    }, 0);
+  };
 
   const handleLogout = useCallback(() => {
     dispatch(logout());
@@ -61,6 +69,9 @@ const Header = (props) => {
 
   useEffect(() => {
     if (!isExpriedToken(user?.token || "")) {
+      if (isEmpty(cart)) {
+        dispatch(getCartByUser(user.encode._id));
+      }
       if (isEmpty(userInfo)) {
         dispatch(getUserInfor(user.encode._id));
       }
@@ -114,20 +125,23 @@ const Header = (props) => {
                 </div>
                 {!isAdmin && (
                   <>
-                    <div className="header-cart">
+                    <Link to="/cart" className="header-cart">
                       <img
                         className="cart-img"
                         src="https://bizweb.dktcdn.net/100/108/842/files/shopping-bag-3.png?v=1654220224817"
                         alt=""
                       />
-                      <span className="quantity">0</span>
+                      <span className="quantity">
+                        {totalQuantityProductInCart() || 0}
+                      </span>
                       <div>
                         <p className="cart-title">GIỎ HÀNG</p>
                         <p className="cart-quantity">
-                          <span>(0)</span>sản phẩm
+                          <span>{totalQuantityProductInCart() || 0}</span>sản
+                          phẩm
                         </p>
                       </div>
-                    </div>
+                    </Link>
                     <Link to="/account/purchase" className="btn-purchase">
                       <img
                         src="https://bizweb.dktcdn.net/100/108/842/themes/775959/assets/kiem-tra-don-hang.png?1669439764403"

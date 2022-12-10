@@ -26,32 +26,12 @@ export const cartReducer = (state = initialState, action) => {
         error: null,
       };
     case TYPES.ADD_PRODUCT_CART_SUCCESS:
-      let isHave = false;
-
-      const data = { ...state.data }.products.map((item) => {
-        if (
-          item.product?.id === action.payload.productId && item.sku
-            ? item.sku.id
-            : null === action.payload.skuId
-        ) {
-          isHave = true;
-          return {
-            ...item,
-            quantity: item.quantity + action.payload.quantity,
-          };
-        } else {
-          return item;
-        }
-      });
-      if (!isHave) {
-        data.push(new ProductCart({ quantity: action.payload.quantity }));
-      }
       return {
         ...state,
         hasError: false,
         data: {
           ...state.data,
-          products: data,
+          products: action.payload,
         },
         isLoading: false,
         error: null,
@@ -105,9 +85,13 @@ export const cartReducer = (state = initialState, action) => {
         error: null,
         data: {
           ...state.data,
-          products: cartTemp.products.filter(
-            (item) => item.id !== action.payload
-          ),
+          products: cartTemp.products.filter((item) => {
+            if (action.payload.skuId === null) {
+              return item.product.id !== action.payload.productCartId;
+            } else {
+              return item.sku.id !== action.payload.skuId;
+            }
+          }),
         },
       };
     case TYPES.DELETE_ITEM_CART_FAIL:
@@ -119,6 +103,25 @@ export const cartReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
+    case TYPES.DELETE_CART:
+      return {
+        ...state,
+        hasError: false,
+        isLoading: true,
+      };
+    case TYPES.DELETE_CART_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        data: null,
+      };
+    case TYPES.DELETE_CART_FAIL:
+      return {
+        ...state,
+        isLoading: false,
+        hasError: true,
+        error: action.payload,
+      };
     default:
       return state;
   }

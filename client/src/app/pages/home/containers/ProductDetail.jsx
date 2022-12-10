@@ -53,8 +53,8 @@ const ProductDetail = () => {
   const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
 
-  const product = useSelector((state) => state.product.data);
-  const isLoading = useSelector((state) => state.cart.isLoading);
+  const product = useSelector((state) => state.product.productDetail);
+  // const isLoading = useSelector((state) => state.cart.isLoading);
   const isLoadingProduct = useSelector((state) => state.product.isLoading);
   const isLoadingSkus = useSelector((state) => state.sku.isLoading);
   const skus = useSelector((state) => state.sku.data);
@@ -83,6 +83,10 @@ const ProductDetail = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    if (isEmpty(user)) {
+      navigate("/login");
+      return;
+    }
     if (skus.length && isEmpty(selectedSku)) {
       alert("Vui lòng chọn phân loại hàng");
     } else {
@@ -141,10 +145,6 @@ const ProductDetail = () => {
 
   useEffect(() => {
     dispatch(getSkuOfProducts(id));
-
-    return () => {
-      // dispatch(clearCart());
-    };
   }, [dispatch, id]);
 
   useEffect(() => {
@@ -303,7 +303,9 @@ const ProductDetail = () => {
                       +
                     </button>
                   </div>
-                  <button className="btn btn-primary mt-5">MUA NGAY</button>
+                  <button className="btn btn-primary mt-5" onClick={onSubmit}>
+                    MUA NGAY
+                  </button>
                 </div>
               </div>
             </div>
