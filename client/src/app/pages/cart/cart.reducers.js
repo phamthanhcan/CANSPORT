@@ -87,9 +87,9 @@ export const cartReducer = (state = initialState, action) => {
           ...state.data,
           products: cartTemp.products.filter((item) => {
             if (action.payload.skuId === null) {
-              return item.product.id !== action.payload.productCartId;
+              return item.product?.id !== action.payload.productCartId;
             } else {
-              return item.sku.id !== action.payload.skuId;
+              return item.sku?.id !== action.payload.skuId;
             }
           }),
         },

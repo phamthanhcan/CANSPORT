@@ -86,6 +86,10 @@ class Cart {
                   },
                   { new: true }
                 )
+                .populate({
+                  path: "products",
+                  populate: [{ path: "product" }, { path: "sku" }],
+                })
                 .exec()
                 .then((cart) => {
                   return res.status(200).json({
@@ -114,6 +118,7 @@ class Cart {
               ],
             });
             return newCart
+              .populate()
               .save()
               .then((item) => {
                 return res.status(201).json({

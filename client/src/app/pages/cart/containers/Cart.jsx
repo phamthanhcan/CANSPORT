@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { deleteItemCart, getCartByUser, deleteCart } from "../cart.actions";
@@ -12,11 +12,35 @@ const Cart = () => {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const cart = useSelector((state) => state.cart.data);
   const isLoading = useSelector((state) => state.cart.isLoading);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const deleteProductCart = (productCartId, cartId, skuId) => {
     dispatch(deleteItemCart(productCartId, cartId, skuId));
   };
-  console.log(cart);
+
+  useEffect(() => {
+    if (cart) {
+      setTotalPrice(
+        cart?.products.reduce((sum, item) => {
+          if (item.sku) {
+            return (
+              sum +
+              (item.sku.price * item.quantity -
+                item.sku.price * item.quantity * (item.sku.discount / 100))
+            );
+          } else {
+            return (
+              sum +
+              (item.product.maxPrice * item.quantity -
+                item.product.maxPrice *
+                  item.quantity *
+                  (item.product.discount / 100))
+            );
+          }
+        }, 0)
+      );
+    }
+  }, [cart]);
 
   const isProductHasSku = (product) => {
     return product.sku ? true : false;
@@ -57,6 +81,7 @@ const Cart = () => {
                 <th>Size</th>
                 <th>Giá</th>
                 <th>Số lượng</th>
+                <th>Khuyến mãi</th>
                 <th>Tổng tiền</th>
                 <th></th>
               </tr>
@@ -83,21 +108,25 @@ const Cart = () => {
                       </td>
                       <td>
                         <span className="price">
-                          {numberWithCommas(item.product.maxPrice)}đ
+                          {numberWithCommas(item.sku.price)}đ
                         </span>
                       </td>
                       <td>
                         <input
                           type="number"
                           min="1"
-                          value={item.quantity}
+                          defaultValue={item.quantity}
                           className="form-control input-quantity"
                         />
                       </td>
+                      <td>{item.sku.discount}</td>
                       <td>
                         <span className="price">
                           {numberWithCommas(
-                            item.quantity * item.product.maxPrice
+                            item.quantity * item.sku.price -
+                              item.quantity *
+                                item.sku.price *
+                                (item.sku.discount / 100)
                           )}
                           đ
                         </span>
@@ -137,9 +166,12 @@ const Cart = () => {
                         <input
                           type="number"
                           min="1"
-                          value={item.quantity}
+                          defaultValue={item.quantity}
                           className="form-control input-quantity"
                         />
+                      </td>
+                      <td>
+                        <span>{item.product.discount}</span>
                       </td>
                       <td>
                         <span className="price">
@@ -172,7 +204,6 @@ const Cart = () => {
               <button className="btn btn-primary mr-3" onClick={deleteCartAll}>
                 Xoá giỏ hàng
               </button>
-              <button className="btn btn-primary">Cập nhật giỏ hàng</button>
             </div>
           </div>
           <div className="row cart-totals">
@@ -181,7 +212,9 @@ const Cart = () => {
               <h3 className="cart-totals-title">TỔNG TIỀN</h3>
               <div className="totals">
                 <span className="totals-label">Tổng</span>
-                <span className="totals-content">780.000đ</span>
+                <span className="totals-content">
+                  {numberWithCommas(totalPrice)}đ
+                </span>
               </div>
               <button className="btn btn-primary full-width">Chốt đơn</button>
             </div>
