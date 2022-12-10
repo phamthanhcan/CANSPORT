@@ -9,6 +9,8 @@ const Cart = () => {
           <tr>
             <th></th>
             <th>Tên sản phẩm</th>
+            <th>Màu sắc</th>
+            <th>Size</th>
             <th>Giá</th>
             <th>Số lượng</th>
             <th>Tổng tiền</th>
@@ -24,6 +26,17 @@ const Cart = () => {
             </td>
             <td>
               <p>Giày Bóng Đá TQ Puma Ultra 1.4 Sakura Trắng Hồng FG 40</p>
+            </td>
+            <td>
+              <li
+                className="product-view-option"
+                style={{ backgroundColor: "#d04d63" }}
+              ></li>
+            </td>
+            <td>
+              <li className="product-view-option">
+                <button className="">38</button>
+              </li>
             </td>
             <td>
               <span className="price">780.000đ</span>
@@ -46,7 +59,7 @@ const Cart = () => {
           Tiếp tục mua hàng
         </Link>
         <div>
-          <button className="btn btn-primary mr-3">Xoá giỏ háng</button>
+          <button className="btn btn-primary mr-3">Xoá giỏ hàng</button>
           <button className="btn btn-primary">Cập nhật giỏ hàng</button>
         </div>
       </div>

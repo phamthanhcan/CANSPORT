@@ -79,7 +79,7 @@ const CategoryForm = (props) => {
 
       setShowForm(false);
     },
-    [dispatch, id, img]
+    [dispatch, id, img, setShowForm]
   );
 
   return (
@@ -123,7 +123,6 @@ const CategoryForm = (props) => {
               type="file"
               id="image"
               className="hidden"
-              accept="image/png, image/jpeg"
               onChange={uploadImg}
             />
             <label className="btn btn-secondary btn-xs" htmlFor="image">

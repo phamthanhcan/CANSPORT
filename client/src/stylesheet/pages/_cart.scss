@@ -8,6 +8,7 @@
   }
 
   tr td {
+    font-size: map-get($font-size, sm);
     background-color: map-get($color, white);
     text-align: left;
     img {

@@ -16,6 +16,10 @@ select.form-control {
       color: map-get($color, gray);
     }
   }
+
+  &.is-invalid {
+    border: 1px solid map-get($color, error);
+  }
 }
 
 .form-label {

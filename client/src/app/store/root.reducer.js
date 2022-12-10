@@ -7,6 +7,7 @@ import {
   productReducer,
   skuReducer,
 } from "../pages/home/home.reducers";
+import { cartReducer } from "../pages/cart/cart.reducers";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   category: categoryReducer,
   product: productReducer,
   sku: skuReducer,
+  cart: cartReducer,
 });
 
 export default rootReducer;

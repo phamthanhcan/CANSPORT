@@ -1,7 +1,9 @@
 import React, { createContext, Suspense, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Footer from "./app/shared/components/layout/Footer";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+import Footer from "./app/shared/components/layout/Footer";
 import Header from "./app/shared/components/layout/Header";
 import Loading from "./app/shared/components/modules/LoadingPage";
 const Home = React.lazy(() => import("./app/pages/home/containers/Home"));
@@ -56,9 +58,10 @@ function App() {
               <Route path="products/add" element={<AddProduct />} />
             </Route>
           </Routes>
-          <Footer />
         </Suspense>
+        {/* <Footer /> */}
       </div>
+      <ToastContainer />
     </AppContext.Provider>
   );
 }

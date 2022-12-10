@@ -33,8 +33,6 @@ const ProductForm = (props) => {
     props.handleSaveSku(data);
   };
 
-  console.log();
-
   const onSubmit = (data) => {
     if (hasSkuSelection && isEmptySku) {
       alert("Vui lòng thêm Sku");
@@ -48,6 +46,7 @@ const ProductForm = (props) => {
       ...prevStatus,
       isLoading: true,
     }));
+    console.log("upload img");
 
     const file = e.target.files[0];
     const formData = new FormData();
@@ -200,15 +199,17 @@ const ProductForm = (props) => {
                 type="file"
                 id="image"
                 className="hidden"
-                accept="image/png, image/jpeg"
+                accept="image/png, image/jpeg, .webp"
                 onChange={uploadImage}
+                // {...register("image", { required: "Vui lòng thêm ảnh" })}
               />
               <label className="btn btn-secondary btn-xs" htmlFor="image">
                 Chọn ảnh
               </label>
-              <div className="category-form-img mt-5">
+              <div className="category-form-img mt-5 form-group">
                 <img src={img || NoImage} alt="" />
                 {status.isLoading && <Loading inline />}
+                <p className="form-error">{errors.image?.message}</p>
               </div>
             </div>
           </div>

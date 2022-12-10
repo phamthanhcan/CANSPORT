@@ -1,0 +1,81 @@
+import { Cart } from "../../models/cart";
+import { getApi, postApi } from "../../shared/helper/api";
+import * as TYPES from "./cart.types";
+
+export const addProductCart =
+  (productId, skuId, quantity, userId) => async (dispatch) => {
+    dispatch({
+      type: TYPES.ADD_PRODUCT_CART,
+    });
+
+    try {
+      const res = await postApi(["cart"], {
+        productId: productId,
+        skuId: skuId,
+        quantity: quantity,
+        userId: userId,
+      });
+      dispatch({
+        type: TYPES.ADD_PRODUCT_CART_SUCCESS,
+        payload: {
+          productId: productId,
+          skuId: skuId,
+          quantity: quantity,
+        },
+      });
+    } catch (err) {
+      dispatch({
+        type: TYPES.ADD_PRODUCT_CART_FAIL,
+        payload: err.response?.data?.message,
+      });
+    }
+  };
+
+export const clearCart = () => {
+  return {
+    type: TYPES.CLEAR_LIST_CART,
+  };
+};
+
+export const getCartByUser = (userId) => async (dispatch) => {
+  dispatch({
+    type: TYPES.GET_CART_BY_USER,
+  });
+
+  try {
+    const res = await getApi([`cart?userId=${userId}`]);
+    const data = new Cart(res.data.cart);
+    dispatch({
+      type: TYPES.GET_CART_BY_USER_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPES.GET_CART_BY_USER_FAIL,
+      payload: err.response?.data?.message,
+    });
+  }
+};
+
+export const deleteItemCart = (productCartId, cartId) => async (dispatch) => {
+  dispatch({
+    type: TYPES.DELETE_ITEM_CART,
+  });
+
+  try {
+    const res = await postApi(["cart/product-cart"], {
+      productCartId: productCartId,
+      cartId: cartId,
+    });
+
+    dispatch({
+      type: TYPES.DELETE_ITEM_CART_SUCCESS,
+      payload: productCartId,
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPES.DELETE_ITEM_CART_FAIL,
+      payload: err.response?.data?.message,
+    });
+  }
+};

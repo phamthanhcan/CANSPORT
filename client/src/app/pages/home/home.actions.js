@@ -32,6 +32,26 @@ export const getListProducts =
     }
   };
 
+export const getProductDetail = (id) => async (dispatch) => {
+  dispatch({
+    type: TYPES.GET_PRODUCT_DETAIL,
+  });
+
+  try {
+    const res = await getApi(["product", id]);
+    const data = new Product(res.data.product);
+    dispatch({
+      type: TYPES.GET_PRODUCT_DETAIL_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPES.GET_PRODUCT_DETAIL_FAIL,
+      payload: err.response?.data?.message,
+    });
+  }
+};
+
 export const getListCategory = () => async (dispatch) => {
   dispatch({
     type: TYPES.GET_LIST_CATEGORY,
@@ -143,7 +163,7 @@ export const getSkuOfProducts = (productId) => async (dispatch) => {
   });
 
   try {
-    const res = await postApi(["skus"], {
+    const res = await postApi(["sku"], {
       productId: productId,
     });
     const data = res.data.skus.map((item) => {

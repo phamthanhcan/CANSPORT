@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 import ProductForm from "../components/ProductForm";
 import ProductNav from "../components/ProductNav";
 import ShippingForm from "../components/ShippingForm";
 import { getSkuOfProducts } from "../../home/home.actions";
 import { isEmpty } from "../../../shared/helper/data";
 import { postApi } from "../../../shared/helper/api";
-import { useNavigate } from "react-router-dom";
 
 const totalQuantity = (skus) => {
   return skus.reduce((sum, sku) => {
@@ -87,7 +89,7 @@ const AddProduct = () => {
         weight: +data.weight,
         width: +data.width,
         height: +data.height,
-        lenght: +data.length,
+        length: +data.length,
         skus: skus?.map((sku) => {
           return {
             ...sku,
@@ -97,7 +99,19 @@ const AddProduct = () => {
           };
         }),
       })
-        .then((res) => navigate("/admin/products"))
+        .then((res) => {
+          navigate("/admin/products");
+          toast.success("Thêm sản phẩm thành công!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        })
         .catch((err) => console.log(err));
     }
   };

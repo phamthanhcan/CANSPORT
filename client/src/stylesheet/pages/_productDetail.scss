@@ -43,17 +43,59 @@
   }
 
   &-option {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-right: 10px;
     width: 30px;
     height: 30px;
-    border: 1px solid map-get($color, secondary);
+    user-select: none;
+
+    .icon-check {
+      position: absolute;
+      right: -5px;
+      top: -5px;
+      color: map-get($color, error);
+      display: none;
+    }
+
+    &.active {
+      .icon-check {
+        display: block;
+      }
+    }
+
+    &.active {
+      background-color: map-get($color, secondary);
+      border-color: map-get($color, white);
+      color: map-get($color, white);
+    }
 
     button {
       font-size: map-get($font-size, sm);
       font-weight: map-get($font-weight, bold);
+    }
+
+    .color-label {
+      width: 100%;
+      height: 100%;
+      border: 1px solid map-get($color, secondary);
+    }
+
+    .size-label {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid map-get($color, secondary);
+
+      &.disabled {
+        background-color: map-get($color, white);
+        border-color: map-get($color, disabled);
+        color: map-get($color, disabled);
+      }
     }
   }
 
@@ -70,5 +112,22 @@
   .btn-quantity {
     background-color: map-get($color, gray);
     padding: 10px 20px;
+  }
+}
+
+.carousel {
+  width: 100%;
+  margin-top: 24px;
+
+  .slick-arrow,
+  .slick-arrow:hover {
+    background-color: map-get($color, border);
+    border-radius: 50%;
+  }
+
+  &-img {
+    height: 100px;
+    object-fit: cover;
+    width: 100%;
   }
 }

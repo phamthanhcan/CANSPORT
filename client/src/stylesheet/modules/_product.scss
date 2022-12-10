@@ -1,6 +1,10 @@
 .product-list {
   padding-top: 10px;
   padding-bottom: 40px;
+
+  .row {
+    margin-top: -40px;
+  }
 }
 
 .btn-load-more {
@@ -8,14 +12,26 @@
 }
 
 .product {
+  position: relative;
   margin-top: 40px;
   box-shadow: 0px 3px 3px 3px #ededed;
   border-radius: 10px;
   overflow: hidden;
 
+  &-badge {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    min-width: 60px;
+  }
+
   &-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     padding: 10px;
     text-align: center;
+    height: 225px;
   }
 
   &-id {
@@ -23,8 +39,16 @@
     font-weight: map-get($font-weight, bold);
   }
 
+  &-price-origin {
+    margin-right: 10px;
+    text-decoration: line-through;
+    color: map-get($color, border);
+    font-size: map-get($font-size, xl);
+    font-weight: map-get($font-weight, bold);
+  }
+
   &-price {
-    padding: 5px 0;
+    font-weight: 600;
     color: map-get($color, error);
     font-size: map-get($font-size, xl);
     font-weight: map-get($font-weight, bold);
@@ -32,10 +56,26 @@
 
   &-name {
     margin-top: 10px;
+    font-size: map-get($font-size, xl);
+    font-weight: map-get($font-weight, bold);
   }
 
   &-status {
-    font-size: map-get($font-size, lg);
-    font-weight: map-get($font-weight, bold);
+    font-size: map-get($font-size, md);
+  }
+
+  &-actions {
+    font-size: map-get($font-size, sm);
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &-love {
+    width: 14px;
+    height: 14px;
+  }
+
+  &-sold {
+    margin-left: 8px !important;
   }
 }
