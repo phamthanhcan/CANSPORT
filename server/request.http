@@ -23,3 +23,11 @@ Content-Type: application/json
 GET http://localhost:7000/user/638245e6728d20ce61049823
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzgyNDkyMGY1NmIyOTJjNWIzNzM0NmUiLCJyb2xlIjoxLCJpYXQiOjE2Njk0ODQyOTksImV4cCI6MTY2OTcwMDI5OX0.4v3cyrp6fx1pRnw_X25gI_WFhvlm0U2P1L7j4JEr0AY
+
+###
+DELETE http://localhost:7000/cart/63945a432b5fae79506e88db
+Content-Type: application/json
+
+{
+  "userId": "63821b347a382466ebedd251"
+}

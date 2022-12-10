@@ -3,6 +3,7 @@ const userRoute = require("./userRoute");
 const categoryRoute = require("./categoriesRoute");
 const productRoute = require("./productRoute");
 const skuRoute = require("./skuRoute");
+const cartRoutes = require("./cartRoute");
 const firebase = require("../config/firebase");
 const multer = require("multer");
 

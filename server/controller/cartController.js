@@ -1,23 +1,27 @@
-const cartModel = require('../models/carts');
-const mongoose = require('mongoose');
+const cartModel = require("../models/carts");
+const mongoose = require("mongoose");
+const categoryController = require("./categoryController");
 const { ObjectId } = mongoose.Schema.Types;
 
 class Cart {
-
   getCardByUser(req, res) {
-    let { userId }  = req.query;
+    let { userId } = req.query;
     if (!userId) {
       return res.status(400).json({ message: "All filled must be required" });
     } else {
-      cartModel.findOne({ user: userId })
-        .populate("products.sku", "size color price discount quantity")
-        .populate("products.product", "name images minPrice maxPrice discount quantity length height weight width")
-        .then(cart => {
-          res.json({ cart: cart })
+      cartModel
+        .findOne({ user: userId })
+        .populate("products.sku", "size color price discount quantity image")
+        .populate(
+          "products.product",
+          "name images minPrice maxPrice discount quantity length height weight width"
+        )
+        .then((cart) => {
+          res.json({ cart: cart });
         })
-        .catch(err => {
+        .catch((err) => {
           res.status(500);
-        })
+        });
     }
   }
 
@@ -26,114 +30,146 @@ class Cart {
     if (!productId || !quantity) {
       return res.status(400).json({ message: "All filled must be required" });
     } else {
-      cartModel.find({ user: userId })
-        .then(cart => {
-          if (cart.length) {
-            const indexProduct = cart[0].products.findIndex((item, index) => String(item.product) === String(productId) && String(item.sku) === String(skuId));
-
+      cartModel
+        .findOne({ user: userId })
+        .then((cart) => {
+          if (cart) {
+            const indexProduct = cart.products.findIndex((item) => {
+              return (
+                String(item.product) === String(productId) &&
+                String(item.sku) === String(skuId)
+              );
+            });
             if (indexProduct >= 0) {
-              const query = 'products.' + indexProduct + '.quantity';
-              cartModel.findByIdAndUpdate(cart[0]._id, {
-                $set: {
-                  [query]: quantity + cart[0].products[indexProduct].quantity
-                }
-              })
+              const query = `products.${indexProduct}.quantity`;
+              cartModel
+                .findByIdAndUpdate(
+                  cart._id,
+                  {
+                    $set: {
+                      [query]: quantity + cart.products[indexProduct].quantity,
+                    },
+                  },
+                  { new: true }
+                )
+                .populate({
+                  path: "products",
+                  populate: [{ path: "product" }, { path: "sku" }],
+                })
                 .exec()
                 .then((cart) => {
                   return res.status(200).json({
                     success: true,
-                    message: "update cart 1 successfully",
-                    cart: cart
-                  })
+                    message: "Update cart susscessfully",
+                    cart: cart,
+                  });
                 })
-                .catch(err => {
+                .catch((err) => {
                   return res.status(500).json({
                     success: false,
-                    message: "update product failed",
-                    err: err.message
-                  })
-                })
+                    message: "Update cart fail",
+                    error: err.message,
+                  });
+                });
             } else {
-              cartModel.findByIdAndUpdate(cart[0]._id, {
-                $push: {
-                  products: {
-                    product: productId,
-                    sku: skuId,
-                    quantity: quantity
-                  }
-                }
-              })
+              cartModel
+                .findByIdAndUpdate(
+                  cart._id,
+                  {
+                    $push: {
+                      products: {
+                        product: productId,
+                        sku: skuId,
+                        quantity: quantity,
+                      },
+                    },
+                  },
+                  { new: true }
+                )
                 .exec()
-                .then(() => {
+                .then((cart) => {
                   return res.status(200).json({
                     success: true,
-                    message: "update cart 2 successfully",
-                    cart: cart
-                  })
+                    message: "Update cart susscessfully",
+                    cart: cart,
+                  });
                 })
-                .catch(err => {
+                .catch((err) => {
                   return res.status(500).json({
                     success: false,
-                    message: "update product failed",
-                    err: err.message
-                  })
-                })
+                    message: "Update cart fail",
+                    error: err.message,
+                  });
+                });
             }
           } else {
             const newCart = new cartModel({
               user: userId,
-              products: [{
-                product: productId,
-                sku: skuId,
-                quantity: quantity
-              }]
-            })
-            return newCart.save()
-              .then(item => {
-                return res.status(201).json(
-                  {
-                    success: true,
-                    cart: item,
-                    message: "create category successfully"
-                  }
-                )
+              products: [
+                {
+                  product: productId,
+                  sku: skuId,
+                  quantity: quantity,
+                },
+              ],
+            });
+            return newCart
+              .save()
+              .then((item) => {
+                return res.status(201).json({
+                  success: true,
+                  cart: item,
+                  message: "create category successfully",
+                });
               })
-              .catch(err => {
+              .catch((err) => {
                 return res.status(500).json({
                   success: false,
-                  error: err.message
-                })
-              })
+                  error: err.message,
+                });
+              });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           res.status(500);
-        })
+        });
     }
   }
 
   async deleteItemCart(req, res) {
-    let { productCartId, cartId } = req.body;
+    let { productCartId, cartId, skuId } = req.body;
     if (!productCartId || !cartId) {
       return res.status(400).json({ message: "All filled must be required" });
     } else {
-      cartModel.findByIdAndUpdate(cartId, {
-        $pull: { products: { _id: productCartId } },
-      })
+      cartModel
+        .findByIdAndUpdate(cartId, {
+          $pull: { products: { product: productCartId, sku: skuId } },
+        })
         .exec()
         .then(() => {
           return res.status(200).json({
             success: true,
-            message: "update cart successfully"
-          })
+            message: "update cart successfully",
+          });
         })
-        .catch(err => {
+        .catch((err) => {
           return res.status(500).json({
             success: false,
             message: "update product failed",
-          })
-        })
+          });
+        });
     }
+  }
+
+  deleteCart(req, res) {
+    const id = req.params.cartId;
+    const { userId } = req.body;
+    cartModel
+      .find({ id: id, user: userId })
+      .deleteOne()
+      .exec()
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   }
 }
 
