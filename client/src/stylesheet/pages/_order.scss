@@ -1,0 +1,111 @@
+.order {
+  h3 {
+    font-size: map-get($font-size, xl);
+    font-weight: map-get($font-weight, bold);
+  }
+
+  &-product {
+    margin-bottom: 40px;
+  }
+
+  &-product-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    .product-img {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .product-quantity {
+        position: absolute;
+        right: -5px;
+        top: -5px;
+        background-color: map-get($color, primary);
+        border: 1px solid map-get($color, border);
+        width: 20px;
+        height: 20px;
+        border-radius: 50px;
+        font-size: map-get($font-size, xs);
+        font-weight: map-get($font-weight, bold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .product-name {
+      margin-top: 0;
+      font-size: map-get($font-size, md);
+      font-weight: map-get($font-weight, bold);
+    }
+  }
+
+  .product-view-option {
+    margin-left: 5px;
+    height: 20px;
+    width: 20px;
+  }
+
+  .product-price {
+    color: map-get($color, text);
+    font-size: map-get($font-size, sm);
+
+    &.disabled {
+      color: map-get($color, disabled);
+      text-decoration: line-through;
+    }
+  }
+
+  .bill {
+    padding: 20px;
+    background-color: map-get($color, gray);
+  }
+
+  .visually-hidden {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    width: 2px;
+    height: 2px;
+    margin: -2px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+  }
+
+  .order-summary-detail {
+    padding: 20px 0;
+    border-top: 1px solid map-get($color, border);
+    border-bottom: 1px solid map-get($color, border);
+  }
+
+  .order-summary-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+
+    .price {
+      font-weight: map-get($font-weight, bold);
+    }
+  }
+
+  .order-summary-total {
+    padding: 10px 0;
+    font-weight: map-get($font-weight, bold);
+    font-size: map-get($font-size, xl);
+
+    .price {
+      color: map-get($color, primary);
+    }
+  }
+}

@@ -1,22 +1,20 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { deleteItemCart, getCartByUser, deleteCart } from "../cart.actions";
+import { Link, useNavigate } from "react-router-dom";
+import { getCartByUser, deleteCart } from "../cart.actions";
 import { numberWithCommas } from "../../../shared/helper/data";
 import Empty from "../../../shared/components/modules/Empty";
 import LoadingPage from "../../../shared/components/modules/LoadingPage";
+import CartItem from "../components/CartItem";
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const cart = useSelector((state) => state.cart.data);
   const isLoading = useSelector((state) => state.cart.isLoading);
   const [totalPrice, setTotalPrice] = useState(0);
-
-  const deleteProductCart = (productCartId, cartId, skuId) => {
-    dispatch(deleteItemCart(productCartId, cartId, skuId));
-  };
 
   useEffect(() => {
     if (cart) {
@@ -42,9 +40,7 @@ const Cart = () => {
     }
   }, [cart]);
 
-  const isProductHasSku = (product) => {
-    return product.sku ? true : false;
-  };
+  console.log("cart", cart);
 
   useEffect(() => {
     dispatch(getCartByUser(user.encode._id));
@@ -87,113 +83,9 @@ const Cart = () => {
               </tr>
             </thead>
             <tbody>
-              {cart?.products?.map((item) => {
-                if (isProductHasSku(item)) {
-                  return (
-                    <tr key={item.sku.id}>
-                      <td>
-                        <img src={item.sku.image} alt="" />
-                      </td>
-                      <td>
-                        <p>{item.product.name}</p>
-                      </td>
-                      <td>
-                        <li
-                          className="product-view-option"
-                          style={{ backgroundColor: item.sku.color }}
-                        ></li>
-                      </td>
-                      <td>
-                        <li className="product-view-option">{item.sku.size}</li>
-                      </td>
-                      <td>
-                        <span className="price">
-                          {numberWithCommas(item.sku.price)}đ
-                        </span>
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          min="1"
-                          defaultValue={item.quantity}
-                          className="form-control input-quantity"
-                        />
-                      </td>
-                      <td>{item.sku.discount}</td>
-                      <td>
-                        <span className="price">
-                          {numberWithCommas(
-                            item.quantity * item.sku.price -
-                              item.quantity *
-                                item.sku.price *
-                                (item.sku.discount / 100)
-                          )}
-                          đ
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          onClick={() =>
-                            deleteProductCart(
-                              item.product.id,
-                              cart.id,
-                              item.sku.id
-                            )
-                          }
-                        >
-                          <ion-icon name="trash-outline"></ion-icon>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                } else {
-                  return (
-                    <tr key={item.product.id}>
-                      <td>
-                        <img src={item.product.images[0]} alt="" />
-                      </td>
-                      <td>
-                        <p>{item.product.name}</p>
-                      </td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <span className="price">
-                          {numberWithCommas(item.product.maxPrice)}đ
-                        </span>
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          min="1"
-                          defaultValue={item.quantity}
-                          className="form-control input-quantity"
-                        />
-                      </td>
-                      <td>
-                        <span>{item.product.discount}</span>
-                      </td>
-                      <td>
-                        <span className="price">
-                          {numberWithCommas(
-                            item.quantity * item.product.maxPrice
-                          )}
-                          đ
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          onClick={() =>
-                            deleteProductCart(item.product.id, cart.id)
-                          }
-                        >
-                          <ion-icon name="trash-outline"></ion-icon>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                }
-              })}
+              {cart?.products?.map((item) => (
+                <CartItem productCart={item} cartId={cart.id} />
+              ))}
             </tbody>
           </table>
           <div className="cart-actions">
@@ -216,7 +108,14 @@ const Cart = () => {
                   {numberWithCommas(totalPrice)}đ
                 </span>
               </div>
-              <button className="btn btn-primary full-width">Chốt đơn</button>
+              <button
+                className="btn btn-primary full-width"
+                onClick={() => {
+                  navigate("/order");
+                }}
+              >
+                CHỐT ĐƠN
+              </button>
             </div>
           </div>
         </>

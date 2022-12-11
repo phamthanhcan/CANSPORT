@@ -4,6 +4,7 @@ import * as TYPES from "./cart.types";
 
 export const addProductCart =
   (productId, skuId, quantity, userId) => async (dispatch) => {
+    console.log("addcart");
     dispatch({
       type: TYPES.ADD_PRODUCT_CART,
     });

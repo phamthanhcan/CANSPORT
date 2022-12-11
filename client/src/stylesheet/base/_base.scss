@@ -57,7 +57,7 @@ textarea {
 .section-title {
   position: relative;
   margin-bottom: 20px;
-  font-size: map-get($font-size, xl);
+  font-size: map-get($font-size, xxxl);
   font-weight: map-get($font-weight, bold);
 
   &::after {

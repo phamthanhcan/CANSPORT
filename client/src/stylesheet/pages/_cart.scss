@@ -34,6 +34,11 @@
   .product-view-option {
     border: 1px solid map-get($color, border);
   }
+
+  .btn-quantity {
+    padding: 10px;
+    background-color: map-get($color, gray);
+  }
 }
 
 .cart-actions {
