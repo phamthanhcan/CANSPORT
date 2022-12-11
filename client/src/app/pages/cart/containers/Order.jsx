@@ -37,7 +37,7 @@ const Order = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {};
+  const isFromPayment = window.location.search.includes("isFromPayment");
 
   const user = useSelector((state) => state.auth.data.encode);
   const cart = useSelector((state) => state.cart.data);
@@ -48,10 +48,106 @@ const Order = () => {
   const [wards, setWards] = useState([]);
   const [services, setServices] = useState([]);
   const [shippingFee, setShippingFee] = useState(0);
+  const [totalPriceProduct, setTotalPriceProduct] = useState(0);
 
   const province = watch("province");
   const district = watch("district");
   const ward = watch("ward");
+
+  const onSubmit = (data) => {
+    if (data.paymentOption === "cod") {
+      axios
+        .post(
+          "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
+          {
+            shop_id: 84329,
+            payment_type_id: 2,
+            required_note: "KHONGCHOXEMHANG",
+            return_phone: "0376755120",
+            return_address: "Xóm 11",
+            return_district_id: 1848,
+            return_ward_code: "290625",
+            to_name: data.name,
+            to_phone: data.phone,
+            to_address: data.addressDetail,
+            to_ward_code: data.ward,
+            to_district_id: +data.district,
+            cod_amount: totalPriceProduct,
+            weight: getWeight(products.current),
+            content: `Dinasour shop send to ${data.name}`,
+            length: getLength(products.current),
+            width: getWidth(products.current),
+            height: getHeight(products.current),
+            service_id: services[services.length - 1].service_id,
+            service_type_id: services[services.length - 1].service_type_id,
+            item: products.map((item) => {
+              return {
+                name: item.product.name,
+                code: item.product.id,
+                price: !item.sku ? item.product.minPrice : item.sku.price,
+                quantity: item.quantity,
+              };
+            }),
+          },
+          {
+            headers: {
+              Token: "6e71122d-5c20-11ec-ac64-422c37c6de1b",
+            },
+          }
+        )
+        .then((res) => {
+          const shippingCode = res.data.data.order_code;
+          console.log("res", res);
+
+          // postApi(["order/create"], {
+          //   user: user._id,
+          //   price: getTotalPrice(products),
+          //   shippingFee,
+          //   shippingId: shippingCode,
+          //   address: data.addressDetail,
+          //   province: provinces.find(
+          //     (item: any) => item.ProvinceID === +province
+          //   ).ProvinceName,
+          //   district: districts.find(
+          //     (item: any) => item.DistrictID === +district
+          //   ).DistrictName,
+          //   ward: wards.find((item: any) => item.WardCode === ward).WardName,
+          //   phone: data.phone,
+          //   name: data.name,
+          //   typePay: "cod",
+          //   products: products.map((item: any) => {
+          //     return {
+          //       id: item.id,
+          //       product: item.product.id,
+          //       sku: item.sku ? item.sku.id : null,
+          //       quantity: item.quantity,
+          //     };
+          //   }),
+          // })
+          //   .then((res) => {
+          //     dispatch(clearCart());
+          //     history.push("/");
+          //   })
+          //   .catch((err) => console.error(err));
+        })
+        .catch((err) => console.error(err));
+    } else {
+      navigate("/payment", {
+        state: {
+          services,
+          data: { ...data, shippingFee },
+          cartId: cart.id,
+          products: products.current,
+          totalPrice: totalPriceProduct + shippingFee,
+          province: provinces.find((item) => item.ProvinceID === +province)
+            .ProvinceName,
+          district: districts.find((item) => item.DistrictID === +district)
+            .DistrictName,
+          ward: wards.find((item) => item.WardCode === ward).WardName,
+        },
+      });
+    }
+  };
 
   useEffect(() => {
     if (cart?.products) {
@@ -59,7 +155,29 @@ const Order = () => {
     }
   }, [cart]);
 
-  console.log(products.current);
+  useEffect(() => {
+    if (cart) {
+      setTotalPriceProduct(
+        cart?.products.reduce((sum, item) => {
+          if (item.sku) {
+            return (
+              sum +
+              (item.sku.price * item.quantity -
+                item.sku.price * item.quantity * (item.sku.discount / 100))
+            );
+          } else {
+            return (
+              sum +
+              (item.product.maxPrice * item.quantity -
+                item.product.maxPrice *
+                  item.quantity *
+                  (item.product.discount / 100))
+            );
+          }
+        }, 0)
+      );
+    }
+  }, [cart]);
 
   useEffect(() => {
     axios
@@ -140,36 +258,36 @@ const Order = () => {
     }
   }, [ward]);
 
-  // useEffect(() => {
-  //   if (services.length) {
-  //     axios
-  //       .post(
-  //         `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee`,
-  //         {
-  //           from_district_id: 1848,
-  //           service_id: services[services.length - 1].service_id,
-  //           service_type_id: services[services.length - 1].service_type_id,
-  //           to_district_id: +district,
-  //           to_ward_code: ward,
-  //           height: getHeight(products),
-  //           length: getLength(products),
-  //           weight: getWeight(products),
-  //           width: getWidth(products),
-  //           coupon: null,
-  //         },
-  //         {
-  //           headers: {
-  //             Token: "6e71122d-5c20-11ec-ac64-422c37c6de1b",
-  //           },
-  //         }
-  //       )
-  //       .then((res) => {
-  //         console.log(res.data.data);
-  //         setShippingFee(res.data.data.total);
-  //       })
-  //       .catch((err) => console.error(err));
-  //   }
-  // }, [services]);
+  useEffect(() => {
+    if (services.length) {
+      axios
+        .post(
+          `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee`,
+          {
+            from_district_id: 1848,
+            service_id: services[services.length - 1].service_id,
+            service_type_id: services[services.length - 1].service_type_id,
+            to_district_id: +district,
+            to_ward_code: ward,
+            height: getHeight(products.current),
+            length: getLength(products.current),
+            weight: getWeight(products.current),
+            width: getWidth(products.current),
+            coupon: null,
+          },
+          {
+            headers: {
+              Token: "6e71122d-5c20-11ec-ac64-422c37c6de1b",
+            },
+          }
+        )
+        .then((res) => {
+          console.log(res.data.data.total);
+          setShippingFee(res.data.data.total);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [services]);
 
   return (
     <div className="main container">
@@ -177,7 +295,7 @@ const Order = () => {
         <h2 className="section-title">SHOPPING ORDER</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
-            <div className="delivery-info col-5">
+            <div className="delivery-info col-6">
               <h3>THÔNG TIN NHẬN HÀNG</h3>
               <div className="form-group">
                 <label className="form-label" htmlFor="name">
@@ -187,7 +305,7 @@ const Order = () => {
                   className="form-control"
                   type="text"
                   id="name"
-                  {...register("name")}
+                  {...register("name", { required: "Vui lòng nhập tên" })}
                 />
                 <p className="form-error">{errors.name?.message}</p>
               </div>
@@ -200,7 +318,9 @@ const Order = () => {
                   className="form-control"
                   type="text"
                   id="phone"
-                  {...register("phone")}
+                  {...register("phone", {
+                    required: "Vui lòng nhập số điện thoại",
+                  })}
                 />
                 <p className="form-error">{errors.phone?.message}</p>
               </div>
@@ -212,9 +332,11 @@ const Order = () => {
                 <textarea
                   className="form-control"
                   id="addressDetail"
-                  {...register("addressDetail")}
+                  {...register("addressDetail", {
+                    required: "Vui lòng nhập địa chỉ",
+                  })}
                 ></textarea>
-                <p className="form-error">{errors.name?.message}</p>
+                <p className="form-error">{errors.addressDetail?.message}</p>
               </div>
               <div className="form-group">
                 <label className="form-label" htmlFor="provinces">
@@ -224,7 +346,9 @@ const Order = () => {
                 <select
                   id="province"
                   className="order-select form-control"
-                  {...register("province")}
+                  {...register("province", {
+                    required: "Vui lòng chọn tỉnh thành",
+                  })}
                 >
                   <option defaultChecked value="">
                     --------------
@@ -247,7 +371,9 @@ const Order = () => {
                 <select
                   id="district"
                   className="order-select form-control"
-                  {...register("district")}
+                  {...register("district", {
+                    required: "Vui lòng chọn quận huyện",
+                  })}
                 >
                   <option defaultChecked value="">
                     --------------
@@ -270,7 +396,7 @@ const Order = () => {
                 <select
                   id="ward"
                   className="order-select form-control"
-                  {...register("ward")}
+                  {...register("ward", { required: "Vui lòng chọn phường xã" })}
                 >
                   <option defaultChecked value="">
                     --------------
@@ -286,7 +412,7 @@ const Order = () => {
                 <p className="form-error">{errors.ward?.message}</p>
               </div>
             </div>
-            <div className="col-2"></div>
+            <div className="col-1"></div>
             <div className="col-5 bill">
               <div className="order-product">
                 <h3>SẢN PHẨM ORDER</h3>
@@ -383,11 +509,15 @@ const Order = () => {
                 <div className="order-summary-detail">
                   <div className="order-summary-item">
                     <span>Tạm tính</span>
-                    <span className="price">1.140.000đ</span>
+                    <span className="price">
+                      {numberWithCommas(totalPriceProduct)}đ
+                    </span>
                   </div>
                   <div className="order-summary-item">
                     <span>Phí vận chuyển</span>
-                    <span className="price">-</span>
+                    <span className="price">
+                      {numberWithCommas(shippingFee)}đ
+                    </span>
                   </div>
                   <div className="order-summary-item">
                     <span>Phương thức thanh toán</span>
@@ -421,7 +551,9 @@ const Order = () => {
                 <div className="order-summary-total">
                   <div className="order-summary-item">
                     <span>Tổng cộng</span>
-                    <span className="price">1.140.000đ</span>
+                    <span className="price">
+                      {numberWithCommas(totalPriceProduct + shippingFee)}đ
+                    </span>
                   </div>
                 </div>
                 <input
@@ -429,47 +561,6 @@ const Order = () => {
                   className="btn btn-primary full-width"
                   value="ĐẶT HÀNG"
                 />
-                {/* <div>
-                  <div className="d-flex py-2">
-                    <p className="">Tạm tính</p>
-                    <p className="">0 VND</p>
-                  </div>
-                  <div className="d-flex py-2">
-                    <p className="col-3">Phí vận chuyển</p>
-                    <p className="col-9">{shippingFee} VND</p>
-                  </div>
-                </div>
-                <div className="d-flex py-2 payment-option">
-                  <p className="txt-sm col-3">Phương thức thanh toán</p>
-                  <div className="col-2">
-                    <input
-                      defaultChecked
-                      type="radio"
-                      value="cod"
-                      id="cod"
-                      {...register("paymentOption")}
-                    />
-                    <label htmlFor="cod" className="ml-2">
-                      Payment on delivery
-                    </label>
-                  </div>
-                  <div className="col-2">
-                    <input
-                      type="radio"
-                      value="online-payment"
-                      id="online-payment"
-                      {...register("paymentOption")}
-                    />
-                    <label htmlFor="online-payment" className="ml-2">
-                      Payment by credit
-                    </label>
-                  </div>
-                </div>
-                <input
-                  type="submit"
-                  className="btn btn-primary mt-4"
-                  value="Order now"
-                /> */}
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ const categoryRoute = require("./categoriesRoute");
 const productRoute = require("./productRoute");
 const skuRoute = require("./skuRoute");
 const cartRoutes = require("./cartRoute");
+const orderRoute = require("./orderRoute");
 const firebase = require("../config/firebase");
 const multer = require("multer");
 
@@ -22,6 +23,7 @@ function route(app) {
   app.use("/product", productRoute);
   app.use("/sku", skuRoute);
   app.use("/cart", cartRoutes);
+  app.use("/order", orderRoute);
 
   app.post("/uploadiu", upload, (req, res) => {
     if (!req.file) {
@@ -54,6 +56,37 @@ function route(app) {
 
     // When there is no more data to be consumed from the stream
     imageWriter.end(req.file.buffer);
+  });
+
+  // This is a sample test API key.
+  const stripe = require("stripe")(
+    "sk_test_51JN6JuAe7sFLRsUwtxjhu3xusD0h6B1KOSXj3PlS6wL8rUz8ag3WK01IHGiZ1KqgfWGGgOuhmhlXLQkKcKGiY5Qv00rODfbW4J"
+  );
+
+  const calculateOrderAmount = (items) => {
+    return (
+      items.reduce((sum, productCart) => {
+        const price = isEmpty(productCart.sku)
+          ? productCart.product.minPrice
+          : productCart.sku.price;
+        const quantity = productCart.quantity;
+        return sum + quantity * (price || 0);
+      }, 0) || 0
+    );
+  };
+
+  app.post("/create-payment-intent", async (req, res) => {
+    const { totalPrice } = req.body;
+
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: totalPrice,
+      currency: "vnd",
+    });
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
   });
 }
 

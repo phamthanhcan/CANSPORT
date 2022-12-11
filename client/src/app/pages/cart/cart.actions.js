@@ -86,7 +86,6 @@ export const deleteItemCart =
   };
 
 export const deleteCart = (cartId, userId) => async (dispatch) => {
-  console.log("delete cart");
   console.log(cartId, userId);
   dispatch({
     type: TYPES.DELETE_CART,
