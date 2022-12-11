@@ -5,8 +5,7 @@ export class Product {
     this.id = data._id || "";
     this.name = data.name || "";
     this.description = data.description || "";
-    this.minPrice = data.minPrice || 0;
-    this.maxPrice = data.maxPrice || 0;
+    this.price = data.price || 0;
     this.discount = data.discount || 0;
     this.sold = data.sold || 0;
     this.quantity = data.quantity || 0;
@@ -14,11 +13,6 @@ export class Product {
     this.length = data.length || 0;
     this.width = data.width || 0;
     this.height = data.height || 0;
-    this.skus = isEmpty(data.skus)
-      ? []
-      : data.skus.map((sku) => {
-          return new Sku(sku);
-        });
     this.category = new CategorySumary(data.category);
     this.ratingsReviews = isEmpty(data.ratingsReviews)
       ? []

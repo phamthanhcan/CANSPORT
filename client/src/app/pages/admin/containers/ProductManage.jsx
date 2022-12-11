@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
@@ -21,11 +21,10 @@ const ProductManage = () => {
   const [page, setPage] = useState(1);
 
   const products = useSelector((state) => state.product.data);
-
-  console.log(products);
+  const totalPages = useSelector((state) => state.product.totalPages);
 
   useEffect(() => {
-    dispatch(getListProducts(page - 1, 0, "", search || ""));
+    dispatch(getListProducts(page - 1, 0, "", search || "", true));
   }, [dispatch, page, search]);
 
   useEffect(() => {
@@ -39,6 +38,16 @@ const ProductManage = () => {
   const handleDelete = () => {
     dispatch(deleteProduct(productId));
   };
+
+  const getProductFilter = useCallback(() => {
+    if (products) {
+      return products.filter((product) =>
+        product.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+  }, [products, search]);
+
+  console.log(getProductFilter());
 
   const handleChange = (e, value) => {
     setPage(value);
@@ -71,6 +80,7 @@ const ProductManage = () => {
           className="form-control"
           type="text"
           placeholder="Nhập tên sản phẩm cần tìm"
+          onChange={(e) => setSearch(e.target.value || "")}
         />
         <Link
           to="/admin/products/add"
@@ -84,55 +94,66 @@ const ProductManage = () => {
       {!products?.length ? (
         <Empty />
       ) : (
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th>Tên</th>
-              <th>Hình ảnh</th>
-              <th>Giá</th>
-              <th>Số lượng</th>
-              <th>Danh mục</th>
-              <th>Chỉnh sửa</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products?.map((product) => (
+        <>
+          <table className="admin-table">
+            <thead>
               <tr>
-                <td>{product.name}</td>
-                <td>
-                  <img
-                    className="category-admin-img"
-                    src={product.images[0] || NoImage}
-                    alt="img"
-                  />
-                </td>
-                <td>
-                  {product.minPrice === product.maxPrice
-                    ? `${numberWithCommas(product.minPrice)}đ`
-                    : `${numberWithCommas(
-                        product.minPrice
-                      )}đ - ${numberWithCommas(product.maxPrice)}đ`}
-                </td>
-                <td>{product.quantity}</td>
-                <td>{product.category.name}</td>
-                <td>
-                  <img src={editIcon} className="action-btn mr-3" alt="edit" />
-                  <img
-                    src={deleteIcon}
-                    className="action-btn delete"
-                    alt="delete"
-                  />
-                </td>
+                <th>Tên</th>
+                <th>Hình ảnh</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Danh mục</th>
+                <th>Chỉnh sửa</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {products?.map((product) => (
+                <tr>
+                  <td>{product.name}</td>
+                  <td>
+                    <img
+                      className="category-admin-img"
+                      src={product.images[0] || NoImage}
+                      alt="img"
+                    />
+                  </td>
+                  <td>{numberWithCommas(product.price)}đ</td>
+                  <td>{product.quantity}</td>
+                  <td>{product.category.name}</td>
+                  <td>
+                    <img
+                      src={editIcon}
+                      className="action-btn mr-3"
+                      alt="edit"
+                    />
+                    <button
+                      onClick={() => {
+                        setProductId(product.id);
+                        setShowDialog(true);
+                      }}
+                    >
+                      <img
+                        src={deleteIcon}
+                        className="action-btn delete"
+                        alt="delete"
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="f-center-x mt-5">
+            <Stack spacing={2}>
+              <Pagination
+                count={totalPages}
+                variant="outlined"
+                shape="rounded"
+              />
+            </Stack>
+          </div>
+        </>
       )}
-      <div className="f-center-x mt-5">
-        <Stack spacing={2}>
-          <Pagination count={10} variant="outlined" shape="rounded" />
-        </Stack>
-      </div>
     </div>
   );
 };

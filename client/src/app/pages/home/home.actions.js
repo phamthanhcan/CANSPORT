@@ -4,7 +4,7 @@ import { deleteApi, getApi, postApi, putApi } from "../../shared/helper/api";
 import * as TYPES from "./home.types";
 
 export const getListProducts =
-  (page, price = 0, category = "", name = "") =>
+  (page, price = 0, category = "", name = "", active = false) =>
   async (dispatch) => {
     dispatch({
       type: TYPES.GET_LIST_PRODUCT,
@@ -12,7 +12,7 @@ export const getListProducts =
 
     try {
       const res = await getApi([
-        `product?size=10&page=${page}&price=${price}&category=${category}&name=${name}`,
+        `product?size=10&page=${page}&price=${price}&category=${category}&name=${name}&active=${active}`,
       ]);
       const data = res.data.products.map((item) => {
         return new Product(item);
@@ -142,7 +142,8 @@ export const deleteProduct = (id) => async (dispatch) => {
   });
 
   try {
-    const res = await deleteApi(["products", id]);
+    const res = await deleteApi(["product", id]);
+    console.log(res);
     dispatch({
       type: TYPES.DELETE_PRODUCT_SUCCESS,
       payload: {

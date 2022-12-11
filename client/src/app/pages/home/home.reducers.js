@@ -44,22 +44,23 @@ export const productReducer = (state = initialState, action) => {
         error: null,
       };
     case TYPES.DELETE_PRODUCT_SUCCESS:
-      let temp1 = [...state.data].map((item) => {
-        if (item.id !== action.payload.id) {
-          return item;
-        } else {
-          return {
-            ...item,
-            status: false,
-          };
-        }
-      });
+      // let temp1 = [...state.data].map((item) => {
+      //   if (item.id !== action.payload.id) {
+      //     return item;
+      //   } else {
+      //     return {
+      //       ...item,
+      //       status: false,
+      //     };
+      //   }
+      // });
+
       return {
         ...state,
         hasError: false,
         isLoading: false,
         error: null,
-        data: temp1,
+        data: [...state.data].filter((item) => item.id !== action.payload.id),
       };
     case TYPES.DELETE_PRODUCT_FAIL:
       return {

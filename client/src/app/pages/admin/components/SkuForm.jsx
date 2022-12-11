@@ -369,6 +369,7 @@ const SkuForm = (props) => {
             </thead>
             <tbody>
               {skuFields.map((item, index) => {
+                console.log(`skus[${index}].size`);
                 return (
                   <tr key={item.id}>
                     {!isEmptyArray(skus.map((item) => item.color)) && (

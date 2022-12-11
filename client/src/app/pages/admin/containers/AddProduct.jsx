@@ -10,28 +10,10 @@ import { getSkuOfProducts } from "../../home/home.actions";
 import { isEmpty } from "../../../shared/helper/data";
 import { postApi } from "../../../shared/helper/api";
 
-const totalQuantity = (skus) => {
-  return skus.reduce((sum, sku) => {
-    return sum + +sku.quantity;
+const totalQuantity = (sizes) => {
+  return sizes.reduce((sum, size) => {
+    return sum + +size.quantity;
   }, 0);
-};
-
-const maxDiscount = (skus) => {
-  return skus.reduce(function (p, v) {
-    return p > +v.discount ? p : +v.discount;
-  }, 0);
-};
-
-const maxPrice = (skus) => {
-  return skus.reduce(function (p, v) {
-    return p > +v.price ? p : +v.price;
-  }, 0);
-};
-
-const minPrice = (skus) => {
-  return skus.reduce(function (p, v) {
-    return p < +v.price ? p : +v.price;
-  }, +skus[0].price);
 };
 
 const AddProduct = () => {
@@ -42,11 +24,10 @@ const AddProduct = () => {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.product.data);
   const product = products?.find((product) => product.id === id);
-  const skusProduct = useSelector((state) => state.sku.data);
   const [currentStep, setCurrentStep] = useState(1);
   const [productInfo, setProductInfo] = useState();
-  const [skus, setSkus] = useState();
-  const [hasSku, setHasSku] = useState();
+  const [sizes, setSizes] = useState(null);
+  const [hasSize, setHasSize] = useState(false);
 
   useEffect(() => {
     if (!isEmpty(id)) {
@@ -54,20 +35,16 @@ const AddProduct = () => {
     }
   }, [dispatch, id]);
 
-  useEffect(() => {
-    if (skusProduct) {
-      setSkus(skusProduct);
-    }
-  }, [skusProduct]);
-
-  const handleSaveInfo = (data, hasSku) => {
+  const handleSaveInfo = (data, hasSize) => {
     setProductInfo(data);
-    setHasSku(hasSku);
+    setHasSize(hasSize);
     setCurrentStep(2);
   };
 
-  const handleSaveSku = (data) => {
-    setSkus(data);
+  console.log(sizes);
+
+  const handleSaveSizes = (data) => {
+    setSizes(data);
   };
 
   const goToPrev = () => {
@@ -81,23 +58,15 @@ const AddProduct = () => {
         images: productInfo.images,
         category: productInfo.category,
         description: productInfo.description,
-        quantity: hasSku ? totalQuantity(skus) : +productInfo.quantity,
-        discount: hasSku ? maxDiscount(skus) : +productInfo.discount,
-        minPrice: hasSku ? minPrice(skus) : +productInfo.price,
-        maxPrice: hasSku ? maxPrice(skus) : +productInfo.price,
+        quantity: hasSize ? totalQuantity(sizes) : +productInfo.quantity,
+        discount: +productInfo.discount,
+        price: +productInfo.price,
         ...data,
         weight: +data.weight,
         width: +data.width,
         height: +data.height,
         length: +data.length,
-        skus: skus?.map((sku) => {
-          return {
-            ...sku,
-            quantity: +sku.quantity,
-            discount: +sku.discount,
-            price: +sku.price,
-          };
-        }),
+        sizes: sizes,
       })
         .then((res) => {
           navigate("/admin/products");
@@ -124,7 +93,7 @@ const AddProduct = () => {
           id={id}
           product={product}
           handleSaveInfo={handleSaveInfo}
-          handleSaveSku={handleSaveSku}
+          handleSaveSizes={handleSaveSizes}
         />
       </div>
       <div className={`${currentStep !== 2 && "hidden"}`}>

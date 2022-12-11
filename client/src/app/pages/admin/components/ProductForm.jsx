@@ -7,14 +7,14 @@ import NoImage from "../../../../assets/images/no-image.png";
 import SkuForm from "./SkuForm";
 import axios from "axios";
 import Loading from "../../../shared/components/modules/LoadingPage";
+import SizeForm from "./SizeForm";
 
 const ProductForm = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [hasSkuSelection, setHasSkuSelection] = useState(false);
+  const [hasSizeSelection, setHasSizeSelection] = useState(false);
   const [img, setImg] = useState("");
-  const [isEmptySku, setIsEmptySku] = useState(true);
+  const [isEmptySize, setIsEmptySize] = useState(true);
   const [status, setStatus] = useState({
     isLoading: false,
     error: null,
@@ -28,17 +28,17 @@ const ProductForm = (props) => {
     formState: { errors },
   } = useForm();
 
-  const handleSaveSku = (data, isEmptySku) => {
-    setIsEmptySku(isEmptySku);
-    props.handleSaveSku(data);
+  const handleSaveSizes = (data, isEmptySize) => {
+    setIsEmptySize(isEmptySize);
+    props.handleSaveSizes(data);
   };
 
   const onSubmit = (data) => {
-    if (hasSkuSelection && isEmptySku) {
-      alert("Vui lòng thêm Sku");
+    if (hasSizeSelection && isEmptySize) {
+      alert("Vui lòng nhập size");
       return;
     }
-    props.handleSaveInfo({ ...data, images: img }, hasSkuSelection);
+    props.handleSaveInfo({ ...data, images: img }, hasSizeSelection);
   };
 
   const uploadImage = (e) => {
@@ -98,48 +98,59 @@ const ProductForm = (props) => {
               </div>
               <div className="form-group">
                 <label className="form-label" htmlFor="description">
-                  Mô tả<span className="form-label-required">*</span>
+                  Mô tả
                 </label>
                 <textarea
                   className="form-control"
                   id="description"
                   rows="3"
-                  {...register("description", {
-                    required: "Vui lòng nhập mô tả",
-                  })}
+                  {...register("description")}
                 ></textarea>
-                <p className="form-error">{errors.description?.message}</p>
               </div>
               <div className="mb-2 f-center-y">
-                <span className="form-label mr-3">SKU</span>
+                <span className="form-label mr-3">THÊM SIZE</span>
                 <label className="toggle" htmlFor="toggle-btn">
                   <input
                     className="toggle-input hidden"
                     type="checkbox"
                     id="toggle-btn"
-                    checked={hasSkuSelection}
-                    onChange={() => setHasSkuSelection(!hasSkuSelection)}
+                    checked={hasSizeSelection}
+                    onChange={() => setHasSizeSelection(!hasSizeSelection)}
                   />
                   <div className="toggle-fill"></div>
                 </label>
               </div>
-              {!hasSkuSelection ? (
-                <div className="row">
-                  <div className="col-4">
-                    <div className="form-group ">
-                      <label className="form-label">Giá</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="price"
-                        min="0"
-                        {...register("price", {
-                          required: "Vui lòng nhập giá",
-                        })}
-                      />
-                      <p className="form-error">{errors.price?.message}</p>
-                    </div>
+
+              <div className="row">
+                <div className={`${hasSizeSelection ? "col-6" : "col-4"}`}>
+                  <div className="form-group ">
+                    <label className="form-label">Giá</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="price"
+                      min="0"
+                      {...register("price", {
+                        required: "Vui lòng nhập giá",
+                      })}
+                    />
+                    <p className="form-error">{errors.price?.message}</p>
                   </div>
+                </div>
+                <div className={`${hasSizeSelection ? "col-6" : "col-4"}`}>
+                  <div className="form-group ">
+                    <label className="form-label">Khuyến mãi</label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="discount"
+                      min="0"
+                      max="100"
+                      {...register("discount")}
+                    />
+                  </div>
+                </div>
+                {!hasSizeSelection ? (
                   <div className="col-4">
                     <div className="form-group">
                       <label className="form-label" htmlFor="quantity">
@@ -157,26 +168,13 @@ const ProductForm = (props) => {
                       <p className="form-error">{errors.quantity?.message}</p>
                     </div>
                   </div>
-                  <div className="col-4">
-                    <div className="form-group ">
-                      <label className="form-label">Khuyến mãi</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        id="discount"
-                        min="0"
-                        max="100"
-                        {...register("discount")}
-                      />
-                    </div>
+                ) : (
+                  <div className="col-12">
+                    <SizeForm handleSaveSizes={handleSaveSizes} />
                   </div>
-                </div>
-              ) : (
-                <SkuForm
-                  handleSaveSku={handleSaveSku}
-                  handleCancelSku={() => setHasSkuSelection(false)}
-                />
-              )}
+                )}
+              </div>
+
               <div className="form-group">
                 <label className="form-label" htmlFor="category">
                   Danh mục

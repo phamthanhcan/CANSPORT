@@ -10,13 +10,8 @@ const productSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
     },
-    minPrice: {
-      type: Number,
-      required: true,
-    },
-    maxPrice: {
+    price: {
       type: Number,
       required: true,
     },

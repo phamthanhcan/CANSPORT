@@ -5,6 +5,7 @@ const productRoute = require("./productRoute");
 const skuRoute = require("./skuRoute");
 const cartRoutes = require("./cartRoute");
 const orderRoute = require("./orderRoute");
+const sizeRoute = require("./sizeRoute");
 const firebase = require("../config/firebase");
 const multer = require("multer");
 
@@ -24,6 +25,7 @@ function route(app) {
   app.use("/sku", skuRoute);
   app.use("/cart", cartRoutes);
   app.use("/order", orderRoute);
+  app.use("/size", sizeRoute);
 
   app.post("/uploadiu", upload, (req, res) => {
     if (!req.file) {

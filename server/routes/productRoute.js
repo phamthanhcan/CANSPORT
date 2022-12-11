@@ -8,7 +8,7 @@ router.post("", loginCheck, productController.addProduct);
 router.post("/add-review", loginCheck, productController.postAddReview);
 router.get("/:productId", productController.getSingleProduct);
 router.put("/:productId", loginCheck, productController.editProduct);
-router.delete("/:product", loginCheck, productController.deleteProduct);
+router.delete("/:productId", loginCheck, productController.deleteProduct);
 router.post("/product-category", productController.getProductByCategory);
 
 module.exports = router;

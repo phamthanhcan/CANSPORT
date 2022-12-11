@@ -3,13 +3,14 @@ const skuModel = require("../models/skus");
 const { getPagination } = require("../config/function");
 // const orderController = require("./orderController");
 const orderModel = require("../models/order");
+const sizeModel = require("../models/size");
 
 class Product {
   getAllProduct(req, res) {
-    const { page, size, name, price, category } = req.query;
+    const { page, size, name, price, category, active } = req.query;
     const { limit, offset } = getPagination(page, size);
-    let query = { status: true };
     let sort = { _id: -1 };
+    let query = {};
 
     if (name && category) {
       query = {
@@ -49,6 +50,13 @@ class Product {
       ],
     };
 
+    if (active) {
+      query = {
+        ...query,
+        status: true,
+      };
+    }
+
     productModel
       .paginate(query, options)
       .then((data) => {
@@ -73,12 +81,11 @@ class Product {
       images,
       category,
       description,
-      skus,
+      sizes,
       quantity,
       discount,
       status,
-      minPrice,
-      maxPrice,
+      price,
       sold,
       weight,
       length,
@@ -88,9 +95,7 @@ class Product {
     if (
       !name ||
       !category ||
-      !description ||
-      !minPrice ||
-      !maxPrice ||
+      !price ||
       !weight ||
       !length ||
       !width ||
@@ -105,8 +110,7 @@ class Product {
         description,
         quantity,
         discount,
-        minPrice,
-        maxPrice,
+        price,
         sold,
         status,
         weight,
@@ -117,22 +121,22 @@ class Product {
       return newProduct
         .save()
         .then((product) => {
-          if (skus) {
-            const skusTemp = skus.map((item) => {
+          if (sizes) {
+            const sizesTemp = sizes.map((item) => {
               return {
                 ...item,
                 product: product._id,
               };
             });
 
-            skuModel
-              .insertMany(skusTemp)
+            sizeModel
+              .insertMany(sizesTemp)
               .then((result) => {
                 return res.status(201).json({
                   success: true,
-                  category: product,
+                  product: product,
                   result: result,
-                  message: "create category successfully 1",
+                  message: "Thêm sản phẩm thành công!",
                 });
               })
               .catch((err) => {
@@ -144,8 +148,8 @@ class Product {
           } else {
             return res.status(201).json({
               success: true,
-              category: product,
-              message: "create category successfully 2",
+              product: product,
+              message: "Thêm sản phẩm thành công!",
             });
           }
         })
@@ -182,11 +186,17 @@ class Product {
 
   deleteProduct(req, res) {
     const id = req.params.productId;
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Id sản phẩm không hợp lệ!" });
+    }
     productModel
       .findByIdAndUpdate(id, { status: false })
       .exec()
-      .then(() => {
+      .then((product) => {
         res.status(204).json({
+          product: product,
           success: true,
         });
       })
