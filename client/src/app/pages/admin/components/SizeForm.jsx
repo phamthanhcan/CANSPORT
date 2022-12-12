@@ -37,7 +37,11 @@ const SizeForm = (props) => {
   const sizes = watch("sizes");
 
   const onSubmit = (data) => {
-    handleSaveSizes(data.sizes, );
+    handleSaveSizes(
+      data.sizes.map((item) => {
+        return { size: item.name, quantity: item.quantity };
+      })
+    );
     toast.success("Thêm size thành công!", {
       position: "top-right",
       autoClose: 5000,
@@ -103,7 +107,6 @@ const SizeForm = (props) => {
                           readOnly
                           value={item.name}
                           className="form-control"
-                          {...register(`sizes[${index}].size`)}
                         />
                       </td>
                       <td>

@@ -1,5 +1,5 @@
 import { Category } from "../../models/category";
-import { Product, Sku } from "../../models/product";
+import { Product, Size, Sku } from "../../models/product";
 import { deleteApi, getApi, postApi, putApi } from "../../shared/helper/api";
 import * as TYPES from "./home.types";
 
@@ -177,6 +177,30 @@ export const getSkuOfProducts = (productId) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: TYPES.GET_SKU_OF_FRODUCT_FAIL,
+      payload: err.response?.data?.message,
+    });
+  }
+};
+
+export const getSizesOfProduct = (productId) => async (dispatch) => {
+  dispatch({
+    type: TYPES.GET_SIZE_OF_PRODUCT,
+  });
+
+  try {
+    const res = await postApi(["size"], {
+      productId: productId,
+    });
+    const data = res.data.sizes.map((item) => {
+      return new Size(item);
+    });
+    dispatch({
+      type: TYPES.GET_SIZE_OF_PRODUCT_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPES.GET_SIZE_OF_PRODUCT_FAIL,
       payload: err.response?.data?.message,
     });
   }

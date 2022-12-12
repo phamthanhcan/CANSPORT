@@ -3,8 +3,7 @@ import { deleteApi, getApi, postApi } from "../../shared/helper/api";
 import * as TYPES from "./cart.types";
 
 export const addProductCart =
-  (productId, skuId, quantity, userId) => async (dispatch) => {
-    console.log("addcart");
+  (productId, sizeId, quantity, userId) => async (dispatch) => {
     dispatch({
       type: TYPES.ADD_PRODUCT_CART,
     });
@@ -12,7 +11,7 @@ export const addProductCart =
     try {
       const res = await postApi(["cart"], {
         productId: productId,
-        skuId: skuId,
+        sizeId: sizeId,
         quantity: quantity,
         userId: userId,
       });
@@ -43,7 +42,9 @@ export const getCartByUser = (userId) => async (dispatch) => {
 
   try {
     const res = await getApi([`cart?userId=${userId}`]);
+    console.log("res", res);
     const data = new Cart(res.data.cart);
+    console.log(data);
     dispatch({
       type: TYPES.GET_CART_BY_USER_SUCCESS,
       payload: data,
@@ -57,7 +58,7 @@ export const getCartByUser = (userId) => async (dispatch) => {
 };
 
 export const deleteItemCart =
-  (productCartId, cartId, skuId = null) =>
+  (productCartId, cartId, sizeId = null) =>
   async (dispatch) => {
     dispatch({
       type: TYPES.DELETE_ITEM_CART,
@@ -67,14 +68,16 @@ export const deleteItemCart =
       const res = await postApi(["cart/product-cart"], {
         productCartId: productCartId,
         cartId: cartId,
-        skuId: skuId,
+        sizeId: sizeId,
       });
+
+      console.log(res);
 
       dispatch({
         type: TYPES.DELETE_ITEM_CART_SUCCESS,
         payload: {
           productCartId,
-          skuId,
+          sizeId,
         },
       });
     } catch (err) {

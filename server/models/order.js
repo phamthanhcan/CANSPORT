@@ -14,9 +14,9 @@ const orderSchema = new mongoose.Schema(
           type: ObjectId,
           ref: "products",
         },
-        sku: {
+        size: {
           type: ObjectId,
-          ref: "skus",
+          ref: "size",
           default: null,
         },
         quantity: Number,

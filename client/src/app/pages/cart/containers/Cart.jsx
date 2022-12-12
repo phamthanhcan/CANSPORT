@@ -20,21 +20,13 @@ const Cart = () => {
     if (cart) {
       setTotalPrice(
         cart?.products.reduce((sum, item) => {
-          if (item.sku) {
-            return (
-              sum +
-              (item.sku.price * item.quantity -
-                item.sku.price * item.quantity * (item.sku.discount / 100))
-            );
-          } else {
-            return (
-              sum +
-              (item.product.maxPrice * item.quantity -
-                item.product.maxPrice *
-                  item.quantity *
-                  (item.product.discount / 100))
-            );
-          }
+          return (
+            sum +
+            (item.product.price * item.quantity -
+              item.product.price *
+                item.quantity *
+                (item.product.discount / 100))
+          );
         }, 0)
       );
     }
@@ -57,7 +49,7 @@ const Cart = () => {
   return (
     <main className="main container">
       <h2 className="admin-title">GIỎ HÀNG</h2>
-      {cart && cart?.products?.length === 0 ? (
+      {cart?.products?.length === 0 ? (
         <>
           <Empty />
           <div className="f-center-x">
@@ -73,7 +65,6 @@ const Cart = () => {
               <tr>
                 <th></th>
                 <th>Tên sản phẩm</th>
-                <th>Màu sắc</th>
                 <th>Size</th>
                 <th>Giá</th>
                 <th>Số lượng</th>

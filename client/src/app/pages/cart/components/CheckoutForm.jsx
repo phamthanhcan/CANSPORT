@@ -97,7 +97,7 @@ export default function CheckoutForm(props) {
         disabled={isLoading || !stripe || !elements}
         id="submit"
       >
-        <span id="button-text">Pay now</span>
+        <button id="btn btn-primary">Pay now</button>
       </button>
       {/* Show any error or success messages */}
       {message && <div id="payment-message">{message}</div>}

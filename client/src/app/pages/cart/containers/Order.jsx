@@ -80,18 +80,18 @@ const Order = () => {
             height: getHeight(products.current),
             service_id: services[services.length - 1].service_id,
             service_type_id: services[services.length - 1].service_type_id,
-            item: products.map((item) => {
+            item: products.current.map((item) => {
               return {
                 name: item.product.name,
                 code: item.product.id,
-                price: !item.sku ? item.product.minPrice : item.sku.price,
+                price: item.product.price,
                 quantity: item.quantity,
               };
             }),
           },
           {
             headers: {
-              Token: "6e71122d-5c20-11ec-ac64-422c37c6de1b",
+              Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
             },
           }
         )
@@ -159,21 +159,13 @@ const Order = () => {
     if (cart) {
       setTotalPriceProduct(
         cart?.products.reduce((sum, item) => {
-          if (item.sku) {
-            return (
-              sum +
-              (item.sku.price * item.quantity -
-                item.sku.price * item.quantity * (item.sku.discount / 100))
-            );
-          } else {
-            return (
-              sum +
-              (item.product.maxPrice * item.quantity -
-                item.product.maxPrice *
-                  item.quantity *
-                  (item.product.discount / 100))
-            );
-          }
+          return (
+            sum +
+            (item.product.price * item.quantity -
+              item.product.price *
+                item.quantity *
+                (item.product.discount / 100))
+          );
         }, 0)
       );
     }
@@ -431,20 +423,13 @@ const Order = () => {
                             <h4 className="product-name">
                               {item.product.name}
                             </h4>
-                            {!isEmpty(item.sku) && (
+                            {!isEmpty(item.size) && (
                               <div className="f-center-y">
-                                Color:
-                                {item.sku.color && (
-                                  <div
-                                    className="product-view-option"
-                                    style={{ backgroundColor: item.sku.color }}
-                                  ></div>
-                                )}
-                                {item.sku.size && (
+                                {item.size.size && (
                                   <>
                                     Size:
                                     <p className="product-view-option">
-                                      <span>{item.sku.size}</span>
+                                      <span>{item.size.size}</span>
                                     </p>
                                   </>
                                 )}
@@ -453,53 +438,29 @@ const Order = () => {
                           </div>
                         </div>
 
-                        {isEmpty(item.sku) ? (
-                          <div className="ml-2">
-                            <p
-                              className={`product-price ${
-                                item.product.discount > 0 ? "disabled" : ""
-                              }`}
-                            >
+                        <div className="ml-2">
+                          <p
+                            className={`product-price ${
+                              item.product.discount > 0 ? "disabled" : ""
+                            }`}
+                          >
+                            {numberWithCommas(
+                              item.product.price * item.quantity
+                            )}
+                            đ
+                          </p>
+                          {item.product.discount > 0 && (
+                            <p className="product-price">
                               {numberWithCommas(
-                                item.product.maxPrice * item.quantity
+                                item.product.price * item.quantity -
+                                  item.product.price *
+                                    item.quantity *
+                                    (item.product.discount / 100)
                               )}
                               đ
                             </p>
-                            {item.product.discount > 0 && (
-                              <p className="product-price">
-                                {numberWithCommas(
-                                  item.product.maxPrice * item.quantity -
-                                    item.product.maxPrice *
-                                      item.quantity *
-                                      (item.sku.discount / 100)
-                                )}
-                                đ
-                              </p>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="ml-2">
-                            <p
-                              className={`product-price ${
-                                item.sku.discount > 0 ? "disabled" : ""
-                              }`}
-                            >
-                              {numberWithCommas(item.sku.price * item.quantity)}
-                              đ
-                            </p>
-                            {item.sku.discount > 0 && (
-                              <p className="product-price">
-                                {numberWithCommas(
-                                  item.sku.price * item.quantity -
-                                    item.sku.price *
-                                      item.quantity *
-                                      (item.sku.discount / 100)
-                                )}
-                                đ
-                              </p>
-                            )}
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </li>
                     );
                   })}

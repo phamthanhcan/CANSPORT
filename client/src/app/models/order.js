@@ -6,6 +6,12 @@ export const TYPE_PAY = {
   COD: "cod",
   ONLINE_PAYMENT: "online-payment",
 };
+
+export const STATUS_ORDER = {
+  NOT_CONFIRMED: "Not comfirmed",
+  CONFIRMED: "Confirmed",
+};
+
 export class Order {
   constructor(data) {
     this.id = data._id;

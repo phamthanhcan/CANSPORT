@@ -1,5 +1,5 @@
 import { isEmpty } from "../shared/helper/data";
-import { Product, Sku } from "./product";
+import { Product, Size } from "./product";
 
 export class Cart {
   constructor(data) {
@@ -17,7 +17,7 @@ export class ProductCart {
   constructor(data) {
     this.id = data._id || "";
     this.product = isEmpty(data.product) ? null : new Product(data.product);
-    this.sku = isEmpty(data.sku) ? null : new Sku(data.sku);
+    this.size = isEmpty(data.size) ? null : new Size(data.size);
     this.quantity = data.quantity || 0;
     this.isReviewed = data.isReviewed || false;
   }

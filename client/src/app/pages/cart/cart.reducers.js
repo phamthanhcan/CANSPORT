@@ -86,10 +86,10 @@ export const cartReducer = (state = initialState, action) => {
         data: {
           ...state.data,
           products: cartTemp.products.filter((item) => {
-            if (action.payload.skuId === null) {
+            if (action.payload.sizeId === null) {
               return item.product?.id !== action.payload.productCartId;
             } else {
-              return item.sku?.id !== action.payload.skuId;
+              return item.size?.id !== action.payload.sizeId;
             }
           }),
         },

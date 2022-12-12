@@ -51,3 +51,11 @@ export class Sku {
     this.image = data.image || "";
   }
 }
+
+export class Size {
+  constructor(data = {}) {
+    this.id = data._id || "";
+    this.quantity = data.quantity || 0;
+    this.size = data.size || "";
+  }
+}

@@ -18,22 +18,22 @@ const CartItem = (props) => {
       deleteItemCart(
         productCart.product.id,
         cartId,
-        productCart.sku === null ? null : productCart.sku.id
+        productCart.size === null ? null : productCart.size.id
       )
     );
   };
 
   const onChangeQuantity = (target) => {
-    const maxQuantity = isEmpty(productCart.sku)
+    const maxQuantity = isEmpty(productCart.size)
       ? productCart.product.quantity
-      : productCart.sku.quantity;
+      : productCart.size.quantity;
 
     if (amountTemp.current + target < 1) {
       setAmountProduct(1);
       dispatch(
         addProductCart(
           productCart.product.id,
-          !isEmpty(productCart.sku) ? productCart.sku.id : null,
+          !isEmpty(productCart.size) ? productCart.size.id : null,
           -amountTemp.current + 1,
           user.encode._id
         )
@@ -42,19 +42,11 @@ const CartItem = (props) => {
       amountTemp.current = +amountTemp.current + target;
       setAmountProduct(+amountTemp.current);
 
-      console.log({
-        productId: productCart.product.id || productCart.product._id,
-        skuId: !isEmpty(productCart.sku)
-          ? productCart.sku.id || productCart.sku._id
-          : null,
-        target: target,
-        userId: user.encode._id,
-      });
       dispatch(
         addProductCart(
           productCart.product.id || productCart.product._id,
-          !isEmpty(productCart.sku)
-            ? productCart.sku.id || productCart.sku._id
+          !isEmpty(productCart.size)
+            ? productCart.size.id || productCart.size._id
             : null,
           target,
           user.encode._id
@@ -67,88 +59,28 @@ const CartItem = (props) => {
     setAmountProduct(value);
   };
 
-  if (productCart.sku === null) {
-    return (
-      <tr key={productCart.product.id || productCart.product._id}>
-        <td>
-          <img src={productCart.product.images[0] || NoImage} alt="Product" />
-        </td>
-        <td>
-          <p>{productCart.product.name}</p>
-        </td>
-        <td></td>
-        <td></td>
-        <td>
-          <span className="price">
-            {numberWithCommas(productCart.product.maxPrice)}đ
-          </span>
-        </td>
-        <td>
-          <input
-            type="button"
-            className="btn-quantity"
-            value="-"
-            onClick={() => onChangeQuantity(-1)}
-          />
-          <input
-            type="number"
-            min="1"
-            value={amountProduct}
-            className="form-control input-quantity"
-            onChange={(e) => changeInputQuantity(e.target.value)}
-            onBlur={(e) =>
-              onChangeQuantity(+e.target.value - +amountTemp.current)
-            }
-          />
-          <input
-            type="button"
-            className="btn-quantity"
-            value="+"
-            onClick={() => onChangeQuantity(1)}
-          />
-        </td>
-        <td>{productCart.product.discount}</td>
-        <td>
-          <span className="price">
-            {numberWithCommas(
-              productCart.quantity * productCart.product.maxPrice -
-                productCart.quantity *
-                  productCart.product.maxPrice *
-                  (productCart.product.discount / 100)
-            )}
-            đ
-          </span>
-        </td>
-        <td>
-          <button onClick={deleteProductCart}>
-            <ion-icon name="trash-outline"></ion-icon>
-          </button>
-        </td>
-      </tr>
-    );
-  }
   return (
-    <tr key={productCart.sku.id}>
+    <tr
+      key={
+        productCart.size === null ? productCart.product.id : productCart.size.id
+      }
+    >
       <td>
-        <img src={productCart.sku.image || NoImage} alt="Product" />
+        <img src={productCart.product.images[0] || NoImage} alt="Product" />
       </td>
       <td>
         <p>{productCart.product.name}</p>
       </td>
       <td>
-        <div
-          className="product-view-option"
-          style={{ backgroundColor: productCart.sku.color }}
-        ></div>
-      </td>
-      <td>
-        <div className="product-view-option">
-          <span>{productCart.sku.size}</span>
-        </div>
+        {productCart.size && (
+          <div className="product-view-option">
+            <span>{productCart.size.size}</span>
+          </div>
+        )}
       </td>
       <td>
         <span className="price">
-          {numberWithCommas(productCart.sku.price)}đ
+          {numberWithCommas(productCart.product.price)}đ
         </span>
       </td>
       <td>
@@ -175,14 +107,14 @@ const CartItem = (props) => {
           onClick={() => onChangeQuantity(1)}
         />
       </td>
-      <td>{productCart.sku.discount}</td>
+      <td>{productCart.product.discount}</td>
       <td>
         <span className="price">
           {numberWithCommas(
-            productCart.quantity * productCart.sku.price -
+            productCart.quantity * productCart.product.price -
               productCart.quantity *
-                productCart.sku.price *
-                (productCart.sku.discount / 100)
+                productCart.product.price *
+                (productCart.product.discount / 100)
           )}
           đ
         </span>

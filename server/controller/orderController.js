@@ -116,7 +116,7 @@ class Order {
         products: products.map((item) => {
           return {
             product: item.product,
-            sku: item.sku,
+            size: item.size,
             quantity: item.quantity,
           };
         }),

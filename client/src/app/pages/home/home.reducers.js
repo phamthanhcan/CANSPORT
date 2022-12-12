@@ -248,3 +248,34 @@ export const skuReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+export const sizeReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case TYPES.GET_SIZE_OF_PRODUCT:
+      return {
+        ...state,
+        hasError: false,
+        isLoading: true,
+        data: null,
+        error: null,
+      };
+    case TYPES.GET_SIZE_OF_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        hasError: false,
+        isLoading: false,
+        error: null,
+        data: action.payload,
+      };
+    case TYPES.GET_SIZE_OF_PRODUCT_FAIL:
+      return {
+        ...state,
+        hasError: true,
+        isLoading: false,
+        data: null,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};

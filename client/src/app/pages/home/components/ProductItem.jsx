@@ -24,7 +24,7 @@ const ProductItem = (props) => {
       </div>
       <div className="product-info">
         <div>
-          <p className="mb-3">
+          {/* <p className="mb-3">
             {data.minPrice === data.maxPrice ? (
               <>
                 <span className="product-price-origin">
@@ -42,7 +42,8 @@ const ProductItem = (props) => {
                 {numberWithCommas(data.maxPrice)}đ
               </span>
             )}
-          </p>
+          </p> */}
+          <p className="product-price">{numberWithCommas(data.price)}đ</p>
           <p className="product-status">HÀNG CÓ SẴN</p>
           <p className="product-name">{data.name}</p>
         </div>

@@ -11,12 +11,13 @@ class Cart {
     } else {
       cartModel
         .findOne({ user: userId })
-        .populate("products.sku", "size color price discount quantity image")
+        .populate("products.size")
         .populate(
           "products.product",
-          "name images minPrice maxPrice discount quantity length height weight width"
+          "name images price discount quantity length height weight width"
         )
         .then((cart) => {
+          console.log(cart);
           res.json({ cart: cart });
         })
         .catch((err) => {
@@ -26,8 +27,8 @@ class Cart {
   }
 
   addProductCart(req, res) {
-    let { productId, skuId, quantity, userId } = req.body;
-    if (!productId || !quantity) {
+    let { productId, sizeId, quantity, userId } = req.body;
+    if (!productId || !quantity || !userId) {
       return res.status(400).json({ message: "All filled must be required" });
     } else {
       cartModel
@@ -37,7 +38,7 @@ class Cart {
             const indexProduct = cart.products.findIndex((item) => {
               return (
                 String(item.product) === String(productId) &&
-                String(item.sku) === String(skuId)
+                String(item.size) === String(sizeId)
               );
             });
             if (indexProduct >= 0) {
@@ -54,7 +55,7 @@ class Cart {
                 )
                 .populate({
                   path: "products",
-                  populate: [{ path: "product" }, { path: "sku" }],
+                  populate: [{ path: "product" }, { path: "size" }],
                 })
                 .exec()
                 .then((cart) => {
@@ -79,7 +80,7 @@ class Cart {
                     $push: {
                       products: {
                         product: productId,
-                        sku: skuId,
+                        size: sizeId,
                         quantity: quantity,
                       },
                     },
@@ -88,7 +89,7 @@ class Cart {
                 )
                 .populate({
                   path: "products",
-                  populate: [{ path: "product" }, { path: "sku" }],
+                  populate: [{ path: "product" }, { path: "size" }],
                 })
                 .exec()
                 .then((cart) => {
@@ -112,13 +113,12 @@ class Cart {
               products: [
                 {
                   product: productId,
-                  sku: skuId,
+                  size: sizeId,
                   quantity: quantity,
                 },
               ],
             });
             return newCart
-              .populate()
               .save()
               .then((item) => {
                 return res.status(201).json({
@@ -142,13 +142,13 @@ class Cart {
   }
 
   async deleteItemCart(req, res) {
-    let { productCartId, cartId, skuId } = req.body;
+    let { productCartId, cartId, sizeId } = req.body;
     if (!productCartId || !cartId) {
       return res.status(400).json({ message: "All filled must be required" });
     } else {
       cartModel
         .findByIdAndUpdate(cartId, {
-          $pull: { products: { product: productCartId, sku: skuId } },
+          $pull: { products: { product: productCartId, size: sizeId } },
         })
         .exec()
         .then(() => {

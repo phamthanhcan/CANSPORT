@@ -202,3 +202,36 @@
 //     }
 //   }
 // }
+
+.user-manage {
+  .form-title {
+    margin-bottom: 10px;
+    font-weight: map-get($font-weight, bold);
+    font-size: map-get($font-size, xl);
+    text-align: center;
+  }
+
+  table {
+    .user-image {
+      width: 50px;
+      height: 50px;
+    }
+  }
+  .user-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+
+    form {
+      width: 500px;
+      padding: 40px;
+      background-color: map-get($color, white);
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: center;
+  }
+}
