@@ -42,9 +42,7 @@ export const getCartByUser = (userId) => async (dispatch) => {
 
   try {
     const res = await getApi([`cart?userId=${userId}`]);
-    console.log("res", res);
     const data = new Cart(res.data.cart);
-    console.log(data);
     dispatch({
       type: TYPES.GET_CART_BY_USER_SUCCESS,
       payload: data,
@@ -71,8 +69,6 @@ export const deleteItemCart =
         sizeId: sizeId,
       });
 
-      console.log(res);
-
       dispatch({
         type: TYPES.DELETE_ITEM_CART_SUCCESS,
         payload: {
@@ -89,7 +85,6 @@ export const deleteItemCart =
   };
 
 export const deleteCart = (cartId, userId) => async (dispatch) => {
-  console.log(cartId, userId);
   dispatch({
     type: TYPES.DELETE_CART,
   });

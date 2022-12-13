@@ -44,3 +44,22 @@ export const getOrderByUser = (userId) => async (dispatch) => {
     });
   }
 };
+
+export const editUserInfor = (userId, data) => async (dispatch) => {
+  dispatch({
+    type: TYPES.EDIT_USER_INFORMATION,
+  });
+
+  try {
+    await putApi([`user/${userId}`], data);
+    dispatch({
+      type: TYPES.EDIT_USER_INFORMATION_SUCCESS,
+      payload: data,
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPES.EDIT_USER_INFORMATION_ERROR,
+      payload: err.response?.data?.message,
+    });
+  }
+};

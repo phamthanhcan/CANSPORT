@@ -47,6 +47,9 @@ import RevenueChart from "./app/pages/admin/containers/RevenueChart";
 import AddProduct from "./app/pages/admin/containers/AddProduct";
 import Order from "./app/pages/cart/containers/Order";
 import Payment from "./app/pages/cart/containers/Payment";
+import Profile from "./app/pages/account/containers/Profile";
+import Account from "./app/pages/account/containers/Account";
+import ChangePassword from "./app/pages/account/containers/ChangePassword";
 
 export const AppContext = createContext({ name: "" });
 
@@ -66,6 +69,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/order" element={<Order />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/account" element={<Account />}>
+            <Route path="profile" element={<Profile />} />
+            <Route path="changepassword" element={<ChangePassword />} />
+          </Route>
           <Route path="/admin" element={<Admin />}>
             <Route path="category" element={<CategoryManage />} />
             <Route path="products" element={<ProductManage />} />

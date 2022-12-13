@@ -1,0 +1,47 @@
+.account-nav {
+  background-color: map-get($color, primary);
+
+  .account-display {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    background-color: map-get($color, secondary);
+    color: map-get($color, white);
+    font-weight: map-get($font-weight, bold);
+
+    img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+      border-radius: 50%;
+    }
+  }
+
+  .menu-item-option {
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .menu-child {
+    &-item {
+      font-size: map-get($font-size, sm);
+      padding: 10px 0 10px 20px;
+    }
+  }
+}
+
+.profile {
+  &-select-avatar {
+  }
+  &-img {
+    width: 150px;
+    height: 150px;
+  }
+}
