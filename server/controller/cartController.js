@@ -17,7 +17,6 @@ class Cart {
           "name images price discount quantity length height weight width"
         )
         .then((cart) => {
-          console.log(cart);
           res.json({ cart: cart });
         })
         .catch((err) => {

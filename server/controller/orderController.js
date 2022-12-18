@@ -3,6 +3,7 @@ const orderModel = require("../models/order");
 const productModel = require("../models/products");
 const skuModel = require("../models/skus");
 const { getPagination } = require("../config/function");
+const sizeModel = require("../models/size");
 
 class Order {
   getAllOrder(req, res) {
@@ -58,10 +59,10 @@ class Order {
       orderModel
         .find({ user: userId })
         .sort({ _id: -1 })
-        .populate("products.sku", "size color price discount quantity")
+        .populate("products.size")
         .populate(
           "products.product",
-          "name images minPrice maxPrice discount quantity ratingsReviews"
+          "name images price discount quantity ratingsReviews"
         )
         .then((orders) => {
           res.json({ orders: orders });
@@ -150,6 +151,7 @@ class Order {
               try {
                 products.forEach(async (item) => {
                   const product = await productModel.findById(item.product);
+                  console.log(product);
                   const result1 = await productModel.findByIdAndUpdate(
                     item.product,
                     {
@@ -159,13 +161,18 @@ class Order {
                       },
                     }
                   );
-                  const sku = await skuModel.findById(item.sku);
-                  const result2 = await skuModel.findByIdAndUpdate(item.sku, {
-                    $set: {
-                      sold: sku.sold + item.quantity,
-                      quantity: sku.quantity - item.quantity,
-                    },
-                  });
+                  const size = await sizeModel.findById(item.size);
+                  if (size) {
+                    const result2 = await sizeModel.findByIdAndUpdate(
+                      item.size,
+                      {
+                        $set: {
+                          sold: size.sold + item.quantity,
+                          quantity: size.quantity - item.quantity,
+                        },
+                      }
+                    );
+                  }
                 });
 
                 return res.json({

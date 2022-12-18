@@ -2,6 +2,7 @@ const { getPagination } = require("../config/function");
 const categoryModel = require("../models/categories");
 class Category {
   async getAllCategory(req, res) {
+    const { active } = req.query;
     // const { page, size } = req.query;
     // const { limit, offset } = getPagination(page, size);
 
@@ -21,7 +22,14 @@ class Category {
     //         });
     //     });
     try {
-      let categories = await categoryModel.find({}).sort({ _id: -1 });
+      let categories = null;
+      if (active) {
+        categories = await categoryModel
+          .find({ status: true })
+          .sort({ _id: -1 });
+      } else {
+        categories = await categoryModel.find({}).sort({ _id: -1 });
+      }
       if (categories) {
         return res.json({ categories });
       }
@@ -32,7 +40,7 @@ class Category {
 
   addCategory(req, res) {
     let { name, description, image } = req.body;
-    if (!name || !description || !image) {
+    if (!name) {
       return res.status(400).json("All filed must required");
     }
     const category = new categoryModel({

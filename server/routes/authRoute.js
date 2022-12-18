@@ -7,5 +7,6 @@ router.post("/isAdmin", authController.isAdmin);
 router.post("/signup", authController.signUp);
 router.post("/signin", authController.signIn);
 router.post("/users", loginCheck, isAuth, isAdmin, authController.getAllUser);
+router.post("/loginAdmin", authController.loginAdmin);
 
 module.exports = router;

@@ -1,0 +1,54 @@
+.purchase-item {
+  border-bottom: 1px solid map-get($color, border);
+  margin-bottom: 30px;
+
+  &-top {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .order-product {
+    margin-bottom: 15px;
+  }
+}
+
+.order-product-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+
+  .order-product-img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .order-product-name {
+    width: 400px;
+    margin-left: 10px;
+    font-size: map-get($font-size, md);
+    font-weight: map-get($font-weight, bold);
+  }
+
+  .order-product-size {
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+
+  .order-product-price {
+    font-size: map-get($font-size, md);
+    font-weight: map-get($font-weight, bold);
+    color: map-get($color, error);
+
+    .order-product-origin.disabled {
+      color: map-get($color, disabled);
+    }
+  }
+
+  .order-product-rating-btn {
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}

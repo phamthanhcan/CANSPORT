@@ -48,7 +48,7 @@ const Cart = () => {
 
   return (
     <main className="main container">
-      <h2 className="admin-title">GIỎ HÀNG</h2>
+      <h2 className="section-title">GIỎ HÀNG</h2>
       {cart?.products?.length === 0 ? (
         <>
           <Empty />

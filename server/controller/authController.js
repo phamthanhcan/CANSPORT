@@ -7,6 +7,46 @@ require("dotenv").config();
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 class Auth {
+  async loginAdmin(req, res) {
+    const { email, password } = req.body;
+
+    try {
+      const user = await userModel.findOne({ email: email, userRole: 1 });
+      if (!user) {
+        res.status(400).json({
+          success: false,
+          message: "Email hoặc mật khẩu không chính xác!",
+        });
+      } else {
+        const isMatchPass = await bcrypt.compare(password, user.password);
+        if (isMatchPass) {
+          const token = jwt.sign(
+            { _id: user.id, role: user.userRole },
+            JWT_SECRET,
+            {
+              expiresIn: "60h",
+            }
+          );
+          const encode = jwt.verify(token, JWT_SECRET);
+          return res.json({
+            token: token,
+            encode: encode,
+          });
+        } else {
+          return res.status(400).json({
+            success: false,
+            message: "Email hoặc mật khẩu không chính xác!",
+          });
+        }
+      }
+    } catch (err) {
+      return res.status(400).json({
+        success: false,
+        message: err?.message,
+      });
+    }
+  }
+
   isAdmin(req, res) {
     const { loggedInUserId } = req.body;
     userModel

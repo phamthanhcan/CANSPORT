@@ -45,7 +45,7 @@ const ProductDetail = () => {
   const size = watch("size");
 
   const onSubmit = () => {
-    if (!size) {
+    if (sizes?.length && !size) {
       toast.error("Vui lòng chọn size!", {
         position: "top-right",
         autoClose: 5000,

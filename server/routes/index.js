@@ -7,6 +7,8 @@ const cartRoutes = require("./cartRoute");
 const orderRoute = require("./orderRoute");
 const sizeRoute = require("./sizeRoute");
 const firebase = require("../config/firebase");
+const { loginCheck } = require("../middleware/auth");
+const orderModel = require("../models/order");
 const multer = require("multer");
 
 const upload = multer({
@@ -26,6 +28,144 @@ function route(app) {
   app.use("/cart", cartRoutes);
   app.use("/order", orderRoute);
   app.use("/size", sizeRoute);
+  app.post("/revenue", loginCheck, (req, res) => {
+    //year: 0, month: 1, day: 2
+    const { option, data } = req.body;
+    console.log(new Date(`${data.year}-${data.month + 1}-01`));
+    switch (option) {
+      case 0:
+        orderModel
+          .aggregate([
+            {
+              $match: {
+                createdAt: {
+                  $gte: new Date(`${data.year}-01-01`),
+                  $lt: new Date(`${data.year + 1}-01-01`),
+                },
+              },
+            },
+            {
+              $unwind: {
+                path: "$products",
+              },
+            },
+            {
+              $group: {
+                // Group by both month and year of the sale
+                _id: { $dateToString: { format: "%Y-%m", date: "$createdAt" } },
+                // Count the no of sales
+                price: {
+                  $sum: "$price",
+                },
+                quantity: {
+                  $sum: "$products.quantity",
+                },
+              },
+            },
+            {
+              $sort: {
+                _id: 1,
+              },
+            },
+          ])
+          .then((result) => {
+            return res.status(200).json({ result });
+          })
+          .catch((error) => {
+            return res.status(500);
+          });
+        break;
+      case 1: {
+        const year = data.month === 12 ? data.year + 1 : data.year;
+        const month = data.month === 12 ? "01" : data.month + 1;
+        orderModel
+          .aggregate([
+            {
+              $match: {
+                createdAt: {
+                  $gte: new Date(`${data.year}-${data.month}-01`),
+                  $lt: new Date(`${year}-${month}-01`),
+                },
+              },
+            },
+            {
+              $unwind: {
+                path: "$products",
+              },
+            },
+            {
+              $group: {
+                // Group by both month and year of the sale
+                _id: {
+                  $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+                },
+                // Count the no of sales
+                price: {
+                  $sum: "$price",
+                },
+                quantity: {
+                  $sum: "$products.quantity",
+                },
+              },
+            },
+            {
+              $sort: {
+                _id: 1,
+              },
+            },
+          ])
+          .then((result) => {
+            console.log("result", result);
+            return res.status(200).json({ result });
+          })
+          .catch((error) => {
+            return res.status(500);
+          });
+        break;
+      }
+      case 2:
+        orderModel
+          .aggregate([
+            {
+              $match: {
+                createdAt: {
+                  $gte: new Date(`${data.year}-${data.month}-${data.day}`),
+                  $lt: new Date(`${data.year}-${data.month}-${data.day + 1}`),
+                },
+              },
+            },
+            {
+              $unwind: {
+                path: "$products",
+              },
+            },
+            {
+              $group: {
+                // Group by both month and year of the sale
+                _id: {
+                  $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+                },
+                // Count the no of sales
+                price: {
+                  $sum: "$price",
+                },
+                quantity: {
+                  $sum: "$products.quantity",
+                },
+              },
+            },
+          ])
+          .then((result) => {
+            return res.status(200).json({ result });
+          })
+          .catch((error) => {
+            return res.status(500);
+          });
+        break;
+      default:
+        break;
+    }
+  });
 
   app.post("/uploadiu", upload, (req, res) => {
     if (!req.file) {

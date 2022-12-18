@@ -3,7 +3,8 @@ import { deleteApi, getApi, postApi } from "../../shared/helper/api";
 import * as TYPES from "./cart.types";
 
 export const addProductCart =
-  (productId, sizeId, quantity, userId) => async (dispatch) => {
+  (productId, sizeId = null, quantity, userId) =>
+  async (dispatch) => {
     dispatch({
       type: TYPES.ADD_PRODUCT_CART,
     });

@@ -50,6 +50,7 @@ import Payment from "./app/pages/cart/containers/Payment";
 import Profile from "./app/pages/account/containers/Profile";
 import Account from "./app/pages/account/containers/Account";
 import ChangePassword from "./app/pages/account/containers/ChangePassword";
+import Purchase from './app/pages/account/containers/Purchase';
 
 export const AppContext = createContext({ name: "" });
 
@@ -72,6 +73,7 @@ function App() {
           <Route path="/account" element={<Account />}>
             <Route path="profile" element={<Profile />} />
             <Route path="changepassword" element={<ChangePassword />} />
+            <Route path="purchase" element={<Purchase />} />
           </Route>
           <Route path="/admin" element={<Admin />}>
             <Route path="category" element={<CategoryManage />} />

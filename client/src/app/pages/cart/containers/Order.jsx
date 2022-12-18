@@ -1,10 +1,12 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { isEmpty, numberWithCommas } from "../../../shared/helper/data";
+import { postApi } from "../../../shared/helper/api";
+import { clearCart } from "../cart.actions";
 
 const getWidth = (products) => {
   return Math.max(...products.map((item) => item.product?.width));
@@ -36,6 +38,7 @@ const Order = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const isFromPayment = window.location.search.includes("isFromPayment");
 
@@ -99,36 +102,34 @@ const Order = () => {
           const shippingCode = res.data.data.order_code;
           console.log("res", res);
 
-          // postApi(["order/create"], {
-          //   user: user._id,
-          //   price: getTotalPrice(products),
-          //   shippingFee,
-          //   shippingId: shippingCode,
-          //   address: data.addressDetail,
-          //   province: provinces.find(
-          //     (item: any) => item.ProvinceID === +province
-          //   ).ProvinceName,
-          //   district: districts.find(
-          //     (item: any) => item.DistrictID === +district
-          //   ).DistrictName,
-          //   ward: wards.find((item: any) => item.WardCode === ward).WardName,
-          //   phone: data.phone,
-          //   name: data.name,
-          //   typePay: "cod",
-          //   products: products.map((item: any) => {
-          //     return {
-          //       id: item.id,
-          //       product: item.product.id,
-          //       sku: item.sku ? item.sku.id : null,
-          //       quantity: item.quantity,
-          //     };
-          //   }),
-          // })
-          //   .then((res) => {
-          //     dispatch(clearCart());
-          //     history.push("/");
-          //   })
-          //   .catch((err) => console.error(err));
+          postApi(["order/create"], {
+            user: user._id,
+            price: totalPriceProduct,
+            shippingFee,
+            shippingId: shippingCode,
+            address: data.addressDetail,
+            province: provinces.find((item) => item.ProvinceID === +province)
+              .ProvinceName,
+            district: districts.find((item) => item.DistrictID === +district)
+              .DistrictName,
+            ward: wards.find((item) => item.WardCode === ward).WardName,
+            phone: data.phone,
+            name: data.name,
+            typePay: "cod",
+            products: products.current.map((item) => {
+              return {
+                id: item.id,
+                product: item.product.id,
+                size: item.size ? item.size.id : null,
+                quantity: item.quantity,
+              };
+            }),
+          })
+            .then((res) => {
+              dispatch(clearCart());
+              navigate("/account/purchase");
+            })
+            .catch((err) => console.error(err));
         })
         .catch((err) => console.error(err));
     } else {
