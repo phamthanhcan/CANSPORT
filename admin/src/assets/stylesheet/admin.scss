@@ -160,8 +160,18 @@
 }
 
 .wrapper {
+  position: relative;
   padding: 0 40px;
   margin-top: -180px;
+  min-height: 200px;
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .form-img {
@@ -170,4 +180,19 @@
   height: 150px;
   object-fit: cover;
   border: 1px solid map-get($color, border);
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  flex-direction: column;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 40px;
+
+  &-title {
+    font-weight: map-get($font-weight, bold);
+    font-size: map-get($font-size, xl);
+  }
 }
