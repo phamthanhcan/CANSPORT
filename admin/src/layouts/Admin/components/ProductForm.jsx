@@ -26,6 +26,12 @@ const ProductForm = (props) => {
     formState: { errors },
   } = useForm();
 
+  const {
+    register: register2,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+  } = useForm();
+
   const [img, setImg] = useState("");
   const [hasSize, setHasSize] = useState(false);
   const [sizes, setSizes] = useState([
@@ -42,10 +48,12 @@ const ProductForm = (props) => {
     dispatch(getCategory());
   }, [dispatch]);
 
-  const onSubmit = (data) => {
+  const onSubmitProductInfo = (data) => {
     console.log(data);
     setCurrentStep(2);
   };
+
+  const onSubmitAll = (data) => {};
 
   const uploadImg = useCallback((e) => {
     const file = e.target.files[0];
@@ -75,7 +83,10 @@ const ProductForm = (props) => {
         {id ? "Cập nhật sản phẩm" : "Thêm sản phẩm"}
       </ModalHeader>
       <ModalBody>
-        <form onSubmit={handleSubmit(onSubmit)} hidden={currentStep !== 1}>
+        <form
+          onSubmit={handleSubmit(onSubmitProductInfo)}
+          hidden={currentStep !== 1}
+        >
           <div className="mb-3 d-flex align-items-center">
             <div className="form-img">
               <img src={img || noImage} alt="" />
@@ -203,7 +214,7 @@ const ProductForm = (props) => {
           <SizeForm sizes={sizes} setSizes={setSizes} />
         )}
 
-        <form hidden={currentStep !== 2}>
+        <form onSubmit={handleSubmit2(onSubmitAll)} hidden={currentStep !== 2}>
           <h3 className="fs-6">Thông tin vận chuyển </h3>
           <div className="mb-3 mt-4">
             <label htmlFor="weight" className="form-label">
@@ -215,7 +226,7 @@ const ProductForm = (props) => {
               id="weight"
               placeholder="khối lượng"
               defaultValue={product?.weight}
-              {...register("weight", {
+              {...register2("weight", {
                 required: "Khối lượng không được để trống!",
               })}
             />
@@ -231,7 +242,7 @@ const ProductForm = (props) => {
               id="height"
               placeholder="Chiều cao"
               defaultValue={product?.height}
-              {...register("height", {
+              {...register2("height", {
                 required: "Chiều cao không được để trống!",
               })}
             />
@@ -247,7 +258,7 @@ const ProductForm = (props) => {
               id="length"
               placeholder="Chiều cao"
               defaultValue={product?.length}
-              {...register("length", {
+              {...register2("length", {
                 required: "Chiều cao không được để trống!",
               })}
             />
@@ -263,7 +274,7 @@ const ProductForm = (props) => {
               id="width"
               placeholder="Chiều cao"
               defaultValue={product?.width}
-              {...register("width", {
+              {...register2("width", {
                 required: "Chiều cao không được để trống!",
               })}
             />
@@ -277,7 +288,7 @@ const ProductForm = (props) => {
         </Button>
         <Button
           color="primary"
-          onClick={() => setCurrentStep(2)}
+          onClick={handleSubmit(onSubmitProductInfo)}
           hidden={currentStep !== 1}
         >
           Tiếp theo
