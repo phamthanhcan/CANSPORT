@@ -27,7 +27,7 @@ const CategoryManage = () => {
   const [search, setSearch] = useState("");
 
   const categoriesFilter = () => {
-    return categories.filter((category) =>
+    return categories?.filter((category) =>
       search.trim()
         ? category.name.toLowerCase().includes(search.toLowerCase().trim())
         : true
@@ -36,11 +36,11 @@ const CategoryManage = () => {
 
   const dispatch = useDispatch();
 
-  const categories = useSelector((state) => state.admin.categories);
+  const categories = useSelector((state) => state.category.categories);
   const categorySelect = categories?.filter(
     (category) => category._id === idCategory
   )[0];
-  const isLoading = useSelector((state) => state.admin.isLoading);
+  const isLoading = useSelector((state) => state.category.isLoading);
 
   useEffect(() => {
     dispatch(getCategory());
@@ -97,7 +97,7 @@ const CategoryManage = () => {
                       </thead>
                       <tbody>
                         {categoriesFilter()?.map((category) => (
-                          <tr>
+                          <tr key={category._id}>
                             <th scope="row">
                               <img
                                 alt="..."

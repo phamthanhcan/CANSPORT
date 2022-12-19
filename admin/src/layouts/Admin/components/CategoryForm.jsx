@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import noImage from "../../../assets/images/no-image.png";
+import Loading from "../../../libs/components/Loading";
 import { addCategory, editCategory } from "../actions";
 
 const CategoryForm = ({ id, modalAdd, toggleModalAdd }) => {
@@ -14,9 +15,10 @@ const CategoryForm = ({ id, modalAdd, toggleModalAdd }) => {
     formState: { errors },
   } = useForm();
 
-  const categories = useSelector((state) => state.admin.categories);
+  const categories = useSelector((state) => state.category.categories);
   const category = categories?.find((item) => item._id === id);
   const [img, setImg] = useState(category?.image || "");
+  const [isLoadingImg, setIsLoadingImg] = useState(false);
 
   const onSubmit = (data) => {
     const dataSubmit = {
@@ -37,7 +39,7 @@ const CategoryForm = ({ id, modalAdd, toggleModalAdd }) => {
     const formData = new FormData();
 
     formData.append("file", file);
-
+    setIsLoadingImg(true);
     axios
       .post("http://localhost:7000/uploadiu", formData, {
         headers: {
@@ -46,9 +48,11 @@ const CategoryForm = ({ id, modalAdd, toggleModalAdd }) => {
       })
       .then((response) => {
         setImg(response?.data?.fileLocation);
+        setIsLoadingImg(false);
       })
       .catch((error) => {
         console.log(error);
+        setIsLoadingImg(false);
       });
   }, []);
   return (
@@ -58,7 +62,10 @@ const CategoryForm = ({ id, modalAdd, toggleModalAdd }) => {
       </ModalHeader>
       <ModalBody>
         <div className="mb-3 d-flex align-items-center">
-          <img className="form-img" src={img || noImage} alt="" />
+          <div className="form-img">
+            <img src={img || noImage} alt="" />
+            {isLoadingImg && <Loading />}
+          </div>
           <input
             type="file"
             className="form-control form-control-sm"
@@ -66,7 +73,7 @@ const CategoryForm = ({ id, modalAdd, toggleModalAdd }) => {
           />
         </div>
         <div className="mb-3">
-          <label for="name" className="form-label">
+          <label htmlFor="name" className="form-label">
             Tên danh mục
           </label>
           <input
@@ -82,7 +89,7 @@ const CategoryForm = ({ id, modalAdd, toggleModalAdd }) => {
           <div className="invalid-feedback">{errors.name?.message}</div>
         </div>
         <div className="mb-3">
-          <label for="description" className="form-label">
+          <label htmlFor="description" className="form-label">
             Mô tả
           </label>
           <textarea

@@ -4,7 +4,7 @@ import * as TYPES from "./types";
 
 export const getCategory = () => async (dispatch) => {
   dispatch({
-    type: TYPES.GET_CATEGORY,
+    type: TYPES.FETCH_CATEGORY,
   });
 
   try {
@@ -24,7 +24,7 @@ export const getCategory = () => async (dispatch) => {
 
 export const deleteCategory = (id) => async (dispatch) => {
   dispatch({
-    type: TYPES.DELETE_CATEGORY,
+    type: TYPES.FETCH_CATEGORY,
   });
 
   try {
@@ -64,7 +64,7 @@ export const deleteCategory = (id) => async (dispatch) => {
 
 export const addCategory = (data) => async (dispatch) => {
   dispatch({
-    type: TYPES.ADD_CATEGORY,
+    type: TYPES.FETCH_CATEGORY,
   });
 
   try {
@@ -103,7 +103,7 @@ export const addCategory = (data) => async (dispatch) => {
 
 export const editCategory = (id, data) => async (dispatch) => {
   dispatch({
-    type: TYPES.EDIT_CATEGORY,
+    type: TYPES.FETCH_CATEGORY,
   });
 
   try {
@@ -133,6 +133,75 @@ export const editCategory = (id, data) => async (dispatch) => {
     });
 
     toast.error("Cập nhật danh mục thất bại!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
+};
+
+export const getListProducts =
+  (page, price = 0, category = "", name = "", active = false) =>
+  async (dispatch) => {
+    dispatch({
+      type: TYPES.FETCH_PRODUCT,
+    });
+
+    try {
+      const res = await getApi([
+        `product?size=10&page=${page}&price=${price}&category=${category}&name=${name}&active=${active}`,
+      ]);
+      const data = res.data.products;
+      dispatch({
+        type: TYPES.GET_PRODUCT_SUCCESS,
+        payload: {
+          data,
+          totalPages: res.data.totalPages,
+        },
+      });
+    } catch (err) {
+      dispatch({
+        type: TYPES.GET_PRODUCT_FAIL,
+        payload: err.response?.data?.message,
+      });
+    }
+  };
+
+export const deleteProduct = (id) => async (dispatch) => {
+  dispatch({
+    type: TYPES.FETCH_PRODUCT,
+  });
+
+  try {
+    const res = await deleteApi(["product", id]);
+    dispatch({
+      type: TYPES.DELETE_PRODUCT_SUCCESS,
+      payload: {
+        id,
+      },
+    });
+
+    toast.success("Xóa sản phẩm thành công!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPES.DELETE_PRODUCT_FAIL,
+      payload: err.response?.data?.message,
+    });
+    toast.error("Xóa sản phẩm thất bại!", {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
