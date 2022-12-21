@@ -12,48 +12,148 @@ import {
   ModalHeader,
   Row,
 } from "reactstrap";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import noImage from "../../../assets/images/no-image.png";
 import { getCategory } from "../actions";
 import SizeForm from "./SizeForm";
 import Loading from "../../../libs/components/Loading";
+import { useRef } from "react";
+import { postApi } from "../../../libs/api";
+import { toast } from "react-toastify";
+
+const totalQuantity = (sizes) => {
+  return sizes.reduce((sum, size) => {
+    return sum + +size.quantity;
+  }, 0);
+};
 
 const ProductForm = (props) => {
   const { id, modalAdd, toggleModalAdd } = props;
   const dispatch = useDispatch();
+
+  const validationProductInfoSchema = Yup.object().shape({
+    name: Yup.string().trim().required("Tên sản phẩm không được để trống"),
+    price: Yup.number()
+      .typeError("Giá phải là số")
+      .min(1000, "Giá phải lớn hơn 1,000đ")
+      .required("Giá không được để trống"),
+    discount: Yup.number()
+      .typeError("Khuyến mãi phải là số")
+      .min(0, "Khuyến mãi phải là từ 0-100")
+      .max(100, "Khuyến mãi phải là từ 0-100"),
+    quantity: Yup.number()
+      .typeError("Số lượng phải là số")
+      .min(1, "Số lượng không được nhỏ hơn 1"),
+    category: Yup.string().required("Danh mục không được để trống"),
+  });
+
+  const formProductInfoOptions = {
+    resolver: yupResolver(validationProductInfoSchema),
+  };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm(formProductInfoOptions);
 
+  const validationShippingSchema = Yup.object().shape({
+    weight: Yup.number()
+      .typeError("Khối lượng phải là số")
+      .min(1, "Khối lượng phải lớn hơn 1")
+      .required("Khối lượng không được để trống"),
+    height: Yup.number()
+      .typeError("Chiều cao phải là số")
+      .min(1, "Chiều cao phải lớn hơn 1")
+      .required("Chiều cao không được để trống"),
+    length: Yup.number()
+      .typeError("Chiều dài phải là số")
+      .min(1, "Chiều dài phải lớn hơn 1")
+      .required("Chiều dài không được để trống"),
+    width: Yup.number()
+      .typeError("Chiều rộng phải là số")
+      .min(1, "Chiều rộng phải lớn hơn 1")
+      .required("Chiều rộng không được để trống"),
+  });
+
+  const formShippingOptions = {
+    resolver: yupResolver(validationShippingSchema),
+  };
   const {
     register: register2,
     handleSubmit: handleSubmit2,
     formState: { errors: errors2 },
-  } = useForm();
+  } = useForm(formShippingOptions);
 
   const [img, setImg] = useState("");
   const [hasSize, setHasSize] = useState(false);
-  const [sizes, setSizes] = useState([
-    { id: uuidv4(), size: "", quantity: "" },
-  ]);
+  const [sizes, setSizes] = useState([{ id: uuidv4(), size: "", quantity: 1 }]);
   const [isLoadingImg, setIsLoadingImg] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const productInfo = useRef(null);
 
   const products = useSelector((state) => state.product.products);
   const product = products?.find((item) => item._id === id);
   const categories = useSelector((state) => state.category.categories);
+
+  const checkEmptySizes = () => {
+    return sizes.some((item) => !item.size || !item.quantity);
+  };
 
   useEffect(() => {
     dispatch(getCategory());
   }, [dispatch]);
 
   const onSubmitProductInfo = (data) => {
-    console.log(data);
+    if ((hasSize && checkEmptySizes()) || !sizes.length) {
+      alert("Vui lòng không để trống size hoặc số lượng");
+      return;
+    }
+    if (hasSize) {
+      productInfo.current = {
+        ...data,
+        quantity: totalQuantity(sizes),
+        images: img,
+        sizes,
+      };
+    } else {
+      productInfo.current = { ...data, images: img };
+    }
     setCurrentStep(2);
   };
 
-  const onSubmitAll = (data) => {};
+  const onSubmitAll = (data) => {
+    if (!id) {
+      postApi(["product"], { ...data, ...productInfo.current })
+        .then((response) => {
+          toggleModalAdd();
+          toast.success("Thêm sản phẩm thành công!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Thêm sản phẩm thất bại!", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        });
+    }
+  };
 
   const uploadImg = useCallback((e) => {
     const file = e.target.files[0];
@@ -83,10 +183,7 @@ const ProductForm = (props) => {
         {id ? "Cập nhật sản phẩm" : "Thêm sản phẩm"}
       </ModalHeader>
       <ModalBody>
-        <form
-          onSubmit={handleSubmit(onSubmitProductInfo)}
-          hidden={currentStep !== 1}
-        >
+        <div hidden={currentStep !== 1}>
           <div className="mb-3 d-flex align-items-center">
             <div className="form-img">
               <img src={img || noImage} alt="" />
@@ -126,32 +223,44 @@ const ProductForm = (props) => {
               {...register("description")}
             ></textarea>
           </div>
-          <div className="form-floating">
+          <div className="mb-3">
+            <label for="category" className="form-label">
+              Danh mục
+            </label>
             <select
-              className="form-select"
+              className={`form-control ${errors.name ? "is-invalid" : ""}`}
               id="category"
-              aria-label="Floating label select example"
               {...register("category")}
             >
+              <option selected disabled value="">
+                Chọn danh mục...
+              </option>
               {categories?.map((category) => (
                 <option key={category._id} value={category._id}>
                   {category.name}
                 </option>
               ))}
             </select>
-            <label htmlFor="category">Danh mục</label>
+            <div className="invalid-feedback">{errors.category?.message}</div>
           </div>
           <Row className="mt-3">
             <Col xs={`${hasSize ? "6" : "4"}`}>
               <div className="mb-3">
+                <label htmlFor="price" className="form-label">
+                  Giá
+                </label>
                 <input
-                  type="text"
+                  type="number"
                   className={`form-control ${errors.price ? "is-invalid" : ""}`}
                   id="price"
                   placeholder="Giá"
-                  defaultValue={product?.price}
+                  defaultValue={product?.price || 1000}
                   {...register("price", {
                     required: "Giá không được để trống!",
+                    min: (value) => {
+                      if (value < 1000)
+                        return "Giá sản phẩm nhỏ nhất là 1,000đ";
+                    },
                   })}
                 />
                 <div className="invalid-feedback">{errors.price?.message}</div>
@@ -159,14 +268,17 @@ const ProductForm = (props) => {
             </Col>
             <Col xs={`${hasSize ? "6" : "4"}`}>
               <div className="mb-3">
+                <label htmlFor="discount" className="form-label">
+                  Khuyến mãi
+                </label>
                 <input
-                  type="text"
+                  type="number"
                   className={`form-control ${
                     errors.discount ? "is-invalid" : ""
                   }`}
                   id="discount"
                   placeholder="Khuyến mãi"
-                  defaultValue={product?.discount}
+                  defaultValue={product?.discount || 0}
                   {...register("discount")}
                 />
                 <div className="invalid-feedback">
@@ -177,14 +289,17 @@ const ProductForm = (props) => {
             {!hasSize && (
               <Col xs="4">
                 <div className="mb-3">
+                  <label htmlFor="price" className="form-label">
+                    Số lượng
+                  </label>
                   <input
-                    type="text"
+                    type="number"
                     className={`form-control ${
                       errors.quantity ? "is-invalid" : ""
                     }`}
                     id="quantity"
                     placeholder="Số lượng"
-                    defaultValue={product?.quantity}
+                    defaultValue={product?.quantity || 1}
                     {...register("quantity", {
                       required: "Số lượng không được để trống!",
                     })}
@@ -209,12 +324,12 @@ const ProductForm = (props) => {
               Thêm size
             </label>
           </div>
-        </form>
+        </div>
         {hasSize && currentStep === 1 && (
           <SizeForm sizes={sizes} setSizes={setSizes} />
         )}
 
-        <form onSubmit={handleSubmit2(onSubmitAll)} hidden={currentStep !== 2}>
+        <div hidden={currentStep !== 2}>
           <h3 className="fs-6">Thông tin vận chuyển </h3>
           <div className="mb-3 mt-4">
             <label htmlFor="weight" className="form-label">
@@ -222,15 +337,13 @@ const ProductForm = (props) => {
             </label>
             <input
               type="number"
-              className={`form-control ${errors.weight ? "is-invalid" : ""}`}
+              className={`form-control ${errors2.weight ? "is-invalid" : ""}`}
               id="weight"
               placeholder="khối lượng"
               defaultValue={product?.weight}
-              {...register2("weight", {
-                required: "Khối lượng không được để trống!",
-              })}
+              {...register2("weight")}
             />
-            <div className="invalid-feedback">{errors.weight?.message}</div>
+            <div className="invalid-feedback">{errors2.weight?.message}</div>
           </div>
           <div className="mb-3 mt-4">
             <label htmlFor="height" className="form-label">
@@ -238,15 +351,13 @@ const ProductForm = (props) => {
             </label>
             <input
               type="number"
-              className={`form-control ${errors.height ? "is-invalid" : ""}`}
+              className={`form-control ${errors2.height ? "is-invalid" : ""}`}
               id="height"
               placeholder="Chiều cao"
               defaultValue={product?.height}
-              {...register2("height", {
-                required: "Chiều cao không được để trống!",
-              })}
+              {...register2("height")}
             />
-            <div className="invalid-feedback">{errors.height?.message}</div>
+            <div className="invalid-feedback">{errors2.height?.message}</div>
           </div>
           <div className="mb-3 mt-4">
             <label htmlFor="length" className="form-label">
@@ -254,15 +365,13 @@ const ProductForm = (props) => {
             </label>
             <input
               type="number"
-              className={`form-control ${errors.length ? "is-invalid" : ""}`}
+              className={`form-control ${errors2.length ? "is-invalid" : ""}`}
               id="length"
               placeholder="Chiều cao"
               defaultValue={product?.length}
-              {...register2("length", {
-                required: "Chiều cao không được để trống!",
-              })}
+              {...register2("length")}
             />
-            <div className="invalid-feedback">{errors.length?.message}</div>
+            <div className="invalid-feedback">{errors2.length?.message}</div>
           </div>
           <div className="mb-3 mt-4">
             <label htmlFor="width" className="form-label">
@@ -270,17 +379,15 @@ const ProductForm = (props) => {
             </label>
             <input
               type="number"
-              className={`form-control ${errors.width ? "is-invalid" : ""}`}
+              className={`form-control ${errors2.width ? "is-invalid" : ""}`}
               id="width"
               placeholder="Chiều cao"
               defaultValue={product?.width}
-              {...register2("width", {
-                required: "Chiều cao không được để trống!",
-              })}
+              {...register2("width")}
             />
-            <div className="invalid-feedback">{errors.width?.message}</div>
+            <div className="invalid-feedback">{errors2.width?.message}</div>
           </div>
-        </form>
+        </div>
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={toggleModalAdd}>
@@ -300,7 +407,11 @@ const ProductForm = (props) => {
         >
           Quay lại
         </Button>
-        <Button color="warning" hidden={currentStep !== 2}>
+        <Button
+          color="primary"
+          onClick={handleSubmit2(onSubmitAll)}
+          hidden={currentStep !== 2}
+        >
           Thêm sản phẩm
         </Button>
       </ModalFooter>

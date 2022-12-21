@@ -12,7 +12,7 @@ const SizeForm = (props) => {
     } else {
       setSizes((prevSizes) => [
         ...prevSizes,
-        { id: uuidv4(), size: "", quantity: "" },
+        { id: uuidv4(), size: "", quantity: 1 },
       ]);
     }
   };
@@ -62,7 +62,9 @@ const SizeForm = (props) => {
               <td>
                 <input
                   className="form-control"
-                  defaultValue={item?.quantity}
+                  defaultValue={item?.quantity || 1}
+                  type="number"
+                  min="1"
                   onChange={(e) => handleChangeInput(e, item.id, "quantity")}
                 />
               </td>
