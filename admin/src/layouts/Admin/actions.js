@@ -29,16 +29,7 @@ export const deleteCategory = (id) => async (dispatch) => {
 
   try {
     const res = await deleteApi(["categories", id]);
-    toast.success("Xóa danh mục thành công!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.success("Xóa danh mục thành công!");
 
     dispatch({
       type: TYPES.DELETE_CATEGORY_SUCCESS,
@@ -49,16 +40,7 @@ export const deleteCategory = (id) => async (dispatch) => {
       type: TYPES.DELETE_CATEGORY_FAIL,
       payload: error.response?.data?.message,
     });
-    toast.error("Xóa danh mục thất bại!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.error("Xóa danh mục thất bại!");
   }
 };
 
@@ -73,31 +55,13 @@ export const addCategory = (data) => async (dispatch) => {
       type: TYPES.ADD_CATEGORY_SUCCESS,
       payload: res.data.category,
     });
-    toast.success("Xóa danh mục thành công!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.success("Xóa danh mục thành công!");
   } catch (err) {
     dispatch({
       type: TYPES.ADD_CATEGORY_FAIL,
       payload: err.response?.data?.message,
     });
-    toast.error("Xóa danh mục thất bại!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.error("Xóa danh mục thất bại!");
   }
 };
 
@@ -116,32 +80,14 @@ export const editCategory = (id, data) => async (dispatch) => {
       },
     });
 
-    toast.success("Cập nhật danh mục thành công!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.success("Cập nhật danh mục thành công!");
   } catch (err) {
     dispatch({
       type: TYPES.EDIT_CATEGORY_FAIL,
       payload: err.response?.data?.message,
     });
 
-    toast.error("Cập nhật danh mục thất bại!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.error("Cập nhật danh mục thất bại!");
   }
 };
 
@@ -186,30 +132,36 @@ export const deleteProduct = (id) => async (dispatch) => {
       },
     });
 
-    toast.success("Xóa sản phẩm thành công!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
+    toast.success("Xóa sản phẩm thành công!");
   } catch (err) {
     dispatch({
       type: TYPES.DELETE_PRODUCT_FAIL,
       payload: err.response?.data?.message,
     });
-    toast.error("Xóa sản phẩm thất bại!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
+    toast.error("Xóa sản phẩm thất bại!");
+  }
+};
+
+export const addProduct = (productData) => async (dispatch) => {
+  dispatch({
+    type: TYPES.FETCH_PRODUCT,
+  });
+
+  try {
+    const res = await postApi(["product"], productData);
+    console.log(res.data);
+    dispatch({
+      type: TYPES.ADD_PRODUCT_SUCCESS,
+      payload: {
+        product: res.data.product,
+      },
     });
+    toast.success("Thêm sản phẩm thành công");
+  } catch (err) {
+    dispatch({
+      type: TYPES.ADD_PRODUCT_FAIL,
+      payload: err.response?.data?.message,
+    });
+    toast.error("Thêm sản phẩm thất bại");
   }
 };

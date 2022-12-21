@@ -121,7 +121,13 @@ const ProductManage = () => {
                             </td>
                             <td>
                               <div className="d-flex">
-                                <button className="btn">
+                                <button
+                                  className="btn"
+                                  onClick={() => {
+                                    setIdSelected(product._id);
+                                    toggleModalAdd();
+                                  }}
+                                >
                                   <ion-icon name="create-outline"></ion-icon>
                                 </button>
                                 <button
@@ -172,7 +178,8 @@ const ProductManage = () => {
       </Modal>
       {modalAdd && (
         <ProductForm
-          id={""}
+          id={idSelected}
+          setId={setIdSelected}
           modalAdd={modalAdd}
           toggleModalAdd={toggleModalAdd}
         />

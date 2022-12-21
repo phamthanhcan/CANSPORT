@@ -131,13 +131,18 @@ class Product {
 
             sizeModel
               .insertMany(sizesTemp)
-              .then((result) => {
-                return res.status(201).json({
-                  success: true,
-                  product: product,
-                  result: result,
-                  message: "Thêm sản phẩm thành công!",
-                });
+              .then((sizesData) => {
+                productModel
+                  .findById(product._id)
+                  .populate("category")
+                  .then((productData) => {
+                    return res.status(201).json({
+                      success: true,
+                      product: productData,
+                      sizes: sizesData,
+                      message: "Thêm sản phẩm thành công!",
+                    });
+                  });
               })
               .catch((err) => {
                 return res.status(500).json({
@@ -146,11 +151,16 @@ class Product {
                 });
               });
           } else {
-            return res.status(201).json({
-              success: true,
-              product: product,
-              message: "Thêm sản phẩm thành công!",
-            });
+            productModel
+              .findById(product._id)
+              .populate("category")
+              .then((productData) => {
+                return res.status(201).json({
+                  success: true,
+                  product: productData,
+                  message: "Thêm sản phẩm thành công!",
+                });
+              });
           }
         })
         .catch((err) => {

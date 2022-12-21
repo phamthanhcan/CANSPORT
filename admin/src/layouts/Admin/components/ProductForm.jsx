@@ -15,7 +15,7 @@ import {
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import noImage from "../../../assets/images/no-image.png";
-import { getCategory } from "../actions";
+import { addProduct, getCategory } from "../actions";
 import SizeForm from "./SizeForm";
 import Loading from "../../../libs/components/Loading";
 import { useRef } from "react";
@@ -29,7 +29,7 @@ const totalQuantity = (sizes) => {
 };
 
 const ProductForm = (props) => {
-  const { id, modalAdd, toggleModalAdd } = props;
+  const { id, setId, modalAdd, toggleModalAdd } = props;
   const dispatch = useDispatch();
 
   const validationProductInfoSchema = Yup.object().shape({
@@ -125,33 +125,8 @@ const ProductForm = (props) => {
 
   const onSubmitAll = (data) => {
     if (!id) {
-      postApi(["product"], { ...data, ...productInfo.current })
-        .then((response) => {
-          toggleModalAdd();
-          toast.success("Thêm sản phẩm thành công!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          toast.error("Thêm sản phẩm thất bại!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-        });
+      dispatch(addProduct({ ...data, ...productInfo.current }));
+      toggleModalAdd();
     }
   };
 
@@ -186,7 +161,7 @@ const ProductForm = (props) => {
         <div hidden={currentStep !== 1}>
           <div className="mb-3 d-flex align-items-center">
             <div className="form-img">
-              <img src={img || noImage} alt="" />
+              <img src={img || product.images[0] || noImage} alt="" />
               {isLoadingImg && <Loading />}
             </div>
             <input
@@ -224,7 +199,7 @@ const ProductForm = (props) => {
             ></textarea>
           </div>
           <div className="mb-3">
-            <label for="category" className="form-label">
+            <label htmlFor="category" className="form-label">
               Danh mục
             </label>
             <select

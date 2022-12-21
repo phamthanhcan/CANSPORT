@@ -9,8 +9,6 @@ const Sidebar = () => {
     setPathname(window.location.pathname);
   }, [window.location.pathname]);
 
-  console.log(pathname);
-
   return (
     <aside className="sidebar">
       <div className="sidebar-header">

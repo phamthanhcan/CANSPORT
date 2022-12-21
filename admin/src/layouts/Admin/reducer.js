@@ -134,6 +134,21 @@ export const productReducer = (state = initialStateProduct, action) => {
         isLoading: false,
         error: action.payload,
       };
+
+    case TYPES.ADD_PRODUCT_SUCCESS:
+      return {
+        ...state,
+        hasError: false,
+        isLoading: false,
+        products: [action.payload.product, ...state.products],
+      };
+    case TYPES.ADD_PRODUCT_FAIL:
+      return {
+        ...state,
+        hasError: true,
+        isLoading: false,
+        error: action.payload,
+      };
     default:
       return state;
   }
