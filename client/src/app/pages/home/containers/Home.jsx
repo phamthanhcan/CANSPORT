@@ -24,7 +24,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    dispatch(getListProducts(page - 1, 0, "", "" || "", true));
+    dispatch(getListProducts(page - 1, 0, "", "", true));
   }, [dispatch, page]);
 
   return (

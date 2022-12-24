@@ -9,6 +9,7 @@ import ChangePassword from "./app/pages/account/containers/ChangePassword";
 import Purchase from "./app/pages/account/containers/Purchase";
 import ListProductByCategory from "./app/pages/home/containers/ListProductByCategory";
 import Order from "./app/pages/cart/containers/Order";
+import ListProductBySearch from "./app/pages/home/containers/ListProductBySearch";
 
 export const pageRoutes = [
   {
@@ -34,6 +35,11 @@ export const pageRoutes = [
   {
     path: "/listProduct/:id",
     element: ListProductByCategory,
+    isProtected: false,
+  },
+  {
+    path: "/search",
+    element: ListProductBySearch,
     isProtected: false,
   },
   {

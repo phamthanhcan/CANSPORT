@@ -6,6 +6,56 @@
   z-index: 100;
   box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
 
+  .search {
+    position: relative;
+    width: 400px;
+    margin-left: 30px;
+  }
+
+  .search-result {
+    width: 400px;
+    background-color: map-get($color, white);
+
+    &-title {
+      padding: 5px;
+      font-size: map-get($font-size, sm);
+      background-color: map-get($color, gray);
+    }
+
+    &-item {
+      a {
+        display: flex;
+        padding: 10px;
+      }
+    }
+
+    &-img {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+
+    &-name,
+    &-price {
+      font-size: map-get($font-size, xs);
+    }
+
+    &-price {
+      color: map-get($color, error);
+    }
+
+    .show-all {
+      display: flex;
+      justify-content: center;
+      padding: 5px;
+      border-top: 1px solid map-get($color, border);
+      font-size: map-get($font-size, xs);
+      span {
+        color: map-get($color, error);
+      }
+    }
+  }
+
   &.dark {
     color: map-get($color, white);
 
@@ -59,11 +109,6 @@
   &-left {
     display: flex;
     align-items: center;
-
-    input {
-      margin-left: 20px;
-      width: 350px;
-    }
   }
 
   &-right {

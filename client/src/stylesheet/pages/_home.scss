@@ -36,6 +36,11 @@
   }
 }
 
+.search-result-quantity {
+  font-weight: map-get($font-weight, bold);
+  font-size: map-get($font-size, xl);
+}
+
 // .category {
 //   .slick-arrow {
 //     &::before {

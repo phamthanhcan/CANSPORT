@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import HeadlessTippy from "@tippyjs/react/headless";
 
 import { getUserInfor } from "../../../pages/account/account.actions";
 import { logout } from "../../../auth/auth.actions";
@@ -9,34 +10,9 @@ import Avatar from "../../../../assets/images/avatar.png";
 import { isEmpty } from "../../helper/data";
 import { getCartByUser } from "../../../pages/cart/cart.actions";
 import { getListCategory } from "../../../pages/home/home.actions";
-
-const categories = [
-  {
-    id: 1,
-    name: "Giày bóng đá",
-    link: "/",
-  },
-  {
-    id: 2,
-    name: "Quần áo bóng đá",
-    link: "/",
-  },
-  {
-    id: 3,
-    name: "Găng tay",
-    link: "/",
-  },
-  {
-    id: 4,
-    name: "Đồ chính hãng",
-    link: "/",
-  },
-  {
-    id: 5,
-    name: "Phụ kiện khác",
-    link: "/",
-  },
-];
+import useDebounce from "../../hooks/useDebounce";
+import { getApi } from "../../helper/api";
+import NoImage from "../../../../assets/images/no-image.png";
 
 export const isExpriedToken = (token) => {
   if (!token) return true;
@@ -57,6 +33,13 @@ const Header = (props) => {
   const cart = useSelector((state) => state.cart.data);
   const categories = useSelector((state) => state.category.data);
   const isAdmin = user?.encode?.role === 1;
+
+  const [searchValue, setSearchValue] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+
+  const debouncedValue = useDebounce(searchValue, 500);
 
   const totalQuantityProductInCart = () => {
     return cart?.products?.reduce((sum, item) => {
@@ -84,6 +67,36 @@ const Header = (props) => {
     }
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!debouncedValue.trim()) {
+      setSearchResult([]);
+      return;
+    }
+    const fetchApi = async () => {
+      setIsLoading(true);
+
+      const result = await getApi([
+        `product?size=8&page=0&price=0&category=&name=${debouncedValue}&active=true`,
+      ]);
+
+      setSearchResult(result.data?.products);
+      setIsLoading(false);
+    };
+
+    fetchApi();
+  }, [debouncedValue]);
+
+  const handleChangeInputSearch = (e) => {
+    const searchValue = e.target.value;
+    if (!searchValue.startsWith(" ")) {
+      setSearchValue(searchValue);
+    }
+  };
+
+  const handleHideResult = () => {
+    setShowResult(false);
+  };
+
   return (
     <header className={`header`}>
       <div className="header-top">
@@ -95,11 +108,65 @@ const Header = (props) => {
                 alt="CANSPORT LOGO"
               />
             </Link>
-            <input
-              className="form-control dark"
-              type="text"
-              placeholder="Nhập sản phẩm tìm kiếm"
-            />
+            <div>
+              <HeadlessTippy
+                placement="bottom"
+                interactive
+                visible={showResult && searchResult.length > 0}
+                render={(attrs) => (
+                  <div className="search-result" tabIndex="-1" {...attrs}>
+                    <p className="search-result-title">Sản phẩm gợi ý</p>
+                    <ul className="search-result-list">
+                      {searchResult.map((item) => {
+                        return (
+                          <li className="search-result-item" key={item._id}>
+                            <Link
+                              to={`/product/${item._id}`}
+                              onClick={() => setShowResult(false)}
+                            >
+                              <img
+                                className="search-result-img"
+                                src={item.image || NoImage}
+                                alt="product"
+                              />
+                              <div className="search-result-info">
+                                <p className="search-result-name">
+                                  {item.name}
+                                </p>
+                                <p className="search-result-price">
+                                  {item.price}
+                                </p>
+                              </div>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <Link
+                      to={`/search?q=${debouncedValue}`}
+                      className="show-all"
+                      onClick={() => setShowResult(false)}
+                    >
+                      Hiển thị tất cả kết quả cho{" "}
+                      <span className="ml-1">{`'${debouncedValue}'`}</span>
+                    </Link>
+                  </div>
+                )}
+                onClickOutside={handleHideResult}
+              >
+                <div className="search">
+                  <input
+                    className="form-control dark"
+                    type="text"
+                    placeholder="Nhập sản phẩm tìm kiếm"
+                    spellCheck={false}
+                    value={searchValue}
+                    onChange={handleChangeInputSearch}
+                    onFocus={() => setShowResult(true)}
+                  />
+                </div>
+              </HeadlessTippy>
+            </div>
           </div>
           <div className="header-right">
             {(user?.token ? isExpriedToken(user.token || "") : true) ? (
