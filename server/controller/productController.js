@@ -317,15 +317,19 @@ class Product {
   }
 
   async getProductByCategory(req, res) {
-    let { categoryId } = req.body;
-    if (!categoryId) {
+    let { id } = req.params;
+    console.log({ id });
+    if (!id) {
       return res.status(400);
     } else {
       try {
         let products = await productModel
-          .find({ category: categoryId })
-          .populate("pCategory", "cName");
+          .find({ category: id })
+          .populate("category", "_id name")
+          .populate("ratingsReviews.user", "name email userImage")
+          .populate("sizes");
         if (products) {
+          console.log({ products });
           return res.json({ products: products });
         }
       } catch (err) {

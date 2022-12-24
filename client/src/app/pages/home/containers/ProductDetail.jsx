@@ -4,18 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { addProductCart, clearCart } from "../../cart/cart.actions";
 import Policy from "../components/Policy";
-import {
-  getListProducts,
-  getProductDetail,
-  getSizesOfProduct,
-  getSkuOfProducts,
-} from "../home.actions";
+import { getProductDetail } from "../home.actions";
 import LoadingPage from "../../../shared/components/modules/LoadingPage";
 import NoImage from "../../../../assets/images/no-image.png";
 import { isEmpty, numberWithCommas } from "../../../shared/helper/data";
-import { useRef } from "react";
-import Carousel from "../components/CarouselImage";
-import CarouselImage from "../components/CarouselImage";
 import { toast } from "react-toastify";
 
 const ProductDetail = () => {
@@ -36,10 +28,6 @@ const ProductDetail = () => {
   const sizes = useSelector((state) => state.size.data);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const [currentSku, setCurrentSku] = useState(null);
-  const [selectedSku, setSelectedSku] = useState(null);
-  const [isSubmited, setIsSubmited] = useState(false);
-  const [currentSize, setCurrentSize] = useState(null);
   const [amountProduct, setAmountProduct] = useState(1);
 
   const size = watch("size");
@@ -97,17 +85,13 @@ const ProductDetail = () => {
     dispatch(getProductDetail(id));
   }, [dispatch, id]);
 
-  useEffect(() => {
-    dispatch(getSizesOfProduct(id));
-  }, [dispatch, id]);
-
   if (isLoadingProduct || isLoadingSizes) {
     return <LoadingPage />;
   }
 
   return (
     <>
-      {product && sizes && (
+      {product && (
         <div className="product-view">
           <div className="container">
             <div className="row gutter-sm">

@@ -9,6 +9,6 @@ router.post("/add-review", loginCheck, productController.postAddReview);
 router.get("/:productId", productController.getProductDetail);
 router.put("/:productId", loginCheck, productController.editProduct);
 router.delete("/:productId", loginCheck, productController.deleteProduct);
-router.post("/product-category", productController.getProductByCategory);
+router.get("/category/:id", productController.getProductByCategory);
 
 module.exports = router;

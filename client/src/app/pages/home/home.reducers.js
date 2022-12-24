@@ -5,7 +5,8 @@ const initialState = {
   isLoading: false,
   data: null,
   error: null,
-  totalPages: 1,
+  totalPages: 0,
+  totalItems: 0,
 };
 
 export const productReducer = (state = initialState, action) => {
@@ -26,6 +27,7 @@ export const productReducer = (state = initialState, action) => {
         error: null,
         data: action.payload.data,
         totalPages: action.payload.totalPages,
+        totalItems: action.payload.totalItems,
       };
     case TYPES.GET_LIST_PRODUCT_FAIL:
       return {

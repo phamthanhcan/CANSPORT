@@ -5,11 +5,12 @@ import ProductItem from "./ProductItem";
 
 const ProductListTpl = (props) => {
   const { data } = props;
+
   return (
     <div className="row">
       {data.map((product) => (
         <div className="col-3" key={product.id}>
-          <Link to={`product/${product.id}`}>
+          <Link to={`/product/${product.id}`}>
             <ProductItem data={product} />
           </Link>
         </div>

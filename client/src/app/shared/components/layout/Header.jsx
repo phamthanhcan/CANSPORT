@@ -64,8 +64,6 @@ const Header = (props) => {
     }, 0);
   };
 
-  console.log({ categories });
-
   const handleLogout = useCallback(() => {
     dispatch(logout());
     navigate("/");

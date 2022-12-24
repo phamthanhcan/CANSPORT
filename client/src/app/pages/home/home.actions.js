@@ -22,6 +22,7 @@ export const getListProducts =
         payload: {
           data,
           totalPages: res.data.totalPages,
+          totalItems: res.data.totalItems,
         },
       });
     } catch (err) {
@@ -201,6 +202,25 @@ export const getSizesOfProduct = (productId) => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: TYPES.GET_SIZE_OF_PRODUCT_FAIL,
+      payload: err.response?.data?.message,
+    });
+  }
+};
+
+export const getProductByCategory = (categoryId) => async (dispatch) => {
+  dispatch({
+    type: TYPES.GET_PRODUCT_BY_CATEGORY,
+  });
+
+  try {
+    const res = await getApi(["product", "category", categoryId]);
+    const data = res.data.products.map((item) => {
+      return new Product(item);
+    });
+    console.log(data);
+  } catch (err) {
+    dispatch({
+      type: TYPES.GET_PRODUCT_BY_CATEGORY_FAIL,
       payload: err.response?.data?.message,
     });
   }
