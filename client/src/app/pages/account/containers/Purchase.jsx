@@ -59,7 +59,7 @@ const Purchase = () => {
                                 <div className="f-center-y">
                                   <img
                                     className="order-product-img"
-                                    src={productCart.product?.images[0]}
+                                    src={productCart.product?.image}
                                     alt="product"
                                   />
                                   <div>

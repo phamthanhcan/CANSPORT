@@ -45,20 +45,14 @@ const ProductDetail = () => {
   const size = watch("size");
 
   const onSubmit = () => {
-    if (sizes?.length && !size) {
-      toast.error("Vui lòng chọn size!", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+    if (isEmpty(user)) {
+      navigate("/login");
       return;
     }
-    console.log(amountProduct);
+    if (product.sizes?.length && !size) {
+      toast.error("Vui lòng chọn size!");
+      return;
+    }
     dispatch(addProductCart(product.id, size, amountProduct, user.encode._id));
   };
 
@@ -122,7 +116,7 @@ const ProductDetail = () => {
                   <div className="col-6">
                     <img
                       className="product-view-img"
-                      src={product?.images[0] || NoImage}
+                      src={product?.image || NoImage}
                       alt=""
                     />
                   </div>
@@ -131,35 +125,46 @@ const ProductDetail = () => {
                     <p className="product-view-id">
                       MÃ SẢN PHẨM: {product?.id}
                     </p>
-                    <p className="product-view-price">
-                      {numberWithCommas(product?.price)}đ
-                    </p>
-                    {sizes?.length > 0 && (
+                    <div className="product-price view">
+                      <p
+                        className={`product-price-${
+                          product.discount > 0 ? "origin" : "current"
+                        }`}
+                      >
+                        {numberWithCommas(product?.price)}đ
+                      </p>
+                      {product?.discount > 0 && (
+                        <p className="product-price-current">
+                          {numberWithCommas(
+                            product?.price -
+                              product?.price * (product?.discount / 100)
+                          )}
+                          đ
+                        </p>
+                      )}
+                    </div>
+                    {product.sizes?.length > 0 && (
                       <>
                         <h3 className="product-view-label">CHỌN SIZE</h3>
                         <ul className="product-view-options">
-                          {sizes?.map((item, index) => (
+                          {product.sizes?.map((item, index) => (
                             <li
                               key={index}
                               className={`product-view-option ${
-                                item.id === size ? "active" : ""
+                                item._id === size ? "active" : ""
                               }`}
                             >
                               <input
                                 type="radio"
                                 className="hidden"
                                 key={index}
-                                id={item.id}
-                                value={item.id}
+                                id={item._id}
+                                value={item._id}
                                 {...register("size", {
                                   required: true,
                                 })}
                               />
-                              <label
-                                className="size-label"
-                                htmlFor={item.id}
-                                onClick={() => console.log("click")}
-                              >
+                              <label className="size-label" htmlFor={item._id}>
                                 {item.size}
                               </label>
                               <span className="icon-check">
@@ -177,7 +182,11 @@ const ProductDetail = () => {
                     <div className="choose-quantity">
                       <button
                         className="btn-quantity"
-                        onClick={() => setAmountProduct((prev) => prev - 1)}
+                        onClick={() =>
+                          setAmountProduct((prev) => {
+                            return prev > 1 ? prev - 1 : prev;
+                          })
+                        }
                       >
                         -
                       </button>

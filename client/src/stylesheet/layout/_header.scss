@@ -35,6 +35,27 @@
     }
   }
 
+  &-bottom {
+    background-color: map-get($color, primary);
+
+    .categories-list {
+      display: flex;
+    }
+
+    .category-item {
+      transition: 0.25s;
+
+      a {
+        display: inline-block;
+        padding: 10px;
+      }
+
+      &:hover {
+        background-color: map-get($color, primary-hover);
+      }
+    }
+  }
+
   &-left {
     display: flex;
     align-items: center;

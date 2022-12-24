@@ -47,6 +47,9 @@ class Product {
           path: "ratingsReviews.user",
           select: "_id name userImage",
         },
+        {
+          path: "sizes",
+        },
       ],
     };
 
@@ -78,7 +81,7 @@ class Product {
   addProduct(req, res) {
     const {
       name,
-      images,
+      image,
       category,
       description,
       sizes,
@@ -103,95 +106,149 @@ class Product {
     ) {
       return res.status(400).json({ error: "All filed must be required" });
     } else {
-      const newProduct = new productModel({
-        name,
-        images,
-        category,
-        description,
-        quantity,
-        discount,
-        price,
-        sold,
-        status,
-        weight,
-        length,
-        width,
-        height,
-      });
-      return newProduct
-        .save()
-        .then((product) => {
-          if (sizes) {
-            const sizesTemp = sizes.map((item) => {
-              return {
-                ...item,
-                product: product._id,
-              };
-            });
-
-            sizeModel
-              .insertMany(sizesTemp)
-              .then((sizesData) => {
-                productModel
-                  .findById(product._id)
-                  .populate("category")
-                  .then((productData) => {
-                    return res.status(201).json({
-                      success: true,
-                      product: productData,
-                      sizes: sizesData,
-                      message: "Thêm sản phẩm thành công!",
-                    });
-                  });
-              })
-              .catch((err) => {
-                return res.status(500).json({
-                  success: false,
-                  error: err.message,
-                });
-              });
-          } else {
-            productModel
-              .findById(product._id)
-              .populate("category")
-              .then((productData) => {
-                return res.status(201).json({
-                  success: true,
-                  product: productData,
-                  message: "Thêm sản phẩm thành công!",
-                });
-              });
-          }
-        })
-        .catch((err) => {
-          return res.status(500).json({
-            success: false,
-            error: err.message,
+      if (sizes) {
+        sizeModel.insertMany(sizes).then((sizesData) => {
+          const newProduct = new productModel({
+            name,
+            image,
+            sizes: sizesData.map((size) => ({ _id: size.id })),
+            category,
+            description,
+            quantity,
+            discount,
+            price,
+            sold,
+            status,
+            weight,
+            length,
+            width,
+            height,
           });
+
+          newProduct
+            .save()
+            .then((product) => {
+              productModel
+                .findById(product._id)
+                .populate([
+                  {
+                    path: "category",
+                    select: "_id name",
+                  },
+                  {
+                    path: "ratingsReviews.user",
+                    select: "_id name userImage",
+                  },
+                  {
+                    path: "sizes",
+                  },
+                ])
+                .then((productData) => {
+                  return res.status(201).json({
+                    success: true,
+                    product: productData,
+                    message: "Thêm sản phẩm thành công!",
+                  });
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(400).json({
+                success: false,
+                message: "Thêm sản phẩm thất bại",
+              });
+            });
         });
+      } else {
+        const newProduct = new productModel({
+          name,
+          image,
+          category,
+          description,
+          quantity,
+          discount,
+          price,
+          sold,
+          status,
+          weight,
+          length,
+          width,
+          height,
+        });
+
+        newProduct.save().then((product) => {
+          productModel
+            .findById(product._id)
+            .populate([
+              {
+                path: "category",
+                select: "_id name",
+              },
+              {
+                path: "ratingsReviews.user",
+                select: "_id name userImage",
+              },
+              {
+                path: "sizes",
+              },
+            ])
+            .then((productData) => {
+              return res.status(201).json({
+                success: true,
+                product: productData,
+                message: "Thêm sản phẩm thành công",
+              });
+            })
+            .catch((err) => {
+              console.log(err);
+              res.status(400).json({
+                success: false,
+                message: "Thêm sản phẩm thất bại",
+              });
+            });
+        });
+      }
     }
   }
 
   editProduct(req, res) {
     const id = req.params.productId;
     const updateProduct = req.body;
-    productModel
-      .findByIdAndUpdate(id, updateProduct)
-      .exec()
-      .then(() => {
-        return res.status(200).json({
-          success: true,
-          message: "update product successfully",
-          product: updateProduct,
-        });
-      })
-      .catch((err) => {
-        return res.json({
-          success: false,
-          message: "update product failed",
-          err: err.message,
-        });
-      });
+
+    if (updateProduct.sizes) {
+      productModel.findById(id).then((product) => {});
+    }
+
+    // productModel
+    //   .findByIdAndUpdate(id, updateProduct)
+    //   .populate([
+    //     {
+    //       path: "category",
+    //       select: "_id name",
+    //     },
+    //     {
+    //       path: "ratingsReviews.user",
+    //       select: "_id name userImage",
+    //     },
+    //     {
+    //       path: "sizes",
+    //     },
+    //   ])
+    //   .exec()
+    //   .then((product) => {
+    //     return res.status(200).json({
+    //       success: true,
+    //       message: "Cập nhật sản phẩm thành công",
+    //       product: product,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     return res.json({
+    //       success: false,
+    //       message: "Cập nhật sản phẩm thất bại",
+    //       err: err.message,
+    //     });
+    //   });
   }
 
   deleteProduct(req, res) {
@@ -203,6 +260,19 @@ class Product {
     }
     productModel
       .findByIdAndUpdate(id, { status: false })
+      .populate([
+        {
+          path: "category",
+          select: "_id name",
+        },
+        {
+          path: "ratingsReviews.user",
+          select: "_id name userImage",
+        },
+        {
+          path: "sizes",
+        },
+      ])
       .exec()
       .then((product) => {
         res.status(204).json({
@@ -218,21 +288,30 @@ class Product {
       });
   }
 
-  async getSingleProduct(req, res) {
+  async getProductDetail(req, res) {
     let { productId } = req.params;
     if (!productId) {
-      return res.status(400);
+      return res.status(400).json({
+        success: false,
+        message: "ID sản phẩm không hợp lệ",
+      });
     } else {
       try {
-        let singleProduct = await productModel
+        let productDetail = await productModel
           .findById(productId)
           .populate("category", "_id name")
-          .populate("ratingsReviews.user", "name email userImage");
-        if (singleProduct) {
-          return res.json({ product: singleProduct });
+          .populate("ratingsReviews.user", "name email userImage")
+          .populate("sizes");
+        if (productDetail) {
+          return res
+            .status(200)
+            .json({ success: true, product: productDetail });
         }
       } catch (err) {
-        return res.status(500);
+        return res.status(500).json({
+          success: false,
+          message: "Không tìm thấy sản phẩm",
+        });
       }
     }
   }

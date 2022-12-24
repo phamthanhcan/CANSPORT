@@ -17,7 +17,6 @@ export const addProductCart =
         userId: userId,
       });
       const products = res.data.cart.products;
-      console.log(products);
       dispatch({
         type: TYPES.ADD_PRODUCT_CART_SUCCESS,
         payload: products,
@@ -43,10 +42,9 @@ export const getCartByUser = (userId) => async (dispatch) => {
 
   try {
     const res = await getApi([`cart?userId=${userId}`]);
-    const data = new Cart(res.data.cart);
     dispatch({
       type: TYPES.GET_CART_BY_USER_SUCCESS,
-      payload: data,
+      payload: res.data.cart,
     });
   } catch (err) {
     dispatch({

@@ -20,31 +20,35 @@ const ProductItem = (props) => {
         <p className="badge product-badge">{data.discount}%</p>
       )}
       <div className="product-img">
-        <img src={data.images[0] || NoImage} alt="product" />
+        <img src={data.image || NoImage} alt="product" />
       </div>
       <div className="product-info">
         <div>
-          {/* <p className="mb-3">
-            {data.minPrice === data.maxPrice ? (
-              <>
-                <span className="product-price-origin">
-                  {numberWithCommas(
-                    Math.floor((data.minPrice * 100) / (100 - data.discount))
-                  )}
-                </span>
-                <span className="product-price">
-                  {numberWithCommas(data.minPrice)}đ
-                </span>
-              </>
-            ) : (
-              <span className="product-price">
-                {numberWithCommas(data.minPrice)}đ -{" "}
-                {numberWithCommas(data.maxPrice)}đ
-              </span>
+          <div className="product-price">
+            <p
+              className={`product-price-${
+                data.discount > 0 ? "origin" : "current"
+              }`}
+            >
+              {numberWithCommas(data.price)}đ
+            </p>
+            {data.discount > 0 && (
+              <p className="product-price-current">
+                {numberWithCommas(
+                  data.price - data.price * (data.discount / 100)
+                )}
+                đ
+              </p>
             )}
-          </p> */}
-          <p className="product-price">{numberWithCommas(data.price)}đ</p>
+          </div>
           <p className="product-status">HÀNG CÓ SẴN</p>
+          <ul className="product-sizes">
+            {data.sizes.map((size) => (
+              <li className="product-size-item" key={size._id}>
+                <p>{size.size}</p>
+              </li>
+            ))}
+          </ul>
           <p className="product-name">{data.name}</p>
         </div>
         <div className="d-flex product-actions mt-2">

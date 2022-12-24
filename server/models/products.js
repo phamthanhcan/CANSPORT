@@ -31,10 +31,17 @@ const productSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "categories",
     },
-    images: {
-      type: Array,
+    image: {
+      type: String,
       default: null,
     },
+    sizes: [
+      {
+        type: ObjectId,
+        ref: "size",
+        default: null,
+      },
+    ],
     weight: {
       type: Number,
     },

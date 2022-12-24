@@ -125,7 +125,9 @@ export const productReducer = (state = initialStateProduct, action) => {
         hasError: false,
         isLoading: false,
         error: null,
-        data: [...state.data].filter((item) => item._id !== action.payload.id),
+        products: [...state.products].filter(
+          (item) => item._id !== action.payload.id
+        ),
       };
     case TYPES.DELETE_PRODUCT_FAIL:
       return {

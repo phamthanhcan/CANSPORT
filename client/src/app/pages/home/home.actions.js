@@ -12,7 +12,7 @@ export const getListProducts =
 
     try {
       const res = await getApi([
-        `product?size=10&page=${page}&price=${price}&category=${category}&name=${name}&active=${active}`,
+        `product?size=8&page=${page}&price=${price}&category=${category}&name=${name}&active=${active}`,
       ]);
       const data = res.data.products.map((item) => {
         return new Product(item);

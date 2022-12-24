@@ -24,8 +24,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    dispatch(getListProducts());
-  }, [dispatch]);
+    dispatch(getListProducts(page - 1, 0, "", "" || "", true));
+  }, [dispatch, page]);
 
   return (
     <>
@@ -37,7 +37,7 @@ const Home = () => {
         <section className="product-list">
           <h2 className="section-title">DANH SÁCH SẢN PHẨM</h2>
           <ProductList products={products} />
-          {/* {!!products?.length && (
+          {!!products?.length && (
             <div className="full-width f-center-x my-5">
               <Pagination
                 count={totalPages || 1}
@@ -45,7 +45,7 @@ const Home = () => {
                 onChange={handleChangePage}
               />
             </div>
-          )} */}
+          )}
         </section>
       </main>
     </>

@@ -29,7 +29,8 @@ const totalQuantity = (sizes) => {
 };
 
 const ProductForm = (props) => {
-  const { id, setId, modalAdd, toggleModalAdd } = props;
+  const { id, setId, modalAdd, toggleModalAdd, categories } = props;
+
   const dispatch = useDispatch();
 
   const validationProductInfoSchema = Yup.object().shape({
@@ -86,24 +87,27 @@ const ProductForm = (props) => {
     formState: { errors: errors2 },
   } = useForm(formShippingOptions);
 
-  const [img, setImg] = useState("");
-  const [hasSize, setHasSize] = useState(false);
-  const [sizes, setSizes] = useState([{ id: uuidv4(), size: "", quantity: 1 }]);
+  const products = useSelector((state) => state.product.products);
+  const product = products?.find((item) => item._id === id);
+
+  const [img, setImg] = useState(product?.image || "");
+  const [hasSize, setHasSize] = useState(product?.sizes.length ? true : false);
+  const [sizes, setSizes] = useState(
+    product?.sizes.length
+      ? product.sizes.map((size) => ({
+          id: size._id,
+          size: size.size,
+          quantity: size.quantity,
+        }))
+      : [{ id: uuidv4(), size: "", quantity: 1 }]
+  );
   const [isLoadingImg, setIsLoadingImg] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const productInfo = useRef(null);
 
-  const products = useSelector((state) => state.product.products);
-  const product = products?.find((item) => item._id === id);
-  const categories = useSelector((state) => state.category.categories);
-
   const checkEmptySizes = () => {
     return sizes.some((item) => !item.size || !item.quantity);
   };
-
-  useEffect(() => {
-    dispatch(getCategory());
-  }, [dispatch]);
 
   const onSubmitProductInfo = (data) => {
     if ((hasSize && checkEmptySizes()) || !sizes.length) {
@@ -114,19 +118,22 @@ const ProductForm = (props) => {
       productInfo.current = {
         ...data,
         quantity: totalQuantity(sizes),
-        images: img,
+        image: img,
         sizes,
       };
     } else {
-      productInfo.current = { ...data, images: img };
+      productInfo.current = { ...data, image: img };
     }
     setCurrentStep(2);
   };
 
   const onSubmitAll = (data) => {
+    console.log({ ...data, ...productInfo.current });
     if (!id) {
       dispatch(addProduct({ ...data, ...productInfo.current }));
       toggleModalAdd();
+    } else {
+      console.log("cập nhật", { ...data, ...productInfo.current });
     }
   };
 
@@ -152,6 +159,12 @@ const ProductForm = (props) => {
       });
   }, []);
 
+  useEffect(() => {
+    return () => {
+      setId(null);
+    };
+  }, []);
+
   return (
     <Modal isOpen={modalAdd} toggle={toggleModalAdd}>
       <ModalHeader toggle={toggleModalAdd}>
@@ -161,7 +174,7 @@ const ProductForm = (props) => {
         <div hidden={currentStep !== 1}>
           <div className="mb-3 d-flex align-items-center">
             <div className="form-img">
-              <img src={img || product.images[0] || noImage} alt="" />
+              <img src={img || noImage} alt="" />
               {isLoadingImg && <Loading />}
             </div>
             <input
@@ -206,6 +219,7 @@ const ProductForm = (props) => {
               className={`form-control ${errors.name ? "is-invalid" : ""}`}
               id="category"
               {...register("category")}
+              defaultValue={product?.category._id}
             >
               <option selected disabled value="">
                 Chọn danh mục...
@@ -342,7 +356,7 @@ const ProductForm = (props) => {
               type="number"
               className={`form-control ${errors2.length ? "is-invalid" : ""}`}
               id="length"
-              placeholder="Chiều cao"
+              placeholder="Chiều dài"
               defaultValue={product?.length}
               {...register2("length")}
             />
@@ -356,7 +370,7 @@ const ProductForm = (props) => {
               type="number"
               className={`form-control ${errors2.width ? "is-invalid" : ""}`}
               id="width"
-              placeholder="Chiều cao"
+              placeholder="Chiều rộng"
               defaultValue={product?.width}
               {...register2("width")}
             />
@@ -372,6 +386,7 @@ const ProductForm = (props) => {
           color="primary"
           onClick={handleSubmit(onSubmitProductInfo)}
           hidden={currentStep !== 1}
+          disabled={isLoadingImg}
         >
           Tiếp theo
         </Button>
@@ -387,7 +402,7 @@ const ProductForm = (props) => {
           onClick={handleSubmit2(onSubmitAll)}
           hidden={currentStep !== 2}
         >
-          Thêm sản phẩm
+          {id ? "Cập nhật sản phẩm" : "Thêm sản phẩm"}
         </Button>
       </ModalFooter>
     </Modal>

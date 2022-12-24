@@ -125,10 +125,10 @@ class Auth {
     let { email, password } = req.body;
 
     try {
-      const user = await userModel.findOne({ email: email });
+      const user = await userModel.findOne({ email: email, userRole: 0 });
       if (!user) {
         return res.status(400).json({
-          message: "Invalid email or password",
+          message: "Email hoặc mật khẩu không hợp lệ",
         });
       } else {
         const login = await bcrypt.compare(password, user.password);
@@ -147,7 +147,7 @@ class Auth {
           });
         } else {
           return res.status(400).json({
-            message: "Invalid email or password",
+            message: "Email hoặc mật khẩu không hợp lệ",
           });
         }
       }

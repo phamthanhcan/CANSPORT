@@ -19,7 +19,8 @@ export class Product {
       : data.ratingsReviews.map((item) => {
           return new RatingReview(item);
         });
-    this.images = isEmpty(data.images) ? [] : data.images;
+    this.image = data.image;
+    this.sizes = data.sizes;
     this.status = data.status || false;
   }
 }

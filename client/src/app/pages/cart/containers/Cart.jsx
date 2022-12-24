@@ -32,8 +32,6 @@ const Cart = () => {
     }
   }, [cart]);
 
-  console.log("cart", cart);
-
   useEffect(() => {
     dispatch(getCartByUser(user.encode._id));
   }, [dispatch]);
@@ -75,7 +73,7 @@ const Cart = () => {
             </thead>
             <tbody>
               {cart?.products?.map((item) => (
-                <CartItem productCart={item} cartId={cart.id} />
+                <CartItem key={item._id} cartItem={item} cartId={cart._id} />
               ))}
             </tbody>
           </table>

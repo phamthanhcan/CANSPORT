@@ -43,6 +43,7 @@ const Order = () => {
   const isFromPayment = window.location.search.includes("isFromPayment");
 
   const user = useSelector((state) => state.auth.data.encode);
+  const userTest = useSelector((state) => state.auth.data);
   const cart = useSelector((state) => state.cart.data);
   const products = useRef([]);
 
@@ -57,81 +58,111 @@ const Order = () => {
   const district = watch("district");
   const ward = watch("ward");
 
+  console.log("user", userTest);
+
   const onSubmit = (data) => {
     if (data.paymentOption === "cod") {
-      axios
-        .post(
-          "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
-          {
-            shop_id: 84329,
-            payment_type_id: 2,
-            required_note: "KHONGCHOXEMHANG",
-            return_phone: "0376755120",
-            return_address: "Xóm 11",
-            return_district_id: 1848,
-            return_ward_code: "290625",
-            to_name: data.name,
-            to_phone: data.phone,
-            to_address: data.addressDetail,
-            to_ward_code: data.ward,
-            to_district_id: +data.district,
-            cod_amount: totalPriceProduct,
-            weight: getWeight(products.current),
-            content: `Dinasour shop send to ${data.name}`,
-            length: getLength(products.current),
-            width: getWidth(products.current),
-            height: getHeight(products.current),
-            service_id: services[services.length - 1].service_id,
-            service_type_id: services[services.length - 1].service_type_id,
-            item: products.current.map((item) => {
-              return {
-                name: item.product.name,
-                code: item.product.id,
-                price: item.product.price,
-                quantity: item.quantity,
-              };
-            }),
-          },
-          {
-            headers: {
-              Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
-            },
-          }
-        )
+      postApi(["order/create"], {
+        user: user._id,
+        price: totalPriceProduct,
+        shippingFee,
+        shippingId: "test",
+        address: data.addressDetail,
+        province: provinces.find((item) => item.ProvinceID === +province)
+          .ProvinceName,
+        district: districts.find((item) => item.DistrictID === +district)
+          .DistrictName,
+        ward: wards.find((item) => item.WardCode === ward).WardName,
+        phone: data.phone,
+        name: data.name,
+        typePay: "cod",
+        products: products.current.map((item) => {
+          return {
+            id: item._id,
+            product: item.product._id,
+            size: item.size ? item.size._id : null,
+            quantity: item.quantity,
+          };
+        }),
+      })
         .then((res) => {
-          const shippingCode = res.data.data.order_code;
-          console.log("res", res);
-
-          postApi(["order/create"], {
-            user: user._id,
-            price: totalPriceProduct,
-            shippingFee,
-            shippingId: shippingCode,
-            address: data.addressDetail,
-            province: provinces.find((item) => item.ProvinceID === +province)
-              .ProvinceName,
-            district: districts.find((item) => item.DistrictID === +district)
-              .DistrictName,
-            ward: wards.find((item) => item.WardCode === ward).WardName,
-            phone: data.phone,
-            name: data.name,
-            typePay: "cod",
-            products: products.current.map((item) => {
-              return {
-                id: item.id,
-                product: item.product.id,
-                size: item.size ? item.size.id : null,
-                quantity: item.quantity,
-              };
-            }),
-          })
-            .then((res) => {
-              dispatch(clearCart());
-              navigate("/account/purchase");
-            })
-            .catch((err) => console.error(err));
+          dispatch(clearCart());
+          // navigate("/account/purchase");
         })
         .catch((err) => console.error(err));
+      // axios
+      //   .post(
+      //     "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
+      //     {
+      //       shop_id: 84329,
+      //       payment_type_id: 2,
+      //       required_note: "KHONGCHOXEMHANG",
+      //       return_phone: "0376755120",
+      //       return_address: "Xóm 11",
+      //       return_district_id: 1848,
+      //       return_ward_code: "290625",
+      //       to_name: data.name,
+      //       to_phone: data.phone,
+      //       to_address: data.addressDetail,
+      //       to_ward_code: data.ward,
+      //       to_district_id: +data.district,
+      //       cod_amount: totalPriceProduct,
+      //       weight: getWeight(products.current),
+      //       content: `CANSPORT send to ${data.name}`,
+      //       length: getLength(products.current),
+      //       width: getWidth(products.current),
+      //       height: getHeight(products.current),
+      //       service_id: services[services.length - 1].service_id,
+      //       service_type_id: services[services.length - 1].service_type_id,
+      //       item: products.current.map((item) => {
+      //         return {
+      //           name: item.product.name,
+      //           code: item.product.id,
+      //           price: item.product.price,
+      //           quantity: item.quantity,
+      //         };
+      //       }),
+      //     },
+      //     {
+      //       headers: {
+      //         Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
+      //       },
+      //     }
+      //   )
+      //   .then((res) => {
+      //     const shippingCode = res.data.data.order_code;
+      //     console.log("res", res);
+
+      //     postApi(["order/create"], {
+      //       user: user._id,
+      //       price: totalPriceProduct,
+      //       shippingFee,
+      //       shippingId: shippingCode,
+      //       address: data.addressDetail,
+      //       province: provinces.find((item) => item.ProvinceID === +province)
+      //         .ProvinceName,
+      //       district: districts.find((item) => item.DistrictID === +district)
+      //         .DistrictName,
+      //       ward: wards.find((item) => item.WardCode === ward).WardName,
+      //       phone: data.phone,
+      //       name: data.name,
+      //       typePay: "cod",
+      //       products: products.current.map((item) => {
+      //         return {
+      //           id: item._id,
+      //           product: item.product._id,
+      //           size: item.size ? item.size._id : null,
+      //           quantity: item.quantity,
+      //         };
+      //       }),
+      //     })
+      //       .then((res) => {
+      //         dispatch(clearCart());
+      //         navigate("/account/purchase");
+      //       })
+      //       .catch((err) => console.error(err));
+      //   })
+      //   .catch((err) => console.error(err));
     } else {
       navigate("/payment", {
         state: {
@@ -415,7 +446,7 @@ const Order = () => {
                       <li key={item.id} className="order-product-item my-4">
                         <div className="d-flex">
                           <div className="product-img">
-                            <img src={item.product.images[0]} alt="product" />
+                            <img src={item.product.image} alt="product" />
                             <span className="product-quantity">
                               {item.quantity}
                             </span>

@@ -100,13 +100,12 @@ export const getListProducts =
 
     try {
       const res = await getApi([
-        `product?size=10&page=${page}&price=${price}&category=${category}&name=${name}&active=${active}`,
+        `product?size=5&page=${page}&price=${price}&category=${category}&name=${name}&active=${active}`,
       ]);
-      const data = res.data.products;
       dispatch({
         type: TYPES.GET_PRODUCT_SUCCESS,
         payload: {
-          data,
+          data: res.data.products,
           totalPages: res.data.totalPages,
         },
       });
@@ -149,7 +148,6 @@ export const addProduct = (productData) => async (dispatch) => {
 
   try {
     const res = await postApi(["product"], productData);
-    console.log(res.data);
     dispatch({
       type: TYPES.ADD_PRODUCT_SUCCESS,
       payload: {
@@ -163,5 +161,28 @@ export const addProduct = (productData) => async (dispatch) => {
       payload: err.response?.data?.message,
     });
     toast.error("Thêm sản phẩm thất bại");
+  }
+};
+
+export const editProduct = (productData, id) => async (dispatch) => {
+  dispatch({
+    type: TYPES.FETCH_PRODUCT,
+  });
+
+  try {
+    const res = await putApi(["product", id], productData);
+    dispatch({
+      type: TYPES.UPDATE_PRODUCT_SUCCESS,
+      payload: {
+        product: res.data.product,
+      },
+    });
+    toast.success("Cập nhật sản phẩm thành công");
+  } catch (err) {
+    dispatch({
+      type: TYPES.UPDATE_PRODUCT_FAIL,
+      payload: err.response?.data?.message,
+    });
+    toast.error("Cập nhật sản phẩm thất bại");
   }
 };

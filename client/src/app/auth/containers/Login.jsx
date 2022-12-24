@@ -41,8 +41,6 @@ const Login = () => {
     if (!isExpriedToken(user?.token)) {
       if (user?.encode.role === 0) {
         window.location.href = "/";
-      } else {
-        window.location.href = "/admin";
       }
     }
   }, [user]);

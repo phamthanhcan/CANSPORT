@@ -14,7 +14,7 @@ class Cart {
         .populate("products.size")
         .populate(
           "products.product",
-          "name images price discount quantity length height weight width"
+          "name image price discount quantity length height weight width"
         )
         .then((cart) => {
           res.json({ cart: cart });
@@ -150,16 +150,17 @@ class Cart {
           $pull: { products: { product: productCartId, size: sizeId } },
         })
         .exec()
-        .then(() => {
+        .then((result) => {
+          console.log("result", result);
           return res.status(200).json({
             success: true,
-            message: "update cart successfully",
+            message: "Xoá sản phẩm khỏi giỏ hàng thành công",
           });
         })
         .catch((err) => {
           return res.status(500).json({
             success: false,
-            message: "update product failed",
+            message: "Xoá sản phẩm khỏi giỏ hàng thất bại",
           });
         });
     }

@@ -150,8 +150,8 @@ class Order {
             .then(() => {
               try {
                 products.forEach(async (item) => {
+                  console.log({ item });
                   const product = await productModel.findById(item.product);
-                  console.log(product);
                   const result1 = await productModel.findByIdAndUpdate(
                     item.product,
                     {
@@ -161,17 +161,16 @@ class Order {
                       },
                     }
                   );
-                  const size = await sizeModel.findById(item.size);
-                  if (size) {
-                    const result2 = await sizeModel.findByIdAndUpdate(
-                      item.size,
-                      {
+                  if (item.size) {
+                    const size = await sizeModel.findById(item.size);
+                    const result2 = await sizeModel
+                      .findByIdAndUpdate(item.size, {
                         $set: {
                           sold: size.sold + item.quantity,
                           quantity: size.quantity - item.quantity,
                         },
-                      }
-                    );
+                      })
+                      .then((result) => console.log("size", result));
                   }
                 });
 

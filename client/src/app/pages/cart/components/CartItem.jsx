@@ -5,35 +5,37 @@ import { isEmpty, numberWithCommas } from "../../../shared/helper/data";
 import { addProductCart, deleteItemCart } from "../cart.actions";
 
 const CartItem = (props) => {
-  const { productCart, cartId } = props;
+  const { cartItem, cartId } = props;
+
+  console.log(cartItem);
 
   const dispatch = useDispatch();
 
-  const [amountProduct, setAmountProduct] = useState(productCart.quantity);
-  const amountTemp = useRef(productCart.quantity);
+  const [amountProduct, setAmountProduct] = useState(cartItem.quantity);
+  const amountTemp = useRef(cartItem.quantity);
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  const deleteProductCart = () => {
+  const deletecartItem = () => {
     dispatch(
       deleteItemCart(
-        productCart.product.id,
+        cartItem.product._id,
         cartId,
-        productCart.size === null ? null : productCart.size.id
+        cartItem.size === null ? null : cartItem.size._id
       )
     );
   };
 
   const onChangeQuantity = (target) => {
-    const maxQuantity = isEmpty(productCart.size)
-      ? productCart.product.quantity
-      : productCart.size.quantity;
+    const maxQuantity = isEmpty(cartItem.size)
+      ? cartItem.product.quantity
+      : cartItem.size.quantity;
 
     if (amountTemp.current + target < 1) {
       setAmountProduct(1);
       dispatch(
         addProductCart(
-          productCart.product.id,
-          !isEmpty(productCart.size) ? productCart.size.id : null,
+          cartItem.product.id,
+          !isEmpty(cartItem.size) ? cartItem.size.id : null,
           -amountTemp.current + 1,
           user.encode._id
         )
@@ -44,9 +46,9 @@ const CartItem = (props) => {
 
       dispatch(
         addProductCart(
-          productCart.product.id || productCart.product._id,
-          !isEmpty(productCart.size)
-            ? productCart.size.id || productCart.size._id
+          cartItem.product.id || cartItem.product._id,
+          !isEmpty(cartItem.size)
+            ? cartItem.size.id || cartItem.size._id
             : null,
           target,
           user.encode._id
@@ -60,27 +62,23 @@ const CartItem = (props) => {
   };
 
   return (
-    <tr
-      key={
-        productCart.size === null ? productCart.product.id : productCart.size.id
-      }
-    >
+    <tr>
       <td>
-        <img src={productCart.product.images[0] || NoImage} alt="Product" />
+        <img src={cartItem.product.image || NoImage} alt="Product" />
       </td>
       <td>
-        <p>{productCart.product.name}</p>
+        <p>{cartItem.product.name}</p>
       </td>
       <td>
-        {productCart.size && (
+        {cartItem.size && (
           <div className="product-view-option">
-            <span>{productCart.size.size}</span>
+            <span>{cartItem.size.size}</span>
           </div>
         )}
       </td>
       <td>
         <span className="price">
-          {numberWithCommas(productCart.product.price)}đ
+          {numberWithCommas(cartItem.product.price)}đ
         </span>
       </td>
       <td>
@@ -107,20 +105,22 @@ const CartItem = (props) => {
           onClick={() => onChangeQuantity(1)}
         />
       </td>
-      <td>{productCart.product.discount}</td>
+      <td>
+        {cartItem.product.discount > 0 ? cartItem.product.discount + "%" : ""}
+      </td>
       <td>
         <span className="price">
           {numberWithCommas(
-            productCart.quantity * productCart.product.price -
-              productCart.quantity *
-                productCart.product.price *
-                (productCart.product.discount / 100)
+            cartItem.quantity * cartItem.product.price -
+              cartItem.quantity *
+                cartItem.product.price *
+                (cartItem.product.discount / 100)
           )}
           đ
         </span>
       </td>
       <td>
-        <button onClick={deleteProductCart}>
+        <button onClick={deletecartItem}>
           <ion-icon name="trash-outline"></ion-icon>
         </button>
       </td>

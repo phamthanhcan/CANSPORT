@@ -8,6 +8,7 @@ import { logout } from "../../../auth/auth.actions";
 import Avatar from "../../../../assets/images/avatar.png";
 import { isEmpty } from "../../helper/data";
 import { getCartByUser } from "../../../pages/cart/cart.actions";
+import { getListCategory } from "../../../pages/home/home.actions";
 
 const categories = [
   {
@@ -54,6 +55,7 @@ const Header = (props) => {
   const user = useSelector((state) => state.auth.data);
   const userInfo = useSelector((state) => state.user.data);
   const cart = useSelector((state) => state.cart.data);
+  const categories = useSelector((state) => state.category.data);
   const isAdmin = user?.encode?.role === 1;
 
   const totalQuantityProductInCart = () => {
@@ -62,10 +64,16 @@ const Header = (props) => {
     }, 0);
   };
 
+  console.log({ categories });
+
   const handleLogout = useCallback(() => {
     dispatch(logout());
     navigate("/");
   }, [dispatch, navigate]);
+
+  useEffect(() => {
+    dispatch(getListCategory());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!isExpriedToken(user?.token || "")) {
@@ -79,7 +87,7 @@ const Header = (props) => {
   }, [dispatch]);
 
   return (
-    <header className={`header ${isAdmin ? "dark" : ""}`}>
+    <header className={`header`}>
       <div className="header-top">
         <div className="container">
           <div className="header-left">
@@ -153,6 +161,18 @@ const Header = (props) => {
               </>
             )}
           </div>
+        </div>
+      </div>
+      <div className="header-bottom">
+        <div className="container">
+          <ul className="categories-list">
+            {categories &&
+              categories.map((category) => (
+                <li className="category-item" key={category.id}>
+                  <Link to={`listProduct/${category.id}`}>{category.name}</Link>
+                </li>
+              ))}
+          </ul>
         </div>
       </div>
     </header>

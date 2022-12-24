@@ -39,19 +39,27 @@
     font-weight: map-get($font-weight, bold);
   }
 
-  &-price-origin {
-    margin-right: 10px;
-    text-decoration: line-through;
-    color: map-get($color, border);
-    font-size: map-get($font-size, xl);
-    font-weight: map-get($font-weight, bold);
-  }
-
   &-price {
+    display: flex;
+    justify-content: center;
     font-weight: 600;
-    color: map-get($color, error);
     font-size: map-get($font-size, xl);
     font-weight: map-get($font-weight, bold);
+
+    &-current {
+      color: map-get($color, error);
+    }
+
+    &-origin {
+      margin-right: 10px;
+      text-decoration: line-through;
+      color: map-get($color, border);
+    }
+
+    &.view {
+      justify-content: start;
+      font-size: map-get($font-size, xxxl);
+    }
   }
 
   &-name {
@@ -60,7 +68,7 @@
   }
 
   &-status {
-    font-size: map-get($font-size, md);
+    font-size: map-get($font-size, sm);
     font-weight: map-get($font-weight, bold);
   }
 
@@ -77,5 +85,13 @@
 
   &-sold {
     margin-left: 8px !important;
+  }
+
+  &-sizes {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    gap: 5px;
+    font-weight: map-get($font-weight, bold);
   }
 }

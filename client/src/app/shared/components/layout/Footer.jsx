@@ -81,14 +81,14 @@ const Footer = () => {
             <p>Zalo bán sỉ: 0382 123 321</p>
           </div>
         </div>
-        <div className="f-center-x footer-feedback">
+        {/* <div className="f-center-x footer-feedback">
           <input
             className="form-control"
             placeholder="Gửi phản ánh cho chúng tôi"
           />
           <button className="btn btn-primary">Gửi</button>
-        </div>
-        <div className="f-center-x">
+        </div> */}
+        <div className="f-center-x mt-5">
           <p>Cung cấp bởi CANSPORT</p>
         </div>
       </div>
