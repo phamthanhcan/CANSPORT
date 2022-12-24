@@ -8,6 +8,7 @@ import Profile from "./app/pages/account/containers/Profile";
 import ChangePassword from "./app/pages/account/containers/ChangePassword";
 import Purchase from "./app/pages/account/containers/Purchase";
 import ListProductByCategory from "./app/pages/home/containers/ListProductByCategory";
+import Order from "./app/pages/cart/containers/Order";
 
 export const pageRoutes = [
   {
@@ -43,7 +44,7 @@ export const pageRoutes = [
   },
   {
     path: "/order",
-    element: Cart,
+    element: Order,
     isProtected: true,
     redirect: "/login",
   },
