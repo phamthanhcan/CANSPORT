@@ -95,6 +95,7 @@ const initialStateProduct = {
   message: "",
   products: [],
   totalPages: 0,
+  totalItems: 0,
 };
 
 export const productReducer = (state = initialStateProduct, action) => {
@@ -111,6 +112,7 @@ export const productReducer = (state = initialStateProduct, action) => {
         hasError: false,
         products: action.payload.data,
         totalPages: action.payload.totalPages,
+        totalItems: action.payload.totalItems,
       };
     case TYPES.GET_PRODUCT_FAIL:
       return {
@@ -150,6 +152,43 @@ export const productReducer = (state = initialStateProduct, action) => {
         hasError: true,
         isLoading: false,
         error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+const initialStateUser = {
+  isLoading: false,
+  hasError: false,
+  message: "",
+  users: [],
+  totalPages: 0,
+  totalItems: 0,
+};
+
+export const userReducer = (state = initialStateUser, action) => {
+  switch (action.type) {
+    case TYPES.GET_LIST_USER:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case TYPES.GET_LIST_USER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        hasError: false,
+        users: action.payload.users,
+        totalPages: action.payload.totalPages,
+        totalItems: action.payload.totalItems,
+      };
+    case TYPES.GET_LIST_USER_FAIL:
+      return {
+        ...state,
+        isLoading: false,
+        hasError: true,
+        message: action.payload,
       };
     default:
       return state;

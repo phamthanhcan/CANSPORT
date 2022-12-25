@@ -26,7 +26,7 @@ export default function CheckoutForm(props) {
     const clientSecret = new URLSearchParams(window.location.search).get(
       "payment_intent_client_secret"
     );
-
+    console.log({ clientSecret });
     if (!clientSecret) {
       return;
     }
@@ -92,13 +92,17 @@ export default function CheckoutForm(props) {
     <form id="payment-form" onSubmit={handleSubmit}>
       <p className="txt-center txt-demi mb-3 txt-lg">Thanh toán {price}VND</p>
       <PaymentElement id="payment-element" />
-      <button
-        className="payment-btn"
-        disabled={isLoading || !stripe || !elements}
-        id="submit"
-      >
-        <button id="btn btn-primary">Pay now</button>
-      </button>
+      <div className="f-center-x">
+        <button
+          className="payment-btn "
+          disabled={isLoading || !stripe || !elements}
+          id="submit"
+        >
+          <button id="button-text" className="btn btn-primary mt-2">
+            THANH TOÁN NGAY
+          </button>
+        </button>
+      </div>
       {/* Show any error or success messages */}
       {message && <div id="payment-message">{message}</div>}
     </form>

@@ -318,7 +318,6 @@ class Product {
 
   async getProductByCategory(req, res) {
     let { id } = req.params;
-    console.log({ id });
     if (!id) {
       return res.status(400);
     } else {
@@ -329,7 +328,6 @@ class Product {
           .populate("ratingsReviews.user", "name email userImage")
           .populate("sizes");
         if (products) {
-          console.log({ products });
           return res.json({ products: products });
         }
       } catch (err) {

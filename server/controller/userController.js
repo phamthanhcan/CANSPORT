@@ -1,5 +1,6 @@
 const userModel = require("../models/users");
 const bcrypt = require("bcryptjs");
+const { getPagination } = require("../config/function");
 
 class User {
   async getAllUser(req, res) {
@@ -10,11 +11,65 @@ class User {
           "_id name email phone dob address gender userImage status updatedAt createdAt"
         );
       if (users) {
-        return res.json({ users });
+        return res.status(200).json({
+          success: true,
+          message: "Lấy danh sách người dùng thành công",
+          users,
+        });
       }
     } catch (err) {
-      return res.status(500);
+      return res.status(500).json({
+        success: false,
+        message: err.message,
+      });
     }
+  }
+
+  async getListUser(req, res) {
+    const { page, size, name, active } = req.query;
+    const { limit, offset } = getPagination(page, size);
+    let sort = { _id: -1 };
+    let query = {};
+
+    if (name) {
+      query = {
+        ...query,
+        name: new RegExp(name, "i"),
+      };
+    }
+
+    if (active) {
+      query = {
+        ...query,
+        status: true,
+      };
+    }
+
+    const options = {
+      limit,
+      offset,
+      sort,
+    };
+
+    userModel
+      .paginate({ ...query, userRole: 0 }, options)
+      .then((data) => {
+        res.status(200).json({
+          success: true,
+          totalItems: data.totalDocs,
+          totalPages: data.totalPages,
+          currentPage: data.page - 1,
+          users: data.docs,
+        });
+      })
+      .catch((err) => {
+        res.status(500).json({
+          success: false,
+          message:
+            err.message ||
+            "Đã xảy ra một số lỗi khi truy xuất dữ liệu người dùng",
+        });
+      });
   }
 
   async getSingleUser(req, res) {

@@ -10,6 +10,7 @@ import Purchase from "./app/pages/account/containers/Purchase";
 import ListProductByCategory from "./app/pages/home/containers/ListProductByCategory";
 import Order from "./app/pages/cart/containers/Order";
 import ListProductBySearch from "./app/pages/home/containers/ListProductBySearch";
+import Payment from "./app/pages/cart/containers/Payment";
 
 export const pageRoutes = [
   {
@@ -51,6 +52,12 @@ export const pageRoutes = [
   {
     path: "/order",
     element: Order,
+    isProtected: true,
+    redirect: "/login",
+  },
+  {
+    path: "/payment",
+    element: Payment,
     isProtected: true,
     redirect: "/login",
   },

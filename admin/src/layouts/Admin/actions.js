@@ -107,6 +107,7 @@ export const getListProducts =
         payload: {
           data: res.data.products,
           totalPages: res.data.totalPages,
+          totalItems: res.data.totalItems,
         },
       });
     } catch (err) {
@@ -184,5 +185,30 @@ export const editProduct = (productData, id) => async (dispatch) => {
       payload: err.response?.data?.message,
     });
     toast.error("Cập nhật sản phẩm thất bại");
+  }
+};
+
+export const getListUser = (page, size, name, active) => async (dispatch) => {
+  dispatch({
+    type: TYPES.GET_LIST_USER,
+  });
+
+  try {
+    const res = await getApi([
+      `user?page=${page}&size=${size}&name=${name}&active=${active}`,
+    ]);
+    dispatch({
+      type: TYPES.GET_LIST_USER_SUCCESS,
+      payload: {
+        users: res.data.users,
+        totalPages: res.data.totalPages,
+        totalItems: res.data.totalItems,
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPES.GET_LIST_USER_FAIL,
+      payload: err.response?.data?.message,
+    });
   }
 };

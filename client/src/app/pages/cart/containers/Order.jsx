@@ -42,6 +42,8 @@ const Order = () => {
 
   const isFromPayment = window.location.search.includes("isFromPayment");
 
+  console.log(isFromPayment);
+
   const user = useSelector((state) => state.auth.data.encode);
   const userTest = useSelector((state) => state.auth.data);
   const cart = useSelector((state) => state.cart.data);

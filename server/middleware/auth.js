@@ -36,7 +36,7 @@ exports.isAdmin = (req, res, next) => {
   userModel
     .findById(req.body.loggedInUserId)
     .then((user) => {
-      if (user.userRole === 0) {
+      if (user.userRole !== 1) {
         res.status(403).json({ error: "Access denied" });
       }
       next();
