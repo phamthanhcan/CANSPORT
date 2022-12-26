@@ -65,12 +65,12 @@ const orderSchema = new mongoose.Schema(
     typePay: {
       type: String,
       default: "cod",
-      enum: ["cod", "online-payment"],
+      enum: ["cod", "online"],
     },
     status: {
       type: String,
-      default: "Not comfirmed",
-      enum: ["Not comfirmed", "Confirmed"],
+      default: "Wait comfirmed",
+      enum: ["Wait confirmed", "Not comfirmed", "Confirmed"],
     },
   },
   { timestamps: true }

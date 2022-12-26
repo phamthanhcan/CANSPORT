@@ -202,3 +202,46 @@
     font-size: map-get($font-size, xl);
   }
 }
+
+.order-product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+
+  &-img {
+    position: relative;
+    margin: 10px;
+  }
+
+  &-quantity {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: map-get($color, secondary);
+    font-size: 12px;
+    border: 1px solid map-get($color, secondary);
+    border-radius: 50%;
+    height: 15px;
+    width: 15px;
+    background-color: map-get($color, primary);
+  }
+
+  &-name {
+    font-size: 12px;
+  }
+
+  &-price {
+    font-size: 12px;
+    font-weight: bold;
+    color: map-get($color, error);
+    .origin {
+      color: map-get($color, disabled);
+      text-decoration: line-through;
+      margin-bottom: 0;
+    }
+  }
+}

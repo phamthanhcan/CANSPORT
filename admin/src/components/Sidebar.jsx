@@ -60,7 +60,7 @@ const Sidebar = () => {
         </li>
         <li
           className={`sidebar-item ${
-            pathname === "/admin/account" ? "active" : ""
+            pathname === "/admin/order" ? "active" : ""
           }`}
         >
           <Link className="sidebar-item-link" to="order">
