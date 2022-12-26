@@ -256,3 +256,39 @@ export const userReducer = (state = initialStateUser, action) => {
       return state;
   }
 };
+
+const initialStateOrder = {
+  isLoading: false,
+  hasError: false,
+  message: "",
+  orders: [],
+  totalPages: 0,
+  totalItems: 0,
+};
+
+export const orderReducer = (state = initialStateOrder, action) => {
+  switch (action.type) {
+    case TYPES.GET_ORDERS:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case TYPES.GET_ORDERS_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        orders: action.payload.orders,
+        totalPages: action.payload.totalPages,
+        totalItems: action.payload.totalItems,
+      };
+    case TYPES.GET_ORDERS_FAIL:
+      return {
+        ...state,
+        isLoading: false,
+        hasError: true,
+        message: action.payload,
+      };
+    default:
+      return state;
+  }
+};

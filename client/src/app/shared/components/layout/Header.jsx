@@ -102,7 +102,7 @@ const Header = (props) => {
       <div className="header-top">
         <div className="container">
           <div className="header-left">
-            <Link className="logo" to={`${isAdmin ? "/admin" : "/"}`}>
+            <Link className="logo" to="/">
               <img
                 src="https://bizweb.dktcdn.net/100/108/842/themes/775959/assets/logo.png?1669439764403"
                 alt="CANSPORT LOGO"

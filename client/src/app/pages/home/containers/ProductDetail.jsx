@@ -33,6 +33,7 @@ const ProductDetail = () => {
   const size = watch("size");
 
   const onSubmit = () => {
+    console.log({ user });
     if (isEmpty(user)) {
       navigate("/login");
       return;
@@ -42,6 +43,7 @@ const ProductDetail = () => {
       return;
     }
     dispatch(addProductCart(product.id, size, amountProduct, user.encode._id));
+    navigate("/cart");
   };
 
   const changeInputQuantity = (value) => {

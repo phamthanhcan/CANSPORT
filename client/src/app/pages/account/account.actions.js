@@ -28,17 +28,11 @@ export const getOrderByUser = (userId) => async (dispatch) => {
     type: TYPES.GET_ORDERS,
   });
 
-  console.log("lfjsdljfsdlkjf");
-
   try {
     const res = await getApi([`order/user/${userId}`]);
-    console.log(res.data);
-    const data = res.data.orders.map((order) => {
-      return new Order(order);
-    });
     dispatch({
       type: TYPES.GET_ORDERS_SUCCESS,
-      payload: data,
+      payload: res.data.orders,
     });
   } catch (err) {
     dispatch({

@@ -40,8 +40,9 @@
     font-weight: map-get($font-weight, bold);
     color: map-get($color, error);
 
-    .order-product-origin.disabled {
-      color: map-get($color, disabled);
+    .price-origin.disabled {
+      color: map-get($color, disabled) !important;
+      text-decoration: line-through;
     }
   }
 

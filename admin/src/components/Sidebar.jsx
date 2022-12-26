@@ -63,9 +63,9 @@ const Sidebar = () => {
             pathname === "/admin/account" ? "active" : ""
           }`}
         >
-          <Link className="sidebar-item-link" to="account">
-            <ion-icon name="shield-outline"></ion-icon>
-            Tài khoản
+          <Link className="sidebar-item-link" to="order">
+            <ion-icon name="cube-outline"></ion-icon>
+            Đơn hàng
           </Link>
         </li>
       </ul>

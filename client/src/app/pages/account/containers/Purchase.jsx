@@ -54,7 +54,7 @@ const Purchase = () => {
                       {item.products &&
                         item.products?.map((productCart) => {
                           return (
-                            <li key={productCart.id} className="order-product">
+                            <li key={productCart._id} className="order-product">
                               <div className="order-product-info">
                                 <div className="f-center-y">
                                   <img

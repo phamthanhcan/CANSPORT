@@ -24,8 +24,7 @@ class Order {
       populate: [
         {
           path: "products.product",
-          select:
-            "name images minPrice maxPrice discount quantity ratingsReviews",
+          select: "name image price discount quantity ratingsReviews",
         },
         {
           path: "user",
@@ -37,7 +36,7 @@ class Order {
     orderModel
       .paginate(query, options)
       .then((data) => {
-        res.send({
+        return res.status(200).json({
           totalItems: data.totalDocs,
           orders: data.docs,
           totalPages: data.totalPages,
@@ -45,7 +44,7 @@ class Order {
         });
       })
       .catch((err) => {
-        res.status(500).send({
+        return res.status(500).json({
           message:
             err.message || "Some error occurred while retrieving products.",
         });
@@ -62,7 +61,7 @@ class Order {
         .populate("products.size")
         .populate(
           "products.product",
-          "name images price discount quantity ratingsReviews"
+          "name image price discount quantity ratingsReviews"
         )
         .then((orders) => {
           res.json({ orders: orders });

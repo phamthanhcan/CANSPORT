@@ -1,6 +1,7 @@
 import Admin from "./layouts/Admin";
 import AccountManage from "./layouts/Admin/containers/AccountManage";
 import CategoryManage from "./layouts/Admin/containers/CategoryManage";
+import OrderManage from "./layouts/Admin/containers/OrderManage";
 import ProductManage from "./layouts/Admin/containers/ProductManage";
 import RevenueChart from "./layouts/Admin/containers/RevenueChart";
 import UserManage from "./layouts/Admin/containers/UserManage";
@@ -41,8 +42,8 @@ export const routes = [
         redirect: "/",
       },
       {
-        path: "account",
-        element: AccountManage,
+        path: "order",
+        element: OrderManage,
         isProtected: true,
         redirect: "/",
       },

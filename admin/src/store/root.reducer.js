@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import authReducer from "../layouts/Auth/reducer";
 import {
   categoryReducer,
+  orderReducer,
   productReducer,
   userReducer,
 } from "../layouts/Admin/reducer";
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   category: categoryReducer,
   product: productReducer,
   user: userReducer,
+  order: orderReducer,
 });
 
 export default rootReducer;

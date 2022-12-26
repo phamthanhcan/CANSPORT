@@ -289,3 +289,26 @@ export const updateUser = (userId, userData) => async (dispatch) => {
     });
   }
 };
+
+export const getOrders = (page, size) => async (dispatch) => {
+  dispatch({
+    type: TYPES.GET_ORDERS,
+  });
+
+  try {
+    const res = await getApi([`order?page=${page}&size=${size}`]);
+    dispatch({
+      type: TYPES.GET_ORDERS_SUCCESS,
+      payload: {
+        orders: res.data.orders,
+        totalPages: res.data.totalPages,
+        totalItems: res.data.totalItems,
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: TYPES.GET_LIST_USER_FAIL,
+      payload: err.response?.data?.message,
+    });
+  }
+};
