@@ -212,3 +212,80 @@ export const getListUser = (page, size, name, active) => async (dispatch) => {
     });
   }
 };
+
+export const deleteUser = (userId) => async (dispatch) => {
+  dispatch({
+    type: TYPES.DELETE_USER,
+  });
+
+  try {
+    const res = await deleteApi(["user", userId]);
+    if (res.data.success) {
+      toast.success("Xoá người dùng thành công");
+    }
+    dispatch({
+      type: TYPES.DELETE_USER_SUCCESS,
+      payload: { userId },
+    });
+  } catch (err) {
+    if (!err.response.data.success) {
+      toast.error(err.response.data?.message || "Xoá người dùng thất bại");
+    }
+    dispatch({
+      type: TYPES.DELETE_USER_FAIL,
+      payload: err.response?.data?.message,
+    });
+  }
+};
+
+export const addUser = (userData) => async (dispatch) => {
+  dispatch({
+    type: TYPES.ADD_USER,
+  });
+
+  try {
+    const res = await postApi(["auth", "signup"], userData);
+    if (res.data.success) {
+      toast.success("Thêm người dùng thành công");
+    }
+    dispatch({
+      type: TYPES.ADD_USER_SUCCESS,
+      payload: { user: res.data.user },
+    });
+  } catch (err) {
+    if (!err.response.data.success) {
+      toast.error(err.response.data?.message || "Thêm người dùng thất bại");
+    }
+    dispatch({
+      type: TYPES.ADD_USER_FAIL,
+      payload: err.response?.data?.message,
+    });
+  }
+};
+
+export const updateUser = (userId, userData) => async (dispatch) => {
+  dispatch({
+    type: TYPES.UPDATE_USER,
+  });
+  console.log("update");
+
+  try {
+    const res = await putApi(["user", userId], userData);
+    console.log(res);
+    if (res.data.success) {
+      toast.success("Cập nhật người dùng thành công");
+    }
+    dispatch({
+      type: TYPES.UPDATE_USER_SUCCESS,
+      payload: { user: res.data.user, userId },
+    });
+  } catch (err) {
+    if (!err.response.data.success) {
+      toast.error(err.response.data?.message || "Cập nhật người dùng thất bại");
+    }
+    dispatch({
+      type: TYPES.UPDATE_USER_FAIL,
+      payload: err.response?.data?.message,
+    });
+  }
+};

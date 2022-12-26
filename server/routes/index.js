@@ -29,9 +29,7 @@ function route(app) {
   app.use("/order", orderRoute);
   app.use("/size", sizeRoute);
   app.post("/revenue", loginCheck, (req, res) => {
-    //year: 0, month: 1, day: 2
     const { option, data } = req.body;
-    console.log(new Date(`${data.year}-${data.month + 1}-01`));
     switch (option) {
       case 0:
         orderModel
@@ -123,45 +121,6 @@ function route(app) {
           });
         break;
       }
-      case 2:
-        orderModel
-          .aggregate([
-            {
-              $match: {
-                createdAt: {
-                  $gte: new Date(`${data.year}-${data.month}-${data.day}`),
-                  $lt: new Date(`${data.year}-${data.month}-${data.day + 1}`),
-                },
-              },
-            },
-            {
-              $unwind: {
-                path: "$products",
-              },
-            },
-            {
-              $group: {
-                // Group by both month and year of the sale
-                _id: {
-                  $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
-                },
-                // Count the no of sales
-                price: {
-                  $sum: "$price",
-                },
-                quantity: {
-                  $sum: "$products.quantity",
-                },
-              },
-            },
-          ])
-          .then((result) => {
-            return res.status(200).json({ result });
-          })
-          .catch((error) => {
-            return res.status(500);
-          });
-        break;
       default:
         break;
     }

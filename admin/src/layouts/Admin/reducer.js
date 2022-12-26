@@ -190,6 +190,68 @@ export const userReducer = (state = initialStateUser, action) => {
         hasError: true,
         message: action.payload,
       };
+
+    case TYPES.DELETE_USER:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case TYPES.DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        users: state.users.filter((user) => user._id !== action.payload.userId),
+      };
+    case TYPES.DELETE_USER_FAIL:
+      return {
+        ...state,
+        isLoading: false,
+        hasError: true,
+        message: action.payload,
+      };
+
+    case TYPES.ADD_USER:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case TYPES.ADD_USER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        users: [action.payload.user, ...state.users],
+      };
+    case TYPES.ADD_USER_FAIL:
+      return {
+        ...state,
+        isLoading: false,
+        hasError: true,
+        message: action.payload,
+      };
+
+    case TYPES.UPDATE_USER:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case TYPES.UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        isLoading: false,
+        users: state.users.map((user) => {
+          if (user._id === action.payload.userId) {
+            return action.payload.user;
+          } else return user;
+        }),
+      };
+    case TYPES.UPDATE_USER_FAIL:
+      return {
+        ...state,
+        isLoading: false,
+        hasError: true,
+        message: action.payload,
+      };
+
     default:
       return state;
   }

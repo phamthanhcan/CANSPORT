@@ -102,7 +102,11 @@ const CategoryForm = ({ id, modalAdd, toggleModalAdd }) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={handleSubmit(onSubmit)}>
+        <Button
+          color="primary"
+          onClick={handleSubmit(onSubmit)}
+          disabled={isLoadingImg}
+        >
           {id ? "Cập nhật" : "Thêm"}
         </Button>{" "}
         <Button color="secondary" onClick={toggleModalAdd}>

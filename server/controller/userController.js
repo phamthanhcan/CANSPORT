@@ -92,24 +92,38 @@ class User {
     }
   }
 
-  async postEditUser(req, res) {
+  async editUser(req, res) {
     const userId = req.params.userId;
     let { name, phone, dob, address, gender, userImage } = req.body;
-    if (!userId || !name || !phone || !dob || !address) {
+    if (!userId || !name || !phone) {
       return res.status(400).json({ message: "All filled must be required" });
     } else {
-      let currentUser = userModel.findByIdAndUpdate(userId, {
-        name,
-        phone,
-        dob,
-        address,
-        gender,
-        userImage,
-      });
-      currentUser.exec((err, result) => {
-        if (err) return res.status(500);
-        return res.json({ success: "User updated successfully" });
-      });
+      userModel
+        .findByIdAndUpdate(userId, {
+          name,
+          phone,
+          dob,
+          address,
+          gender,
+          userImage,
+        })
+        .exec()
+        .then(() => {
+          userModel.findById(userId).then((user) => {
+            console.log(user);
+            return res.status(200).json({
+              success: true,
+              message: "Cập nhật người dùng thành công",
+              user,
+            });
+          });
+        })
+        .catch((err) => {
+          return res.status(500).json({
+            success: false,
+            message: "Đã xảy ra lỗi khi cập nhật người dùng",
+          });
+        });
     }
   }
 
@@ -121,12 +135,14 @@ class User {
       .then(() => {
         res.status(200).json({
           success: true,
+          message: "Xoá người dùng thành công!",
         });
       })
       .catch((err) => {
         res.status(500).json({
           success: false,
           err: err.message,
+          message: "Đã có lỗi khi xoá người dùng",
         });
       });
   }

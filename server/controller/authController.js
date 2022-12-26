@@ -83,14 +83,15 @@ class Auth {
   }
 
   signUp(req, res) {
-    let { name, email, password, dob, gender, phone, address } = req.body;
+    let { name, email, password, dob, gender, phone, address, userImage } =
+      req.body;
     password = bcrypt.hashSync(password);
     userModel
       .findOne({ email: email })
       .then((user) => {
         if (user) {
           return res.status(400).json({
-            message: "Email already exists",
+            message: "Email đã tồn tại",
           });
         } else {
           const newUser = new userModel({
@@ -102,17 +103,23 @@ class Auth {
             gender,
             phone,
             address: address || "",
+            userImage,
           });
           newUser
             .save()
             .then((data) => {
-              return res.json({
-                message: "Account create successfully",
+              return res.status(201).json({
+                success: true,
+                message: "Thêm người dùng thành công",
                 user: data,
               });
             })
             .catch((err) => {
               console.log(err);
+              return res.status(501).json({
+                success: false,
+                message: "Đã có lỗi khi thêm người dùng",
+              });
             });
         }
       })
@@ -125,7 +132,11 @@ class Auth {
     let { email, password } = req.body;
 
     try {
-      const user = await userModel.findOne({ email: email, userRole: 0 });
+      const user = await userModel.findOne({
+        email: email,
+        userRole: 0,
+        status: true,
+      });
       if (!user) {
         return res.status(400).json({
           message: "Email hoặc mật khẩu không hợp lệ",

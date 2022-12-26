@@ -15,6 +15,14 @@ import Navbar from "../../../components/Navbar";
 import { postApi } from "../../../libs/api";
 import Empty from "../../../libs/components/Empty";
 
+const generateMonth = () => {
+  let arr = [];
+  for (let i = 0; i <= 12; i++) {
+    arr.push(i);
+  }
+  return arr;
+};
+
 const RevenueChart = () => {
   const {
     register,
@@ -24,7 +32,21 @@ const RevenueChart = () => {
 
   const [data, setData] = useState(null);
 
-  const onSubmit = () => {};
+  const onSubmit = (data) => {
+    let option = 0;
+    if (+data.month && +data.year) {
+      option = 1;
+    }
+    postApi(["revenue"], {
+      option,
+      data: {
+        year: +data.year,
+        month: +data.month,
+      },
+    })
+      .then((res) => setData(res.data.result))
+      .catch((err) => console.error(err));
+  };
 
   useEffect(() => {
     const date = new Date();
@@ -54,7 +76,7 @@ const RevenueChart = () => {
                   <label htmlFor="month" className="form-label">
                     Tháng
                   </label>
-                  <input
+                  {/* <input
                     type="text"
                     className={`form-control ${
                       errors.name ? "is-invalid" : ""
@@ -63,8 +85,22 @@ const RevenueChart = () => {
                     placeholder="MM"
                     {...register("month")}
                     defaultValue={new Date().getMonth() + 1}
-                  />
-                  <div className="invalid-feedback">{errors.name?.message}</div>
+                  /> */}
+
+                  <select
+                    className="form-control"
+                    style={{ width: 200 }}
+                    {...register("month")}
+                    defaultValue={new Date().getMonth() + 1}
+                  >
+                    {generateMonth().map((item) => {
+                      return (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
                 <div>
                   <label htmlFor="year" className="form-label">
@@ -73,14 +109,16 @@ const RevenueChart = () => {
                   <input
                     type="text"
                     className={`form-control ${
-                      errors.name ? "is-invalid" : ""
+                      errors.year ? "is-invalid" : ""
                     }`}
                     id="year"
                     placeholder="YYYY"
-                    {...register("year")}
+                    {...register("year", {
+                      required: "Năm không được để trống",
+                    })}
                     defaultValue={`${new Date().getFullYear()}`}
                   />
-                  <div className="invalid-feedback">{errors.name?.message}</div>
+                  <div className="invalid-feedback">{errors.year?.message}</div>
                 </div>
                 <input
                   type="submit"

@@ -14,9 +14,10 @@ import {
 } from "reactstrap";
 import Pagination from "@mui/material/Pagination";
 import Navbar from "../../../components/Navbar";
-import { getListUser } from "../actions";
+import { deleteUser, getListUser } from "../actions";
 import noImage from "../../../assets/images/no-image.png";
 import Empty from "../../../libs/components/Empty";
+import UserForm from "../components/UserForm";
 
 const UserManage = () => {
   const dispatch = useDispatch();
@@ -38,7 +39,10 @@ const UserManage = () => {
     setPage(value);
   };
 
-  const handleDeleteUser = () => {};
+  const handleDeleteUser = () => {
+    dispatch(deleteUser(idSelected));
+    toggleModalDelete();
+  };
 
   useEffect(() => {
     dispatch(getListUser(page - 1, 10, "", true));
@@ -56,7 +60,14 @@ const UserManage = () => {
               style={{ width: 300 }}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <Button onClick={toggleModalAdd}>+ Thêm người dùng</Button>
+            <Button
+              onClick={() => {
+                toggleModalAdd();
+                setIdSelected(null);
+              }}
+            >
+              + Thêm người dùng
+            </Button>
           </div>
           {users.length ? (
             <Row>
@@ -154,7 +165,7 @@ const UserManage = () => {
           <img
             style={{ width: 100, height: 100 }}
             className="mr-3"
-            src={userSelected?.imageUser}
+            src={userSelected?.imageUser || noImage}
             alt=""
           />
           <span>{userSelected?.name}</span>
@@ -168,6 +179,13 @@ const UserManage = () => {
           </Button>
         </ModalFooter>
       </Modal>
+      {modalAdd && (
+        <UserForm
+          id={idSelected}
+          modalAdd={modalAdd}
+          toggleModalAdd={toggleModalAdd}
+        />
+      )}
     </div>
   );
 };
