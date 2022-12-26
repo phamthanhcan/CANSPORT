@@ -132,6 +132,7 @@ function route(app) {
     }
 
     const image = firebase.bucket.file(req.file.originalname);
+    console.log({ image });
 
     const imageWriter = image.createWriteStream({
       metadata: {

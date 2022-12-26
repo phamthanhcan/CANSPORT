@@ -1,6 +1,6 @@
 const admin = require("firebase-admin");
 require("dotenv").config();
-const serviceAccount = require("../cansport-7f03d-firebase-adminsdk-cd6bf-37d695d3d0.json");
+const serviceAccount = require("../cansport-95ec4-firebase-adminsdk-ek807-76fe3316c6.json");
 
 // Initialize firebase admin SDK
 admin.initializeApp({
