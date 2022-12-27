@@ -65,7 +65,7 @@ const OrderManage = () => {
   };
 
   const handleConfirm = (status) => {
-    // dispatch(updateOrder(selectedOrder.id, status));
+    dispatch(updateOrder(selectedOrder.id, status));
 
     if (status === "confirmed") {
       axios

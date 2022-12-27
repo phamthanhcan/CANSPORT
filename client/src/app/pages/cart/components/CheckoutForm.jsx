@@ -8,6 +8,7 @@ import axios from "axios";
 import { getTotalPrice } from "../containers/Cart";
 import { postApi } from "../../../shared/helper/api";
 import { useSelector } from "react-redux";
+import { numberWithCommas } from "../../../shared/helper/data";
 
 export default function CheckoutForm(props) {
   const stripe = useStripe();
@@ -26,7 +27,6 @@ export default function CheckoutForm(props) {
     const clientSecret = new URLSearchParams(window.location.search).get(
       "payment_intent_client_secret"
     );
-    console.log({ clientSecret });
     if (!clientSecret) {
       return;
     }
@@ -70,7 +70,7 @@ export default function CheckoutForm(props) {
             email: user.email,
           },
         },
-        return_url: "http://localhost:3000/order?isFromPayment=1",
+        return_url: "http://localhost:3001/order?isFromPayment=1",
       },
     });
 
@@ -90,7 +90,9 @@ export default function CheckoutForm(props) {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <p className="txt-center txt-demi mb-3 txt-lg">Thanh toán {price}VND</p>
+      <p className="txt-center txt-demi mb-3 txt-lg">
+        Thanh toán {price && numberWithCommas(price)}VND
+      </p>
       <PaymentElement id="payment-element" />
       <div className="f-center-x">
         <button

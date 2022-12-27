@@ -76,7 +76,7 @@ const CartItem = (props) => {
       </td>
       <td>
         <span className="price">
-          {numberWithCommas(cartItem.product.price)}đ
+          {cartItem.product.price && numberWithCommas(cartItem.product.price)}đ
         </span>
       </td>
       <td>
@@ -108,12 +108,13 @@ const CartItem = (props) => {
       </td>
       <td>
         <span className="price">
-          {numberWithCommas(
-            cartItem.quantity * cartItem.product.price -
-              cartItem.quantity *
-                cartItem.product.price *
-                (cartItem.product.discount / 100)
-          )}
+          {cartItem !== null &&
+            numberWithCommas(
+              cartItem.quantity * cartItem.product.price -
+                cartItem.quantity *
+                  cartItem.product.price *
+                  (cartItem.product.discount / 100)
+            )}
           đ
         </span>
       </td>

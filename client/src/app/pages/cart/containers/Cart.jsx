@@ -13,6 +13,7 @@ const Cart = () => {
 
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const cart = useSelector((state) => state.cart.data);
+  const isLoadingProduct = useSelector((state) => state.product.isLoading);
   const isLoading = useSelector((state) => state.cart.isLoading);
   const [totalPrice, setTotalPrice] = useState(0);
 
@@ -40,14 +41,14 @@ const Cart = () => {
     dispatch(deleteCart(cart.id, user.encode._id));
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingProduct) {
     return <LoadingPage />;
   }
 
   return (
     <main className="main container">
       <h2 className="section-title">GIỎ HÀNG</h2>
-      {cart?.products?.length === 0 ? (
+      {cart === null || cart?.products?.length === 0 ? (
         <>
           <Empty />
           <div className="f-center-x">
@@ -94,7 +95,7 @@ const Cart = () => {
               <div className="totals">
                 <span className="totals-label">Tổng</span>
                 <span className="totals-content">
-                  {numberWithCommas(totalPrice)}đ
+                  {totalPrice && numberWithCommas(totalPrice)}đ
                 </span>
               </div>
               <button

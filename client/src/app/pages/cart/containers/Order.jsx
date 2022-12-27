@@ -44,6 +44,81 @@ const Order = () => {
 
   const isFromPayment = window.location.search.includes("isFromPayment");
 
+  useEffect(() => {
+    if (isFromPayment) {
+      const data = JSON.parse(localStorage.getItem("data") || "{}");
+      const products = JSON.parse(localStorage.getItem("products") || "{}");
+      const services = JSON.parse(localStorage.getItem("services") || "{}");
+      const provinceLS = JSON.parse(localStorage.getItem("province") || "{}");
+      const districtLS = JSON.parse(localStorage.getItem("district") || "{}");
+      const wardLS = JSON.parse(localStorage.getItem("ward") || "{}");
+
+      console.log({
+        user: user._id,
+        price: products.reduce((sum, item) => {
+          return (
+            sum +
+            (item.product.price * item.quantity -
+              item.product.price *
+                item.quantity *
+                (item.product.discount / 100))
+          );
+        }, 0),
+        shippingFee: data.shippingFee,
+        shippingId: "test",
+        address: data.addressDetail,
+        province: provinceLS,
+        district: districtLS,
+        ward: wardLS,
+        phone: data.phone,
+        name: data.name,
+        typePay: "online-payment",
+        products: products.map((item) => {
+          return {
+            id: item.id,
+            product: item.product.id,
+            sku: item.sku ? item.sku.id : null,
+            quantity: item.quantity,
+          };
+        }),
+      });
+
+      // postApi(["order/create"], {
+      //   user: user._id,
+      //   price: products.reduce((sum, item) => {
+      //     return (
+      //       sum +
+      //       (item.product.price * item.quantity -
+      //         item.product.price *
+      //           item.quantity *
+      //           (item.product.discount / 100))
+      //     );
+      //   }, 0),
+      //   shippingFee: data.shippingFee,
+      //   shippingId: "test",
+      //   address: data.addressDetail,
+      //   province: provinceLS,
+      //   district: districtLS,
+      //   ward: wardLS,
+      //   phone: data.phone,
+      //   name: data.name,
+      //   typePay: "online-payment",
+      //   products: products.map((item) => {
+      //     return {
+      //       id: item.id,
+      //       product: item.product.id,
+      //       sku: item.sku ? item.sku.id : null,
+      //       quantity: item.quantity,
+      //     };
+      //   }),
+      // })
+      //   .then((res) => {
+      //     dispatch(clearCart());
+      //   })
+      //   .catch((err) => console.error(err));
+    }
+  }, []);
+
   const user = useSelector((state) => state.auth.data.encode);
   const userDetail = useSelector((state) => state.user.data);
   const isLoading = useSelector((state) => state.user.isLoading);

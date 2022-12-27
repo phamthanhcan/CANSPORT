@@ -42,8 +42,9 @@ const ProductDetail = () => {
       toast.error("Vui lòng chọn size!");
       return;
     }
-    dispatch(addProductCart(product.id, size, amountProduct, user.encode._id));
-    navigate("/cart");
+    dispatch(
+      addProductCart(product.id, size, amountProduct, user.encode._id, navigate)
+    );
   };
 
   const changeInputQuantity = (value) => {
@@ -198,32 +199,6 @@ const ProductDetail = () => {
               </div>
               <div className="col-3">
                 <Policy column />
-              </div>
-            </div>
-            <div className="product-collateral">
-              <ul className="product-tab-list">
-                <li className="product-tab-item">
-                  <button className="product-tab-btn">CHI TIẾT SẢN PHẨM</button>
-                </li>
-                <li className="product-tab-item">
-                  <button className="product-tab-btn">
-                    HƯỚNG DẪN MUA HÀNG
-                  </button>
-                </li>
-                <li className="product-tab-item">
-                  <button className="product-tab-btn">CÁCH CHỌN SIZE</button>
-                </li>
-                <li className="product-tab-item">
-                  <button className="product-tab-btn">
-                    CHÍNH SÁCH HOÀN TRẢ
-                  </button>
-                </li>
-              </ul>
-              <div className="product-tab-content">
-                <div className="product-tabpane"></div>
-                <div className="product-tabpane"></div>
-                <div className="product-tabpane"></div>
-                <div className="product-tabpane"></div>
               </div>
             </div>
           </div>

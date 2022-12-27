@@ -214,6 +214,7 @@ class Product {
   editProduct(req, res) {
     const id = req.params.productId;
     const updateProduct = req.body;
+    console.log(updateProduct);
 
     productModel
       .findByIdAndUpdate(id, updateProduct)

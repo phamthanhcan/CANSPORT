@@ -3,7 +3,7 @@ import { deleteApi, getApi, postApi } from "../../shared/helper/api";
 import * as TYPES from "./cart.types";
 
 export const addProductCart =
-  (productId, sizeId = null, quantity, userId) =>
+  (productId, sizeId = null, quantity, userId, navigate) =>
   async (dispatch) => {
     dispatch({
       type: TYPES.ADD_PRODUCT_CART,
@@ -16,6 +16,9 @@ export const addProductCart =
         quantity: quantity,
         userId: userId,
       });
+      if (res.data.success) {
+        navigate("/cart");
+      }
       const products = res.data.cart.products;
       dispatch({
         type: TYPES.ADD_PRODUCT_CART_SUCCESS,
@@ -42,6 +45,7 @@ export const getCartByUser = (userId) => async (dispatch) => {
 
   try {
     const res = await getApi([`cart?userId=${userId}`]);
+    console.log(userId);
     dispatch({
       type: TYPES.GET_CART_BY_USER_SUCCESS,
       payload: res.data.cart,

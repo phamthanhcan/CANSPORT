@@ -173,7 +173,6 @@ class Order {
             .then(() => {
               try {
                 products.forEach(async (item) => {
-                  console.log({ item });
                   const product = await productModel.findById(item.product);
                   const result1 = await productModel.findByIdAndUpdate(
                     item.product,
@@ -225,8 +224,6 @@ class Order {
     const { id } = req.params;
     const { status } = req.body;
 
-    console.log({ id, status });
-
     orderModel
       .findByIdAndUpdate(id, { status: status })
       .exec()
@@ -254,6 +251,26 @@ class Order {
       })
       .catch((err) => {
         return res.status(500);
+      });
+  }
+
+  getRenevue(req, res) {
+    orderModel
+      .find({ status: "confirmed" })
+      .then((orders) => {
+        const totalRevenue = orders.reduce((sum, item) => {
+          return sum + (+item.price + +item.shippingFee);
+        }, 0);
+        return res.status(200).json({
+          success: true,
+          totalRevenue: totalRevenue,
+        });
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          success: false,
+          message: "Có lỗi khi lấy doanh thu",
+        });
       });
   }
 }

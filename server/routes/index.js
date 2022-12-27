@@ -36,6 +36,7 @@ function route(app) {
           .aggregate([
             {
               $match: {
+                status: "confirmed",
                 createdAt: {
                   $gte: new Date(`${data.year}-01-01`),
                   $lt: new Date(`${data.year + 1}-01-01`),
@@ -80,6 +81,7 @@ function route(app) {
           .aggregate([
             {
               $match: {
+                status: "confirmed",
                 createdAt: {
                   $gte: new Date(`${data.year}-${data.month}-01`),
                   $lt: new Date(`${year}-${month}-01`),

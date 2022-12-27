@@ -3,6 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { regex } from "../../shared/constants/regex";
 import { postApi } from "../../shared/helper/api";
 
@@ -63,9 +64,10 @@ const Register = () => {
           success: "Create account successfully",
         });
 
-        setTimeout(() => {
-          navigate("/login");
-        }, 3000);
+        if (res.data.success) {
+          toast.success("Đăng ký thành công");
+        }
+        navigate("/login");
       })
       .catch((err) => {
         setStatus({
