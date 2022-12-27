@@ -90,10 +90,18 @@ class Order {
       ward,
       district,
       province,
+      wardId,
+      districtId,
+      provinceId,
+      height,
+      weight,
+      length,
+      width,
       products,
       price,
       shippingFee,
       shippingId,
+      service,
       typePay,
     } = req.body;
     if (
@@ -107,7 +115,15 @@ class Order {
       !products.length ||
       !price ||
       !shippingId ||
-      !typePay
+      !service ||
+      !typePay ||
+      !wardId ||
+      !districtId ||
+      !provinceId ||
+      !height ||
+      !weight ||
+      !length ||
+      !width
     ) {
       return res.status(400).json({ error: "All filed must be required" });
     } else {
@@ -129,7 +145,15 @@ class Order {
         district,
         phone,
         name,
+        service,
         typePay,
+        wardId,
+        districtId,
+        provinceId,
+        height,
+        weight,
+        length,
+        width,
       });
       return newOrder
         .save()
@@ -195,6 +219,29 @@ class Order {
           });
         });
     }
+  }
+
+  updateOrder(req, res) {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    console.log({ id, status });
+
+    orderModel
+      .findByIdAndUpdate(id, { status: status })
+      .exec()
+      .then((order) => {
+        return res.status(200).json({
+          success: true,
+          order,
+        });
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          success: false,
+          message: "Đã có lỗi khi cập nhật đơn hàng",
+        });
+      });
   }
 
   confirmOrder(req, res) {

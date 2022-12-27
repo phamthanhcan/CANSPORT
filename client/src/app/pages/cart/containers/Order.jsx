@@ -60,8 +60,6 @@ const Order = () => {
   const district = watch("district");
   const ward = watch("ward");
 
-  console.log("user", userTest);
-
   const onSubmit = (data) => {
     if (data.paymentOption === "cod") {
       postApi(["order/create"], {
@@ -77,6 +75,10 @@ const Order = () => {
         ward: wards.find((item) => item.WardCode === ward).WardName,
         phone: data.phone,
         name: data.name,
+        service: {
+          id: services[services.length - 1].service_id,
+          typeId: services[services.length - 1].service_type_id,
+        },
         typePay: "cod",
         products: products.current.map((item) => {
           return {
@@ -86,51 +88,57 @@ const Order = () => {
             quantity: item.quantity,
           };
         }),
+        wardId: +ward,
+        districtId: +district,
+        provinceId: +province,
+        weight: getWeight(products.current),
+        length: getLength(products.current),
+        width: getWidth(products.current),
+        height: getHeight(products.current),
       })
         .then((res) => {
           dispatch(clearCart());
-          // navigate("/account/purchase");
+          navigate("/account/purchase");
         })
         .catch((err) => console.error(err));
-      // axios
-      //   .post(
-      //     "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
-      //     {
-      //       shop_id: 84329,
-      //       payment_type_id: 2,
-      //       required_note: "KHONGCHOXEMHANG",
-      //       return_phone: "0376755120",
-      //       return_address: "Xóm 11",
-      //       return_district_id: 1848,
-      //       return_ward_code: "290625",
-      //       to_name: data.name,
-      //       to_phone: data.phone,
-      //       to_address: data.addressDetail,
-      //       to_ward_code: data.ward,
-      //       to_district_id: +data.district,
-      //       cod_amount: totalPriceProduct,
-      //       weight: getWeight(products.current),
-      //       content: `CANSPORT send to ${data.name}`,
-      //       length: getLength(products.current),
-      //       width: getWidth(products.current),
-      //       height: getHeight(products.current),
-      //       service_id: services[services.length - 1].service_id,
-      //       service_type_id: services[services.length - 1].service_type_id,
-      //       item: products.current.map((item) => {
-      //         return {
-      //           name: item.product.name,
-      //           code: item.product.id,
-      //           price: item.product.price,
-      //           quantity: item.quantity,
-      //         };
-      //       }),
-      //     },
-      //     {
-      //       headers: {
-      //         Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
-      //       },
-      //     }
-      //   )
+      axios.post(
+        "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
+        {
+          shop_id: 84329,
+          payment_type_id: 2,
+          required_note: "KHONGCHOXEMHANG",
+          return_phone: "0376755120",
+          return_address: "Xóm 11",
+          return_district_id: 1848,
+          return_ward_code: "290625",
+          to_name: data.name,
+          to_phone: data.phone,
+          to_address: data.addressDetail,
+          to_ward_code: data.ward,
+          to_district_id: +data.district,
+          cod_amount: totalPriceProduct,
+          weight: getWeight(products.current),
+          content: `CANSPORT send to ${data.name}`,
+          length: getLength(products.current),
+          width: getWidth(products.current),
+          height: getHeight(products.current),
+          service_id: services[services.length - 1].service_id,
+          service_type_id: services[services.length - 1].service_type_id,
+          item: products.current.map((item) => {
+            return {
+              name: item.product.name,
+              code: item.product.id,
+              price: item.product.price,
+              quantity: item.quantity,
+            };
+          }),
+        },
+        {
+          headers: {
+            Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
+          },
+        }
+      );
       //   .then((res) => {
       //     const shippingCode = res.data.data.order_code;
       //     console.log("res", res);
@@ -211,7 +219,7 @@ const Order = () => {
         `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province`,
         {
           headers: {
-            Token: "6e71122d-5c20-11ec-ac64-422c37c6de1b",
+            Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
           },
         }
       )
@@ -236,7 +244,7 @@ const Order = () => {
           `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=${province}`,
           {
             headers: {
-              Token: "6e71122d-5c20-11ec-ac64-422c37c6de1b",
+              Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
             },
           }
         )
@@ -254,7 +262,7 @@ const Order = () => {
           `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${district}`,
           {
             headers: {
-              Token: "6e71122d-5c20-11ec-ac64-422c37c6de1b",
+              Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
             },
           }
         )
@@ -272,7 +280,7 @@ const Order = () => {
           `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/available-services?from_district=1848&to_district=${district}&shop_id=84329`,
           {
             headers: {
-              Token: "6e71122d-5c20-11ec-ac64-422c37c6de1b",
+              Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
             },
           }
         )
@@ -303,7 +311,7 @@ const Order = () => {
           },
           {
             headers: {
-              Token: "6e71122d-5c20-11ec-ac64-422c37c6de1b",
+              Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
             },
           }
         )

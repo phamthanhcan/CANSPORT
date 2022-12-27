@@ -46,12 +46,40 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    provinceId: {
+      type: Number,
+      required: true,
+    },
     district: {
       type: String,
       required: true,
     },
+    districtId: {
+      type: Number,
+      required: true,
+    },
     ward: {
       type: String,
+      required: true,
+    },
+    wardId: {
+      type: Number,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
+    },
+    width: {
+      type: Number,
+      required: true,
+    },
+    length: {
+      type: Number,
+      required: true,
+    },
+    weight: {
+      type: Number,
       required: true,
     },
     phone: {
@@ -67,10 +95,14 @@ const orderSchema = new mongoose.Schema(
       default: "cod",
       enum: ["cod", "online"],
     },
+    service: {
+      id: Number,
+      typeId: Number,
+    },
     status: {
       type: String,
-      default: "Wait comfirmed",
-      enum: ["Wait confirmed", "Not comfirmed", "Confirmed"],
+      default: "waitting",
+      enum: ["waitting", "cancelled", "confirmed"],
     },
   },
   { timestamps: true }

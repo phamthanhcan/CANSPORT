@@ -8,6 +8,19 @@ import { isEmpty, numberWithCommas } from "../../../shared/helper/data";
 import EditIcon from "../../../../assets/icons/edit.svg";
 import LoadingPage from "../../../shared/components/modules/LoadingPage";
 
+const getStatus = (type) => {
+  switch (type) {
+    case "waitting":
+      return "Chờ xác nhận";
+    case "cancelled":
+      return "Đã hủy";
+    case "confirmed":
+      return "Đã duyệt";
+    default:
+      return "Chờ xác nhận";
+  }
+};
+
 const Purchase = () => {
   const user = useSelector((state) => state.auth.data.encode);
   const order = useSelector((state) => state.order.data);
@@ -38,18 +51,21 @@ const Purchase = () => {
             order?.map((item) => {
               return (
                 <li className="purchase-item">
-                  <Link to={`account/purchase/${item.id}`}>
+                  <Link to={`account/purchase/${item._id}`}>
                     <ul>
                       <div className="purchase-item-top">
                         <p>
-                          Mã đơn hàng: {item.id} <br />
+                          Mã đơn hàng: {item._id} <br />
                           Mã vận đơn: {item.shippingId}
                         </p>
-                        <p>
-                          Ngày đặt hàng:{" "}
-                          {!!item.orderDate &&
-                            format(new Date(item.orderDate), "dd/MM/yyyy")}
-                        </p>
+                        <div>
+                          <p>
+                            Ngày đặt hàng:{" "}
+                            {!!item.createdAt &&
+                              format(new Date(item.createdAt), "dd/MM/yyyy")}
+                          </p>
+                          <p>{getStatus(item.status)}</p>
+                        </div>
                       </div>
                       {item.products &&
                         item.products?.map((productCart) => {
@@ -101,7 +117,7 @@ const Purchase = () => {
                                 <p className="order-product-quantity">
                                   Số lượng: {productCart.quantity}
                                 </p>
-                                {productCart.isReviewed ? (
+                                {/* {productCart.isReviewed ? (
                                   <span>Rated</span>
                                 ) : (
                                   <button
@@ -117,7 +133,7 @@ const Purchase = () => {
                                     <img src={EditIcon} alt="edit icon" />
                                     <span className="txt-sm pl-2">Rating</span>
                                   </button>
-                                )}
+                                )} */}
                               </div>
                             </li>
                           );

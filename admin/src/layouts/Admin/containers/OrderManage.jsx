@@ -14,9 +14,10 @@ import {
 import { Pagination } from "@mui/material";
 import Navbar from "../../../components/Navbar";
 import Empty from "../../../libs/components/Empty";
-import { getOrders } from "../actions";
+import { getOrders, updateOrder } from "../actions";
 import noImage from "../../../assets/images/no-image.png";
 import { numberWithCommas } from "../../../libs/helper";
+import axios from "axios";
 
 const getStatus = (type) => {
   switch (type) {
@@ -63,11 +64,60 @@ const OrderManage = () => {
     setPage(value);
   };
 
+  const handleConfirm = (status) => {
+    dispatch(updateOrder(selectedOrder.id, status));
+
+    if (status === "confirmed") {
+      axios
+        .post(
+          "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
+          {
+            payment_type_id: 2,
+            required_note: "KHONGCHOXEMHANG",
+            return_phone: "0921194881",
+            return_address: "107 Nguyễn Hữu Dật - TP Đà Nẵng",
+            return_district_id: 1526,
+            return_ward_code: "40105",
+            to_name: orderDetail.name,
+            to_phone: String(orderDetail.phone),
+            to_address: `${orderDetail?.address} - ${orderDetail?.province} - ${orderDetail?.district} - ${orderDetail?.ward}`,
+            to_ward_code: String(orderDetail.wardId),
+            to_district_id: orderDetail.districtId,
+            cod_amount: orderDetail.price,
+            content: `CANSPORT send to ${orderDetail.name}`,
+            weight: orderDetail.weight,
+            length: orderDetail.length,
+            width: orderDetail.width,
+            height: orderDetail.height,
+            service_id: orderDetail.service.id,
+            service_type_id: orderDetail.service.typeId,
+            item: orderDetail.products.map((item) => {
+              return {
+                name: item.product.name,
+                code: item.product.id,
+                price: item.product.price,
+                quantity: item.quantity,
+              };
+            }),
+          },
+          {
+            headers: {
+              Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
+              ShopId: "121017",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+        });
+    }
+
+    toggleModalConfirm();
+  };
+
   useEffect(() => {
     dispatch(getOrders(page, 5));
   }, [dispatch, page]);
-
-  console.log({ orderDetail });
 
   return (
     <>
@@ -94,7 +144,7 @@ const OrderManage = () => {
                   <th scope="col">Phí vận chuyển</th>
                   <th scope="col">Ngày đặt hàng</th>
                   <th scope="col">Tổng tiền</th>
-                  <th scope="col"></th>
+                  <th scope="col" style={{ width: 150 }}></th>
                 </tr>
               </thead>
               <tbody>
@@ -204,11 +254,17 @@ const OrderManage = () => {
           </ModalBody>
           <ModalFooter>
             {selectedOrder.type === "cancel" ? (
-              <Button color="primary" onClick={() => {}}>
+              <Button
+                color="primary"
+                onClick={() => handleConfirm("cancelled")}
+              >
                 Xác nhận hủy
               </Button>
             ) : (
-              <Button color="primary" onClick={() => {}}>
+              <Button
+                color="primary"
+                onClick={() => handleConfirm("confirmed")}
+              >
                 Duyệt đơn
               </Button>
             )}

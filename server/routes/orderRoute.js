@@ -7,5 +7,6 @@ router.post("/create", loginCheck, orderController.createOrder);
 router.post("/confirm", loginCheck, orderController.confirmOrder);
 router.get("/user/:userId", loginCheck, orderController.getOrderByUser);
 router.get("/", loginCheck, orderController.getAllOrder);
+router.put("/:id", loginCheck, orderController.updateOrder);
 
 module.exports = router;

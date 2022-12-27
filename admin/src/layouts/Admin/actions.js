@@ -312,3 +312,29 @@ export const getOrders = (page, size) => async (dispatch) => {
     });
   }
 };
+
+export const updateOrder = (id, status) => async (dispatch) => {
+  dispatch({
+    type: TYPES.UPDATE_ORDERS,
+  });
+
+  try {
+    const res = await putApi([`order/${id}`], { status });
+    if (res.data.success) {
+      dispatch(getOrders(0, 5));
+      toast.success(
+        status === "cancelled"
+          ? "Hủy đơn hàng thành công"
+          : "Đã duyệt đơn hàng thành công"
+      );
+    }
+  } catch (err) {
+    dispatch({
+      type: TYPES.UPDATE_ORDERS_FAIL,
+      payload: err.response?.data?.message,
+    });
+    toast.error(
+      err.response?.data?.message || "Đã có lỗi khi cập nhật đơn hàng"
+    );
+  }
+};
