@@ -12,6 +12,13 @@
   color: map-get($color, white);
   box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
 
+  &-user-logout {
+    font-size: map-get($font-size, md);
+    font-weight: map-get($font-weight, light);
+    color: map-get($color, primary);
+    padding-top: 0;
+  }
+
   &-logo {
     display: flex;
     align-items: center;

@@ -140,9 +140,7 @@ function route(app) {
       },
     });
 
-    imageWriter.on("error", (err) => {
-      console.log(req.file);
-    });
+    imageWriter.on("error", (err) => {});
 
     imageWriter.on("finish", () => {
       // Assembling public URL for accessing the file via HTTP

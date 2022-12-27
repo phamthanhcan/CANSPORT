@@ -94,15 +94,17 @@ class User {
 
   async editUser(req, res) {
     const userId = req.params.userId;
-    let { name, phone, dob, address, gender, userImage } = req.body;
+    let { name, phone, address, gender, userImage } = req.body;
     if (!userId || !name || !phone) {
-      return res.status(400).json({ message: "All filled must be required" });
+      return res
+        .status(400)
+        .json({ message: "Các trường đầu vào không hợp lệ" });
     } else {
+      userModel.findById(userId).then((user) => console.log(user));
       userModel
         .findByIdAndUpdate(userId, {
           name,
           phone,
-          dob,
           address,
           gender,
           userImage,
@@ -110,7 +112,6 @@ class User {
         .exec()
         .then(() => {
           userModel.findById(userId).then((user) => {
-            console.log(user);
             return res.status(200).json({
               success: true,
               message: "Cập nhật người dùng thành công",

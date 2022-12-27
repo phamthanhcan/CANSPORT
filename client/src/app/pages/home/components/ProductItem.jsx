@@ -44,7 +44,12 @@ const ProductItem = (props) => {
           <p className="product-status">HÀNG CÓ SẴN</p>
           <ul className="product-sizes">
             {data.sizes.map((size) => (
-              <li className="product-size-item" key={size._id}>
+              <li
+                className={`product-size-item ${
+                  size.quantity === 0 ? "disabled" : ""
+                }`}
+                key={size._id}
+              >
                 <p>{size.size}</p>
               </li>
             ))}

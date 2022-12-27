@@ -94,4 +94,8 @@
     gap: 5px;
     font-weight: map-get($font-weight, bold);
   }
+
+  &-size-item.disabled {
+    color: map-get($color, disabled);
+  }
 }

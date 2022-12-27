@@ -182,7 +182,7 @@ const Header = (props) => {
               <>
                 <div className="header-account">
                   <div className="account">
-                    <Link className="account-link" to="/account">
+                    <Link className="account-link" to="/account/profile">
                       <img
                         className="account-img"
                         src={userInfo?.imageUrl || Avatar}

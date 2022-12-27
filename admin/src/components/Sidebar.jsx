@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import logoImg from "../assets/images/logo.webp";
+import { logout } from "../layouts/Auth/actions";
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [pathname, setPathname] = useState();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
 
   useEffect(() => {
     setPathname(window.location.pathname);
@@ -76,7 +85,15 @@ const Sidebar = () => {
             alt="avatar"
           />
         </div>
-        <p className="sidebar-user-name">Pham Thanh Can</p>
+        <div>
+          <p className="sidebar-user-name">Pham Thanh Can</p>
+          <button
+            className="sidebar-user-logout btn btn-text"
+            onClick={handleLogout}
+          >
+            Đăng xuất
+          </button>
+        </div>
       </div>
     </aside>
   );

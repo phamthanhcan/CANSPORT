@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 import { isEmpty, numberWithCommas } from "../../../shared/helper/data";
 import { postApi } from "../../../shared/helper/api";
@@ -98,6 +99,7 @@ const Order = () => {
       })
         .then((res) => {
           dispatch(clearCart());
+          toast.success("Đặt hàng thành công!");
           navigate("/account/purchase");
         })
         .catch((err) => console.error(err));

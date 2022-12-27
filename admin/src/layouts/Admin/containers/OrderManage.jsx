@@ -48,7 +48,7 @@ const OrderManage = () => {
   const orders = useSelector((state) => state.order.orders);
   const totalPages = useSelector((state) => state.order.totalPages);
 
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [modalConfirm, setModalConfirm] = useState(false);
   const toggleModalConfirm = () => {
     setModalConfirm(!modalConfirm);
@@ -72,6 +72,7 @@ const OrderManage = () => {
         .post(
           "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
           {
+            ShopId: "121017",
             payment_type_id: 2,
             required_note: "KHONGCHOXEMHANG",
             return_phone: "0921194881",
@@ -103,7 +104,6 @@ const OrderManage = () => {
           {
             headers: {
               Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
-              ShopId: "121017",
             },
           }
         )
@@ -116,7 +116,7 @@ const OrderManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getOrders(page, 5));
+    dispatch(getOrders(page - 1, 5));
   }, [dispatch, page]);
 
   return (

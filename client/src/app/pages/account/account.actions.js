@@ -2,6 +2,7 @@ import { User } from "../../models/user";
 import * as TYPES from "../account/account.types";
 import { getApi, putApi } from "../../shared/helper/api";
 import { Order } from "../../models/order";
+import { toast } from "react-toastify";
 
 export const getUserInfor = (userId) => async (dispatch) => {
   dispatch({
@@ -48,15 +49,19 @@ export const editUserInfor = (userId, data) => async (dispatch) => {
   });
 
   try {
-    await putApi([`user/${userId}`], data);
-    dispatch({
-      type: TYPES.EDIT_USER_INFORMATION_SUCCESS,
-      payload: data,
-    });
+    const res = await putApi([`user/${userId}`], data);
+    if (res.data.success) {
+      dispatch(getUserInfor(userId));
+      toast.success("Cập nhật người dùng thành công");
+    }
   } catch (err) {
     dispatch({
       type: TYPES.EDIT_USER_INFORMATION_ERROR,
       payload: err.response?.data?.message,
     });
+
+    toast.error(
+      err.response?.data?.message || "Đã xảy ra lỗi khi cập nhật người dùng"
+    );
   }
 };
