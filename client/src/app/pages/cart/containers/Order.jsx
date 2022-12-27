@@ -8,6 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { isEmpty, numberWithCommas } from "../../../shared/helper/data";
 import { postApi } from "../../../shared/helper/api";
 import { clearCart } from "../cart.actions";
+import LoadingPage from "../../../shared/components/modules/LoadingPage";
 
 const getWidth = (products) => {
   return Math.max(...products.map((item) => item.product?.width));
@@ -43,10 +44,9 @@ const Order = () => {
 
   const isFromPayment = window.location.search.includes("isFromPayment");
 
-  console.log(isFromPayment);
-
   const user = useSelector((state) => state.auth.data.encode);
-  const userTest = useSelector((state) => state.auth.data);
+  const userDetail = useSelector((state) => state.user.data);
+  const isLoading = useSelector((state) => state.user.isLoading);
   const cart = useSelector((state) => state.cart.data);
   const products = useRef([]);
 
@@ -102,7 +102,7 @@ const Order = () => {
           toast.success("Đặt hàng thành công!");
           navigate("/account/purchase");
         })
-        .catch((err) => console.error(err));
+        .catch((err) => toast.error("Có lỗi! Đặt hàng không thành công"));
       axios.post(
         "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
         {
@@ -141,40 +141,6 @@ const Order = () => {
           },
         }
       );
-      //   .then((res) => {
-      //     const shippingCode = res.data.data.order_code;
-      //     console.log("res", res);
-
-      //     postApi(["order/create"], {
-      //       user: user._id,
-      //       price: totalPriceProduct,
-      //       shippingFee,
-      //       shippingId: shippingCode,
-      //       address: data.addressDetail,
-      //       province: provinces.find((item) => item.ProvinceID === +province)
-      //         .ProvinceName,
-      //       district: districts.find((item) => item.DistrictID === +district)
-      //         .DistrictName,
-      //       ward: wards.find((item) => item.WardCode === ward).WardName,
-      //       phone: data.phone,
-      //       name: data.name,
-      //       typePay: "cod",
-      //       products: products.current.map((item) => {
-      //         return {
-      //           id: item._id,
-      //           product: item.product._id,
-      //           size: item.size ? item.size._id : null,
-      //           quantity: item.quantity,
-      //         };
-      //       }),
-      //     })
-      //       .then((res) => {
-      //         dispatch(clearCart());
-      //         navigate("/account/purchase");
-      //       })
-      //       .catch((err) => console.error(err));
-      //   })
-      //   .catch((err) => console.error(err));
     } else {
       navigate("/payment", {
         state: {
@@ -287,7 +253,6 @@ const Order = () => {
           }
         )
         .then((res) => {
-          console.log(services);
           setServices(res.data.data);
         })
         .catch((err) => console.error(err));
@@ -318,7 +283,6 @@ const Order = () => {
           }
         )
         .then((res) => {
-          console.log(res.data.data.total);
           setShippingFee(res.data.data.total);
         })
         .catch((err) => console.error(err));
@@ -329,247 +293,256 @@ const Order = () => {
     <div className="main container">
       <section className="order">
         <h2 className="section-title">SHOPPING ORDER</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="row">
-            <div className="delivery-info col-6">
-              <h3>THÔNG TIN NHẬN HÀNG</h3>
-              <div className="form-group">
-                <label className="form-label" htmlFor="name">
-                  Họ và tên <span className="form-label-required">*</span>
-                </label>
-                <input
-                  className="form-control"
-                  type="text"
-                  id="name"
-                  {...register("name", { required: "Vui lòng nhập tên" })}
-                />
-                <p className="form-error">{errors.name?.message}</p>
+        {isLoading ? (
+          <LoadingPage />
+        ) : (
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="row">
+              <div className="delivery-info col-6">
+                <h3>THÔNG TIN NHẬN HÀNG</h3>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="name">
+                    Họ và tên <span className="form-label-required">*</span>
+                  </label>
+                  <input
+                    defaultValue={userDetail?.name}
+                    className="form-control"
+                    type="text"
+                    id="name"
+                    {...register("name", { required: "Vui lòng nhập tên" })}
+                  />
+                  <p className="form-error">{errors.name?.message}</p>
+                </div>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="phone">
+                    Số điện thoại
+                    <span className="form-label-required">*</span>
+                  </label>
+                  <input
+                    defaultValue={userDetail?.phone}
+                    className="form-control"
+                    type="text"
+                    id="phone"
+                    {...register("phone", {
+                      required: "Vui lòng nhập số điện thoại",
+                    })}
+                  />
+                  <p className="form-error">{errors.phone?.message}</p>
+                </div>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="addressDetail">
+                    Địa chỉ chi tiết
+                    <span className="form-label-required">*</span>
+                  </label>
+                  <textarea
+                    defaultValue={userDetail?.address}
+                    className="form-control"
+                    id="addressDetail"
+                    {...register("addressDetail", {
+                      required: "Vui lòng nhập địa chỉ",
+                    })}
+                  ></textarea>
+                  <p className="form-error">{errors.addressDetail?.message}</p>
+                </div>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="provinces">
+                    Tỉnh thành
+                    <span className="form-label-required">*</span>
+                  </label>
+                  <select
+                    id="province"
+                    className="order-select form-control"
+                    {...register("province", {
+                      required: "Vui lòng chọn tỉnh thành",
+                    })}
+                  >
+                    <option defaultChecked value="">
+                      --------------
+                    </option>
+                    {provinces.map((item) => {
+                      return (
+                        <option key={item.ProvinceID} value={item.ProvinceID}>
+                          {item.ProvinceName}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <p className="form-error">{errors.province?.message}</p>
+                </div>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="district">
+                    Quận huyện
+                    <span className="form-label-required">*</span>
+                  </label>
+                  <select
+                    id="district"
+                    className="order-select form-control"
+                    {...register("district", {
+                      required: "Vui lòng chọn quận huyện",
+                    })}
+                  >
+                    <option defaultChecked value="">
+                      --------------
+                    </option>
+                    {districts?.map((item) => {
+                      return (
+                        <option value={item.DistrictID} key={item.DistrictID}>
+                          {item.DistrictName}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <p className="form-error">{errors.district?.message}</p>
+                </div>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="ward">
+                    Phường xã
+                    <span className="form-label-required">*</span>
+                  </label>
+                  <select
+                    id="ward"
+                    className="order-select form-control"
+                    {...register("ward", {
+                      required: "Vui lòng chọn phường xã",
+                    })}
+                  >
+                    <option defaultChecked value="">
+                      --------------
+                    </option>
+                    {wards?.map((item) => {
+                      return (
+                        <option value={item.WardCode} key={item.WardCode}>
+                          {item.WardName}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <p className="form-error">{errors.ward?.message}</p>
+                </div>
               </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="phone">
-                  Số điện thoại
-                  <span className="form-label-required">*</span>
-                </label>
-                <input
-                  className="form-control"
-                  type="text"
-                  id="phone"
-                  {...register("phone", {
-                    required: "Vui lòng nhập số điện thoại",
-                  })}
-                />
-                <p className="form-error">{errors.phone?.message}</p>
-              </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="addressDetail">
-                  Địa chỉ chi tiết
-                  <span className="form-label-required">*</span>
-                </label>
-                <textarea
-                  className="form-control"
-                  id="addressDetail"
-                  {...register("addressDetail", {
-                    required: "Vui lòng nhập địa chỉ",
-                  })}
-                ></textarea>
-                <p className="form-error">{errors.addressDetail?.message}</p>
-              </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="provinces">
-                  Tỉnh thành
-                  <span className="form-label-required">*</span>
-                </label>
-                <select
-                  id="province"
-                  className="order-select form-control"
-                  {...register("province", {
-                    required: "Vui lòng chọn tỉnh thành",
-                  })}
-                >
-                  <option defaultChecked value="">
-                    --------------
-                  </option>
-                  {provinces.map((item) => {
-                    return (
-                      <option key={item.ProvinceID} value={item.ProvinceID}>
-                        {item.ProvinceName}
-                      </option>
-                    );
-                  })}
-                </select>
-                <p className="form-error">{errors.province?.message}</p>
-              </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="district">
-                  Quận huyện
-                  <span className="form-label-required">*</span>
-                </label>
-                <select
-                  id="district"
-                  className="order-select form-control"
-                  {...register("district", {
-                    required: "Vui lòng chọn quận huyện",
-                  })}
-                >
-                  <option defaultChecked value="">
-                    --------------
-                  </option>
-                  {districts?.map((item) => {
-                    return (
-                      <option value={item.DistrictID} key={item.DistrictID}>
-                        {item.DistrictName}
-                      </option>
-                    );
-                  })}
-                </select>
-                <p className="form-error">{errors.district?.message}</p>
-              </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="ward">
-                  Phường xã
-                  <span className="form-label-required">*</span>
-                </label>
-                <select
-                  id="ward"
-                  className="order-select form-control"
-                  {...register("ward", { required: "Vui lòng chọn phường xã" })}
-                >
-                  <option defaultChecked value="">
-                    --------------
-                  </option>
-                  {wards?.map((item) => {
-                    return (
-                      <option value={item.WardCode} key={item.WardCode}>
-                        {item.WardName}
-                      </option>
-                    );
-                  })}
-                </select>
-                <p className="form-error">{errors.ward?.message}</p>
-              </div>
-            </div>
-            <div className="col-1"></div>
-            <div className="col-5 bill">
-              <div className="order-product">
-                <h3>SẢN PHẨM ORDER</h3>
-                <ul className="order-product-list">
-                  {products.current?.map((item) => {
-                    return (
-                      <li key={item.id} className="order-product-item my-4">
-                        <div className="d-flex">
-                          <div className="product-img">
-                            <img src={item.product.image} alt="product" />
-                            <span className="product-quantity">
-                              {item.quantity}
-                            </span>
+              <div className="col-1"></div>
+              <div className="col-5 bill">
+                <div className="order-product">
+                  <h3>SẢN PHẨM ORDER</h3>
+                  <ul className="order-product-list">
+                    {products.current?.map((item) => {
+                      return (
+                        <li key={item._id} className="order-product-item my-4">
+                          <div className="d-flex">
+                            <div className="product-img">
+                              <img src={item.product.image} alt="product" />
+                              <span className="product-quantity">
+                                {item.quantity}
+                              </span>
+                            </div>
+                            <div className="ml-3">
+                              <h4 className="product-name">
+                                {item.product.name}
+                              </h4>
+                              {!isEmpty(item.size) && (
+                                <div className="f-center-y">
+                                  {item.size.size && (
+                                    <>
+                                      Size:
+                                      <p className="product-view-option">
+                                        <span>{item.size.size}</span>
+                                      </p>
+                                    </>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <div className="ml-3">
-                            <h4 className="product-name">
-                              {item.product.name}
-                            </h4>
-                            {!isEmpty(item.size) && (
-                              <div className="f-center-y">
-                                {item.size.size && (
-                                  <>
-                                    Size:
-                                    <p className="product-view-option">
-                                      <span>{item.size.size}</span>
-                                    </p>
-                                  </>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
 
-                        <div className="ml-2">
-                          <p
-                            className={`product-price ${
-                              item.product.discount > 0 ? "disabled" : ""
-                            }`}
-                          >
-                            {numberWithCommas(
-                              item.product.price * item.quantity
-                            )}
-                            đ
-                          </p>
-                          {item.product.discount > 0 && (
-                            <p className="product-price">
+                          <div className="ml-2">
+                            <p
+                              className={`product-price ${
+                                item.product.discount > 0 ? "disabled" : ""
+                              }`}
+                            >
                               {numberWithCommas(
-                                item.product.price * item.quantity -
-                                  item.product.price *
-                                    item.quantity *
-                                    (item.product.discount / 100)
+                                item.product.price * item.quantity
                               )}
                               đ
                             </p>
-                          )}
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-              <div className="order-summary">
-                <div className="order-summary-detail">
-                  <div className="order-summary-item">
-                    <span>Tạm tính</span>
-                    <span className="price">
-                      {numberWithCommas(totalPriceProduct)}đ
-                    </span>
-                  </div>
-                  <div className="order-summary-item">
-                    <span>Phí vận chuyển</span>
-                    <span className="price">
-                      {numberWithCommas(shippingFee)}đ
-                    </span>
-                  </div>
-                  <div className="order-summary-item">
-                    <span>Phương thức thanh toán</span>
-                    <div>
-                      <div className="mb-3">
-                        <input
-                          defaultChecked
-                          type="radio"
-                          value="cod"
-                          id="cod"
-                          {...register("paymentOption")}
-                        />
-                        <label htmlFor="cod" className="ml-2">
-                          Thanh toán khi nhận hàng
-                        </label>
-                      </div>
+                            {item.product.discount > 0 && (
+                              <p className="product-price">
+                                {numberWithCommas(
+                                  item.product.price * item.quantity -
+                                    item.product.price *
+                                      item.quantity *
+                                      (item.product.discount / 100)
+                                )}
+                                đ
+                              </p>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <div className="order-summary">
+                  <div className="order-summary-detail">
+                    <div className="order-summary-item">
+                      <span>Tạm tính</span>
+                      <span className="price">
+                        {numberWithCommas(totalPriceProduct)}đ
+                      </span>
+                    </div>
+                    <div className="order-summary-item">
+                      <span>Phí vận chuyển</span>
+                      <span className="price">
+                        {numberWithCommas(shippingFee)}đ
+                      </span>
+                    </div>
+                    <div className="order-summary-item">
+                      <span>Phương thức thanh toán</span>
                       <div>
-                        <input
-                          type="radio"
-                          value="online-payment"
-                          id="online-payment"
-                          {...register("paymentOption")}
-                        />
-                        <label htmlFor="online-payment" className="ml-2">
-                          Thanh toán bằng thẻ tín dụng
-                        </label>
+                        <div className="mb-3">
+                          <input
+                            defaultChecked
+                            type="radio"
+                            value="cod"
+                            id="cod"
+                            {...register("paymentOption")}
+                          />
+                          <label htmlFor="cod" className="ml-2">
+                            Thanh toán khi nhận hàng
+                          </label>
+                        </div>
+                        <div>
+                          <input
+                            type="radio"
+                            value="online-payment"
+                            id="online-payment"
+                            {...register("paymentOption")}
+                          />
+                          <label htmlFor="online-payment" className="ml-2">
+                            Thanh toán bằng thẻ tín dụng
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="order-summary-total">
-                  <div className="order-summary-item">
-                    <span>Tổng cộng</span>
-                    <span className="price">
-                      {numberWithCommas(totalPriceProduct + shippingFee)}đ
-                    </span>
+                  <div className="order-summary-total">
+                    <div className="order-summary-item">
+                      <span>Tổng cộng</span>
+                      <span className="price">
+                        {numberWithCommas(totalPriceProduct + shippingFee)}đ
+                      </span>
+                    </div>
                   </div>
+                  <input
+                    type="submit"
+                    className="btn btn-primary full-width"
+                    value="ĐẶT HÀNG"
+                  />
                 </div>
-                <input
-                  type="submit"
-                  className="btn btn-primary full-width"
-                  value="ĐẶT HÀNG"
-                />
               </div>
             </div>
-          </div>
-        </form>
+          </form>
+        )}
       </section>
     </div>
   );

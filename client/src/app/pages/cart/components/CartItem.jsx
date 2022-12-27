@@ -7,8 +7,6 @@ import { addProductCart, deleteItemCart } from "../cart.actions";
 const CartItem = (props) => {
   const { cartItem, cartId } = props;
 
-  console.log(cartItem);
-
   const dispatch = useDispatch();
 
   const [amountProduct, setAmountProduct] = useState(cartItem.quantity);

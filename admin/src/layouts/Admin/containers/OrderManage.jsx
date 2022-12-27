@@ -65,14 +65,13 @@ const OrderManage = () => {
   };
 
   const handleConfirm = (status) => {
-    dispatch(updateOrder(selectedOrder.id, status));
+    // dispatch(updateOrder(selectedOrder.id, status));
 
     if (status === "confirmed") {
       axios
         .post(
           "https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create",
           {
-            ShopId: "121017",
             payment_type_id: 2,
             required_note: "KHONGCHOXEMHANG",
             return_phone: "0921194881",
@@ -92,7 +91,7 @@ const OrderManage = () => {
             height: orderDetail.height,
             service_id: orderDetail.service.id,
             service_type_id: orderDetail.service.typeId,
-            item: orderDetail.products.map((item) => {
+            items: orderDetail.products.map((item) => {
               return {
                 name: item.product.name,
                 code: item.product.id,
@@ -103,7 +102,8 @@ const OrderManage = () => {
           },
           {
             headers: {
-              Token: "3203fd77-7a41-11ed-a2ce-1e68bf6263c5",
+              Token: "aeba4fd5-85a7-11ed-9ccc-a2c11deda90c",
+              ShopId: 121232,
             },
           }
         )
@@ -194,7 +194,9 @@ const OrderManage = () => {
                         {new Date(order.createdAt).toLocaleDateString("en-GB")}
                       </span>
                     </td>
-                    <td>{numberWithCommas(order.price)}đ</td>
+                    <td>
+                      {numberWithCommas(order.price + order.shippingFee)}đ
+                    </td>
                     <td>
                       {order.status === "waitting" && (
                         <div>

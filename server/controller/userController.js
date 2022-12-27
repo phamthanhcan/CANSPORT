@@ -152,12 +152,14 @@ class User {
     let userId = req.params.userId;
     let { oldPassword, newPassword } = req.body;
     if (!userId || !oldPassword || !newPassword) {
-      return res.status(400).json({ message: "All filled must be required" });
+      return res
+        .status(400)
+        .json({ message: "Các trường đầu vào không hợp lệ" });
     } else {
       const data = await userModel.findOne({ _id: userId });
       if (!data) {
         return res.status(400).json({
-          error: "Invalid user",
+          error: "Người dùng không hợp lệ",
         });
       } else {
         const oldPassCheck = await bcrypt.compare(oldPassword, data.password);
@@ -168,11 +170,15 @@ class User {
           });
           passChange.exec((err, result) => {
             if (err) return res.status(500);
-            return res.json({ success: "Password updated successfully" });
+            return res.json({
+              success: true,
+              message: "Thay đổi mật khẩu thành công",
+            });
           });
         } else {
           return res.status(400).json({
-            error: "Your old password is wrong!!",
+            success: false,
+            message: "Mật khẩu cũ không đúng",
           });
         }
       }

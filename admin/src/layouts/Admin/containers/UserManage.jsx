@@ -45,8 +45,8 @@ const UserManage = () => {
   };
 
   useEffect(() => {
-    dispatch(getListUser(page - 1, 10, "", true));
-  }, [dispatch, page]);
+    dispatch(getListUser(page - 1, 10, search, true));
+  }, [dispatch, page, search]);
 
   return (
     <div>

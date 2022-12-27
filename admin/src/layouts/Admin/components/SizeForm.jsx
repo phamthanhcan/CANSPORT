@@ -4,7 +4,7 @@ import { Button, Table } from "reactstrap";
 import { v4 as uuidv4 } from "uuid";
 
 const SizeForm = (props) => {
-  const { sizes, setSizes } = props;
+  const { sizes, setSizes, id } = props;
 
   const handleChangeAddSize = () => {
     if (sizes.some((item) => !item.size || !item.quantity)) {
@@ -46,7 +46,7 @@ const SizeForm = (props) => {
           <tr>
             <th>Size</th>
             <th>Số lượng</th>
-            <th></th>
+            {!id && <th></th>}
           </tr>
         </thead>
         <tbody>
@@ -54,6 +54,7 @@ const SizeForm = (props) => {
             <tr key={item.id}>
               <td>
                 <input
+                  disabled={!!id}
                   className="form-control"
                   defaultValue={item?.size}
                   onChange={(e) => handleChangeInput(e, item.id, "size")}
@@ -68,17 +69,19 @@ const SizeForm = (props) => {
                   onChange={(e) => handleChangeInput(e, item.id, "quantity")}
                 />
               </td>
-              <td>
-                <button
-                  className="btn btn-danger"
-                  onClick={() => handleDeleteSize(item.id)}
-                >
-                  <ion-icon
-                    name="trash-outline"
-                    style={{ fontSize: 20 }}
-                  ></ion-icon>
-                </button>
-              </td>
+              {!id && (
+                <td>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => handleDeleteSize(item.id)}
+                  >
+                    <ion-icon
+                      name="trash-outline"
+                      style={{ fontSize: 20 }}
+                    ></ion-icon>
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>

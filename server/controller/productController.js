@@ -215,40 +215,36 @@ class Product {
     const id = req.params.productId;
     const updateProduct = req.body;
 
-    if (updateProduct.sizes) {
-      productModel.findById(id).then((product) => {});
-    }
-
-    // productModel
-    //   .findByIdAndUpdate(id, updateProduct)
-    //   .populate([
-    //     {
-    //       path: "category",
-    //       select: "_id name",
-    //     },
-    //     {
-    //       path: "ratingsReviews.user",
-    //       select: "_id name userImage",
-    //     },
-    //     {
-    //       path: "sizes",
-    //     },
-    //   ])
-    //   .exec()
-    //   .then((product) => {
-    //     return res.status(200).json({
-    //       success: true,
-    //       message: "Cập nhật sản phẩm thành công",
-    //       product: product,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     return res.json({
-    //       success: false,
-    //       message: "Cập nhật sản phẩm thất bại",
-    //       err: err.message,
-    //     });
-    //   });
+    productModel
+      .findByIdAndUpdate(id, updateProduct)
+      .populate([
+        {
+          path: "category",
+          select: "_id name",
+        },
+        {
+          path: "ratingsReviews.user",
+          select: "_id name userImage",
+        },
+        {
+          path: "sizes",
+        },
+      ])
+      .exec()
+      .then((product) => {
+        return res.status(200).json({
+          success: true,
+          message: "Cập nhật sản phẩm thành công",
+          product: product,
+        });
+      })
+      .catch((err) => {
+        return res.json({
+          success: false,
+          message: "Cập nhật sản phẩm thất bại",
+          err: err.message,
+        });
+      });
   }
 
   deleteProduct(req, res) {

@@ -51,20 +51,17 @@ const Purchase = () => {
             order?.map((item) => {
               return (
                 <li className="purchase-item">
-                  <Link to={`account/purchase/${item._id}`}>
+                  <div>
                     <ul>
                       <div className="purchase-item-top">
-                        <p>
-                          Mã đơn hàng: {item._id} <br />
-                          Mã vận đơn: {item.shippingId}
-                        </p>
+                        <p>Mã đơn hàng: {item._id}</p>
                         <div>
                           <p>
                             Ngày đặt hàng:{" "}
                             {!!item.createdAt &&
                               format(new Date(item.createdAt), "dd/MM/yyyy")}
                           </p>
-                          <p>{getStatus(item.status)}</p>
+                          <p>Trạng thái: {getStatus(item.status)}</p>
                         </div>
                       </div>
                       {item.products &&
@@ -117,6 +114,7 @@ const Purchase = () => {
                                 <p className="order-product-quantity">
                                   Số lượng: {productCart.quantity}
                                 </p>
+
                                 {/* {productCart.isReviewed ? (
                                   <span>Rated</span>
                                 ) : (
@@ -139,7 +137,16 @@ const Purchase = () => {
                           );
                         })}
                     </ul>
-                  </Link>
+                    <div className="f-center-x">
+                      <p className="mr-3">
+                        Phí vận chuyển: {numberWithCommas(item.shippingFee)}đ
+                      </p>
+                      <p style={{ fontWeight: "bold" }}>
+                        Tổng tiền:{" "}
+                        {numberWithCommas(item.shippingFee + item.price)}đ
+                      </p>
+                    </div>
+                  </div>
                 </li>
               );
             })}

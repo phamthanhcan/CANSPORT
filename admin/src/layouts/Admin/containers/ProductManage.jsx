@@ -28,7 +28,8 @@ const ProductManage = () => {
   const isLoading = useSelector((state) => state.product.isLoading);
   const categories = useSelector((state) => state.category.categories);
 
-  const [search, setSearch] = useState("");
+  const [searchName, setSearchName] = useState("");
+  const [searchCategory, setSearchCategory] = useState("");
   const [page, setPage] = useState(1);
   const [idSelected, setIdSelected] = useState(null);
   const [modalDelete, setModalDelete] = useState(false);
@@ -45,21 +46,21 @@ const ProductManage = () => {
     toggleModalDelete();
   };
 
-  const productsFilter = () => {
-    return products?.filter((product) =>
-      search.trim()
-        ? product.name.toLowerCase().includes(search.toLowerCase().trim())
-        : true
-    );
-  };
+  // const productsFilter = () => {
+  //   return products?.filter((product) =>
+  //     search.trim()
+  //       ? product.name.toLowerCase().includes(search.toLowerCase().trim())
+  //       : true
+  //   );
+  // };
 
   const handleChangePage = (e, value) => {
     setPage(value);
   };
 
   useEffect(() => {
-    dispatch(getListProducts(page - 1, 0, "", "" || "", true));
-  }, [dispatch, page]);
+    dispatch(getListProducts(page - 1, 0, searchCategory, searchName, true));
+  }, [dispatch, page, searchName, searchCategory]);
 
   useEffect(() => {
     dispatch(getCategory());
@@ -71,12 +72,27 @@ const ProductManage = () => {
       <div className="wrapper">
         <>
           <div className="d-flex justify-content-between mb-2">
-            <input
-              className="form-control"
-              placeholder="Nhập sản phẩm cần tìm kiếm..."
-              style={{ width: 300 }}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <div className="d-flex gap-2">
+              <input
+                className="form-control"
+                placeholder="Nhập sản phẩm cần tìm kiếm..."
+                style={{ width: 300 }}
+                onChange={(e) => setSearchName(e.target.value)}
+              />
+              <select
+                className="form-control"
+                onChange={(e) => setSearchCategory(e.target.value)}
+              >
+                <option value="">---Danh mục---</option>
+                {categories?.map((item) => {
+                  return (
+                    <option key={item._id} value={item._id}>
+                      {item.name}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
             <Button onClick={toggleModalAdd}>+ Thêm sản phẩm</Button>
           </div>
           {products.length ? (
@@ -100,7 +116,7 @@ const ProductManage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {productsFilter()?.map((product) => (
+                      {products?.map((product) => (
                         <tr key={product._id}>
                           <th scope="row">
                             <img

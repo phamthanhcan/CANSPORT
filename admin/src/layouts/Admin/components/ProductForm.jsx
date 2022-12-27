@@ -15,7 +15,7 @@ import {
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import noImage from "../../../assets/images/no-image.png";
-import { addProduct, getCategory } from "../actions";
+import { addProduct, editProduct } from "../actions";
 import SizeForm from "./SizeForm";
 import Loading from "../../../libs/components/Loading";
 import { useRef } from "react";
@@ -128,13 +128,12 @@ const ProductForm = (props) => {
   };
 
   const onSubmitAll = (data) => {
-    console.log({ ...data, ...productInfo.current });
     if (!id) {
       dispatch(addProduct({ ...data, ...productInfo.current }));
-      toggleModalAdd();
     } else {
-      console.log("cập nhật", { ...data, ...productInfo.current });
+      dispatch(editProduct({ ...data, ...productInfo.current }, id));
     }
+    toggleModalAdd();
   };
 
   const uploadImg = useCallback((e) => {
@@ -315,7 +314,7 @@ const ProductForm = (props) => {
           </div>
         </div>
         {hasSize && currentStep === 1 && (
-          <SizeForm sizes={sizes} setSizes={setSizes} />
+          <SizeForm sizes={sizes} setSizes={setSizes} id={id} />
         )}
 
         <div hidden={currentStep !== 2}>

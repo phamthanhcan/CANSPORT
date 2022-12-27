@@ -40,8 +40,6 @@ const ChangePassword = () => {
 
   const [isSubmited, setIsSubmited] = useState(false);
 
-  console.log(user);
-
   const onSubmit = (data) => {
     putApi([`user/${userId}/change-password`], {
       oldPassword: data.oldPassword,
@@ -49,29 +47,11 @@ const ChangePassword = () => {
     })
       .then((res) => {
         setIsSubmited(true);
-        toast.success("Đổi mật khẩu thành công!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.success("Đổi mật khẩu thành công!");
       })
       .catch((err) => {
         setIsSubmited(true);
-        toast.error(err.response?.data?.error, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.error(err.response?.data?.message);
       });
   };
 

@@ -125,12 +125,7 @@ export const deleteProduct = (id) => async (dispatch) => {
 
   try {
     const res = await deleteApi(["product", id]);
-    dispatch({
-      type: TYPES.DELETE_PRODUCT_SUCCESS,
-      payload: {
-        id,
-      },
-    });
+    dispatch(getListProducts(0, 0, "", "", true));
 
     toast.success("Xóa sản phẩm thành công!");
   } catch (err) {
@@ -149,12 +144,7 @@ export const addProduct = (productData) => async (dispatch) => {
 
   try {
     const res = await postApi(["product"], productData);
-    dispatch({
-      type: TYPES.ADD_PRODUCT_SUCCESS,
-      payload: {
-        product: res.data.product,
-      },
-    });
+    dispatch(getListProducts(0, 0, "", "", true));
     toast.success("Thêm sản phẩm thành công");
   } catch (err) {
     dispatch({
@@ -172,12 +162,7 @@ export const editProduct = (productData, id) => async (dispatch) => {
 
   try {
     const res = await putApi(["product", id], productData);
-    dispatch({
-      type: TYPES.UPDATE_PRODUCT_SUCCESS,
-      payload: {
-        product: res.data.product,
-      },
-    });
+    dispatch(getListProducts(0, 0, "", "", true));
     toast.success("Cập nhật sản phẩm thành công");
   } catch (err) {
     dispatch({
@@ -223,10 +208,7 @@ export const deleteUser = (userId) => async (dispatch) => {
     if (res.data.success) {
       toast.success("Xoá người dùng thành công");
     }
-    dispatch({
-      type: TYPES.DELETE_USER_SUCCESS,
-      payload: { userId },
-    });
+    dispatch(getListUser(0, 10, "", true));
   } catch (err) {
     if (!err.response.data.success) {
       toast.error(err.response.data?.message || "Xoá người dùng thất bại");
@@ -248,10 +230,7 @@ export const addUser = (userData) => async (dispatch) => {
     if (res.data.success) {
       toast.success("Thêm người dùng thành công");
     }
-    dispatch({
-      type: TYPES.ADD_USER_SUCCESS,
-      payload: { user: res.data.user },
-    });
+    dispatch(getListUser(0, 10, "", true));
   } catch (err) {
     if (!err.response.data.success) {
       toast.error(err.response.data?.message || "Thêm người dùng thất bại");
@@ -267,18 +246,13 @@ export const updateUser = (userId, userData) => async (dispatch) => {
   dispatch({
     type: TYPES.UPDATE_USER,
   });
-  console.log("update");
 
   try {
     const res = await putApi(["user", userId], userData);
-    console.log(res);
     if (res.data.success) {
       toast.success("Cập nhật người dùng thành công");
     }
-    dispatch({
-      type: TYPES.UPDATE_USER_SUCCESS,
-      payload: { user: res.data.user, userId },
-    });
+    dispatch(getListUser(0, 10, "", true));
   } catch (err) {
     if (!err.response.data.success) {
       toast.error(err.response.data?.message || "Cập nhật người dùng thất bại");
